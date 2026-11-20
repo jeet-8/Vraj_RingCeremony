@@ -58,8 +58,10 @@ test.describe('Ring Ceremony Invitation Functional Tests', () => {
 
     // Verify Hero Card elements
     await expect(page.locator('text=Vraj').first()).toBeVisible();
-    await expect(page.locator('text=Jiya (Pooja)').first()).toBeVisible();
+    await expect(page.locator('text=Son of').first()).toBeVisible();
     await expect(page.locator('text=Rekha Kuwar & Prakashsinghji').first()).toBeVisible();
+    await expect(page.locator('text=Pooja (Jiya)').first()).toBeVisible();
+    await expect(page.locator('text=Daughter of').first()).toBeVisible();
     await expect(page.locator('text=Seema Kuwar & Parvatsinghji').first()).toBeVisible();
 
     // Verify Countdown Card

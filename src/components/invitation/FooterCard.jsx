@@ -10,7 +10,7 @@ export default function FooterCard({ onReopen }) {
   const handleShare = async () => {
     const shareData = {
       title: eventConfig.seo.title,
-      text: `💍 You are cordially invited to the Ring Ceremony of Vraj & Jiya (Pooja) on 6 December 2026 at R.K. Royal Banquet, Science City! Tap to open the digital invitation:`,
+      text: `💍 You are cordially invited to the Ring Ceremony of Vraj & Pooja (Jiya) on 6 December 2026 at R.K. Royal Banquet, Science City! Tap to open the digital invitation:`,
       url: window.location.href,
     };
 
@@ -39,7 +39,7 @@ export default function FooterCard({ onReopen }) {
       {/* Monogram Seal */}
       <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#581829] to-[#3A0F1B] border-2 border-[#D8A85E] shadow-wax-seal flex flex-col items-center justify-center mb-4">
         <span className="font-display font-bold text-sm text-[#FFEDBA]">
-          {eventConfig.couple.monogram}
+          {eventConfig.monogram || eventConfig.couple?.monogram || 'V & P'}
         </span>
       </div>
 
@@ -74,7 +74,7 @@ export default function FooterCard({ onReopen }) {
       )}
 
       <p className="text-[11px] text-[#8E5164] font-serif mt-4">
-        {t('footer.madeWithLove')} • Vraj &amp; Jiya
+        {t('footer.madeWithLove')} • Vraj &amp; Pooja (Jiya)
       </p>
     </footer>
   );

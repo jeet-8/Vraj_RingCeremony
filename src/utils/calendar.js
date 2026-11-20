@@ -16,11 +16,11 @@ export function downloadIcsCalendar() {
   const icsContent = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Vraj & Jiya//Ring Ceremony Invitation//EN",
+    "PRODID:-//Vraj & Pooja//Ring Ceremony Invitation//EN",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
-    `UID:ring-ceremony-vraj-jiya-20261206@vraj-jiya.com`,
+    `UID:ring-ceremony-vraj-pooja-20261206@vraj-pooja.com`,
     `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").split(".")[0]}Z`,
     `DTSTART:${startTimeUtc}`,
     `DTEND:${endTimeUtc}`,
@@ -31,7 +31,7 @@ export function downloadIcsCalendar() {
     "BEGIN:VALARM",
     "TRIGGER:-PT24H",
     "ACTION:DISPLAY",
-    "DESCRIPTION:Reminder: Ring Ceremony of Vraj & Jiya tomorrow!",
+    "DESCRIPTION:Reminder: Ring Ceremony of Vraj & Pooja (Jiya) tomorrow!",
     "END:VALARM",
     "END:VEVENT",
     "END:VCALENDAR",
@@ -40,7 +40,7 @@ export function downloadIcsCalendar() {
   const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
   const link = document.createElement("a");
   link.href = window.URL.createObjectURL(blob);
-  link.setAttribute("download", "Vraj-Jiya-Ring-Ceremony.ics");
+  link.setAttribute("download", "Vraj-Pooja-Ring-Ceremony.ics");
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

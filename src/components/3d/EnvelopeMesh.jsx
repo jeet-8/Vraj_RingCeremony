@@ -8,6 +8,7 @@ import {
   createWaxSealMonogramTexture,
 } from '../../utils/proceduralTextures';
 import soundEngine from '../../utils/proceduralAudio';
+import eventConfig from '../../../event.config.js';
 
 export default function EnvelopeMesh({
   isOpening,
@@ -42,7 +43,7 @@ export default function EnvelopeMesh({
   // Procedural Textures
   const leafNormalMap = useMemo(() => createEmbossedLeafNormalTexture(1024), []);
   const silkNormalMap = useMemo(() => createSilkLiningNormalTexture(512), []);
-  const sealMonogramTex = useMemo(() => createWaxSealMonogramTexture(1024), []);
+  const sealMonogramTex = useMemo(() => createWaxSealMonogramTexture(1024, eventConfig.monogram || eventConfig.couple?.monogram || 'V & P'), []);
 
   // 1. Embossed Mauve-Pink Paper Material
   const paperMaterial = useMemo(() => {
@@ -159,55 +160,72 @@ export default function EnvelopeMesh({
     ctx.fillText('卐', 700, 190);
 
     // Top blessing lines
-    ctx.font = '500 32px "Cormorant Garamond", serif';
+    ctx.font = '500 30px "Cormorant Garamond", serif';
     ctx.fillStyle = '#B38136';
-    ctx.fillText('Shree Ganeshay Namah  •  Shree Khimaj Mata Namah  •  Shree Kheteshwaray Namah', 700, 280);
+    ctx.fillText('Shree Ganeshay Namah  •  Shree Khimaj Mata Namah  •  Shree Kheteshwaray Namah', 700, 260);
 
-    ctx.font = 'italic 42px "Cormorant Garamond", serif';
+    ctx.font = '24px "Cinzel", serif';
     ctx.fillStyle = '#8E5164';
-    ctx.fillText('Cordially invite you to celebrate the', 700, 400);
+    ctx.fillText('WITH THE BLESSINGS OF OUR ELDERS', 700, 330);
 
-    ctx.font = 'bold 56px "Cinzel", serif';
+    ctx.font = 'italic 34px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#8E5164';
+    ctx.fillText('Cordially invite you to celebrate the joyous', 700, 385);
+
+    ctx.font = 'bold 44px "Cinzel", serif';
     ctx.fillStyle = '#B38136';
-    ctx.fillText('RING CEREMONY', 700, 500);
+    ctx.fillText('RING CEREMONY', 700, 445);
 
-    ctx.font = 'italic 135px "Great Vibes", cursive';
+    // Groom Block
+    ctx.font = 'italic 100px "Great Vibes", cursive';
     ctx.fillStyle = '#4A1224';
-    ctx.fillText('Vraj & Jiya', 700, 720);
+    ctx.fillText(eventConfig.groom.name, 700, 555);
 
-    ctx.font = '28px "Cinzel", serif';
-    ctx.fillStyle = '#8E5164';
-    ctx.fillText('WITH BLESSINGS FROM ELDERS & FAMILIES', 700, 880);
+    ctx.font = 'italic 28px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#9E6D38';
+    ctx.fillText('Son of', 700, 615);
 
     ctx.font = 'bold 36px "Cormorant Garamond", serif';
     ctx.fillStyle = '#4A1224';
-    ctx.fillText('Rekha Kanwer & Prakashsinghji', 700, 950);
-    ctx.font = 'italic 30px "Cormorant Garamond", serif';
+    ctx.fillText(eventConfig.groom.parents, 700, 660);
+
+    // Center & Divider
+    ctx.font = 'italic 38px "Cormorant Garamond", serif';
     ctx.fillStyle = '#D8A85E';
-    ctx.fillText('&', 700, 995);
+    ctx.fillText('—  &  —', 700, 730);
+
+    // Bride Block
+    ctx.font = 'italic 100px "Great Vibes", cursive';
+    ctx.fillStyle = '#4A1224';
+    ctx.fillText(eventConfig.bride.name, 700, 835);
+
+    ctx.font = 'italic 28px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#9E6D38';
+    ctx.fillText('Daughter of', 700, 895);
+
     ctx.font = 'bold 36px "Cormorant Garamond", serif';
     ctx.fillStyle = '#4A1224';
-    ctx.fillText('Seema Kanwer & Parvatsinghji', 700, 1040);
+    ctx.fillText(eventConfig.bride.parents, 700, 940);
 
     // Thin separator
     ctx.strokeStyle = '#D8A85E';
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(350, 1120);
-    ctx.lineTo(1050, 1120);
+    ctx.moveTo(350, 1010);
+    ctx.lineTo(1050, 1010);
     ctx.stroke();
 
-    ctx.font = 'bold 44px "Cinzel", serif';
+    ctx.font = 'bold 42px "Cinzel", serif';
     ctx.fillStyle = '#B38136';
-    ctx.fillText('SUNDAY, 6 DECEMBER 2026', 700, 1200);
+    ctx.fillText('SUNDAY, 6 DECEMBER 2026', 700, 1085);
 
-    ctx.font = '36px "Cormorant Garamond", serif';
+    ctx.font = '34px "Cormorant Garamond", serif';
     ctx.fillStyle = '#5A2637';
-    ctx.fillText('4:00 PM Arrival & Welcome', 700, 1270);
+    ctx.fillText('4:00 PM Arrival & Welcome', 700, 1145);
 
-    ctx.font = '36px "Cormorant Garamond", serif';
+    ctx.font = '34px "Cormorant Garamond", serif';
     ctx.fillStyle = '#5A2637';
-    ctx.fillText('R.K. Royal Banquet & Party Lawn, Science City', 700, 1340);
+    ctx.fillText('R.K. Royal Banquet & Party Lawn, Science City', 700, 1205);
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.colorSpace = THREE.SRGBColorSpace;
@@ -712,7 +730,7 @@ export default function EnvelopeMesh({
               <torusGeometry args={[sealR * 0.90, 0.032, 16, 48]} />
             </mesh>
 
-            {/* Embossed Monogram Face ("V & J" Monogram) */}
+            {/* Embossed Monogram Face ("V & P" Monogram) */}
             <mesh
               position={[0, 0, 0.036]}
             >

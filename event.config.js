@@ -1,11 +1,29 @@
 /**
  * EVENT CONFIGURATION
- * All event details for Vraj & Jiya's Ring Ceremony.
+ * All event details for Vraj & Pooja's Ring Ceremony.
  * Edit this file to update names, date, venue, contacts, or translations.
  */
 
 export const eventConfig = {
-  // Couple Information
+  // Monogram & Title
+  monogram: "V & P",
+  monogramTitle: "Vraj & Pooja",
+
+  // Couple & Parents Information
+  groom: {
+    name: "Vraj",
+    fullName: "Vraj",
+    parents: "Rekha Kuwar & Prakashsinghji",
+  },
+  bride: {
+    name: "Pooja (Jiya)",
+    fullName: "Pooja (Jiya)",
+    parents: "Seema Kuwar & Parvatsinghji",
+  },
+  ceremony: "Ring Ceremony",
+  subtitle: "Engagement Celebration",
+
+  // Couple alias for backward compatibility
   couple: {
     groom: "Vraj",
     bride: "Pooja (Jiya)",
@@ -15,13 +33,6 @@ export const eventConfig = {
     monogramTitle: "Vraj & Pooja",
     ceremony: "Ring Ceremony",
     subtitle: "Engagement Celebration",
-  },
-
-  // Family Information
-  families: {
-    groomParents: "Rekha Kuwar & Prakashsinghji",
-    brideParents: "Seema Kuwar & Parvatsinghji",
-    blessingQuote: "With the divine blessings of our beloved elders and ancestors, we cordially invite you to celebrate the joyous Ring Ceremony of our children.",
   },
 
   // Top Blessing Lines (shown above the envelope and in Hero card)
@@ -49,8 +60,8 @@ export const eventConfig = {
     iso: "2026-12-06T16:00:00+05:30",
     dateFormatted: "Sunday, 6 December 2026",
     timeFormatted: "4:00 PM Onwards",
-    calendarSummary: "Ring Ceremony of Vraj & Jiya (Pooja)",
-    calendarDescription: "You are warmly invited to the Ring Ceremony of Vraj & Jiya (Pooja) at R.K. Royal Banquet & Party Lawn, Science City.",
+    calendarSummary: "Ring Ceremony of Vraj & Pooja (Jiya)",
+    calendarDescription: "You are warmly invited to the Ring Ceremony of Vraj & Pooja (Jiya) at R.K. Royal Banquet & Party Lawn, Science City.",
     targetYear: 2026,
     targetMonth: 12, // 1-indexed
     targetDay: 6,
@@ -141,9 +152,9 @@ export const eventConfig = {
 
   // SEO & Social Sharing
   seo: {
-    title: "Ring Ceremony Invitation | Vraj & Jiya (Pooja) - 6 Dec 2026",
-    description: "Cordially inviting you to celebrate the Ring Ceremony of Vraj & Jiya (Pooja) on 6 December 2026 at R.K. Royal Banquet & Party Lawn, Science City.",
-    url: "https://vraj-jiya-ring-ceremony.com",
+    title: "Ring Ceremony Invitation | Vraj & Pooja (Jiya) - 6 Dec 2026",
+    description: "Cordially inviting you to celebrate the Ring Ceremony of Vraj & Pooja (Jiya) on 6 December 2026 at R.K. Royal Banquet & Party Lawn, Science City.",
+    url: "https://vraj-pooja-ring-ceremony.com",
     ogImage: "/src/assets/photos/og-preview.jpg",
   },
 };

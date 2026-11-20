@@ -12,7 +12,7 @@ export default function Plain2DInvitation({ guestName, onSwitchTo3D }) {
       {/* Header bar */}
       <div className="w-full max-w-md flex items-center justify-between mb-6 pt-2">
         <span className="font-display text-sm tracking-widest text-[#D8A85E]">
-          ✦ VRAJ &amp; JIYA ✦
+          ✦ VRAJ &amp; POOJA ✦
         </span>
         {onSwitchTo3D && (
           <button

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import eventConfig from '../../event.config.js';
 
 /**
  * Creates a procedural embossed leaf normal map (Ginkgo & Lotus style relief)
@@ -273,9 +274,9 @@ export function createSilkLiningNormalTexture(size = 512) {
 }
 
 /**
- * Creates high-resolution procedural wax seal stamp face texture with monogram "V & J"
+ * Creates high-resolution procedural wax seal stamp face texture with monogram
  */
-export function createWaxSealMonogramTexture(size = 1024) {
+export function createWaxSealMonogramTexture(size = 1024, monogram = eventConfig?.monogram || eventConfig?.couple?.monogram || 'V & P') {
   const canvas = document.createElement('canvas');
   canvas.width = size;
   canvas.height = size;
@@ -330,7 +331,7 @@ export function createWaxSealMonogramTexture(size = 1024) {
   ctx.textBaseline = 'middle';
   ctx.fillText('卐', size / 2, size * 0.25);
 
-  // Monogram "V & J" in large bold serif with champagne-gold foil luster
+  // Monogram in large bold serif with champagne-gold foil luster
   ctx.font = 'bold 155px "Cinzel", "Cormorant Garamond", Georgia, serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
@@ -348,7 +349,7 @@ export function createWaxSealMonogramTexture(size = 1024) {
   ctx.shadowOffsetX = 3;
   ctx.shadowOffsetY = 4;
   ctx.shadowBlur = 8;
-  ctx.fillText('V & J', size / 2, size * 0.49);
+  ctx.fillText(monogram, size / 2, size * 0.49);
 
   // Date banner underneath
   ctx.shadowBlur = 0;

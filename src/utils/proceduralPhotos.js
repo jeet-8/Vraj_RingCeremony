@@ -1,9 +1,9 @@
 /**
- * Generates beautiful royal portrait placeholders for Vraj & Jiya (Pooja)
+ * Generates beautiful royal portrait placeholders for Vraj & Pooja (Jiya)
  * with intricate gold filigree borders, floral silhouettes, and royal typography.
  */
 
-export function generateCouplePhotoPlaceholder(title = "Vraj & Jiya", subtitle = "Ring Ceremony 2026", colorTheme = "rose") {
+export function generateCouplePhotoPlaceholder(title = "Vraj & Pooja (Jiya)", subtitle = "Ring Ceremony 2026", colorTheme = "rose") {
   const canvas = document.createElement('canvas');
   canvas.width = 800;
   canvas.height = 1000;
@@ -62,7 +62,7 @@ export function generateCouplePhotoPlaceholder(title = "Vraj & Jiya", subtitle =
 
   // Monogram
   ctx.font = 'bold 72px "Cinzel", serif';
-  ctx.fillText('V & J', 400, 430);
+  ctx.fillText('V & P', 400, 430);
 
   // Subtitle
   ctx.font = 'italic 34px "Cormorant Garamond", serif';

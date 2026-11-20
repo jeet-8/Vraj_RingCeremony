@@ -1,6 +1,6 @@
-# 💍 Vraj & Jiya (Pooja) — Ring Ceremony 3D Digital Invitation
+# 💍 Vraj & Pooja (Jiya) — Ring Ceremony 3D Digital Invitation
 
-A luxury, mobile-first, 3D interactive digital invitation website for the Ring Ceremony (Engagement) of **Vraj & Jiya (Pooja)**. Built with React 18, Vite, React Three Fiber, Three.js, GSAP, Framer Motion, Tailwind CSS, Lenis, and i18next.
+A luxury, mobile-first, 3D interactive digital invitation website for the Ring Ceremony (Engagement) of **Vraj & Pooja (Jiya)**. Built with React 18, Vite, React Three Fiber, Three.js, GSAP, Framer Motion, Tailwind CSS, Lenis, and i18next.
 
 ---
 
@@ -9,15 +9,15 @@ A luxury, mobile-first, 3D interactive digital invitation website for the Ring C
 1. **Top Blessing Lines (English, Hindi & Gujarati):**
    - Centered above the envelope with safe-area notch insets.
    - Exact lines:
-     - `Shree Khimaj Mata Namah` (श्री खिमज माता नमः / શ્રી ખીમજ માતા નમઃ)
      - `Shree Ganeshay Namah` (श्री गणेशाय नमः / શ્રી ગણેશાય નમઃ)
-     - `Shree Kheteshwar Namah` (श्री खेतेश्वर नमः / શ્રી ખેતેશ્વર નમઃ)
+     - `Shree Khimaj Mata Namah` (श्री खिमज माता नमः / શ્રી ખીમજ માતા નમઃ)
+     - `Shree Kheteshwaray Namah` (श्री खेतेश्वराय नमः / શ્રી ખેતેશ્વરાય નમઃ)
    - Champagne-gold foil sheen with soft glow and staggered 0.4s fade-in.
    - Repeated at the top of the Hero card in the scrollable invitation.
 2. **Scene A: Sealed 3D Envelope:**
    - Custom geometry envelope with blush-mauve/champagne paper relief.
    - Procedural floral embossed normal map (`createEmbossedFloralNormalTexture`).
-   - Lathe wax seal with embossed **"V & J"** monogram.
+   - Lathe wax seal with embossed **"V & P"** monogram.
    - Parallax gyroscope tilt on mobile (with iOS permission request) and mouse tilt on desktop (max 8°).
    - Sweeping specular sheen and pulsing hint: *"Tap the seal to open"*.
 3. **Scene B: 6-Second Opening Animation (GSAP):**
@@ -95,19 +95,17 @@ All event details are centralized in `event.config.js` in the project root:
 
 ```javascript
 export const eventConfig = {
-  // Couple Information
-  couple: {
-    groom: "Vraj",
-    bride: "Jiya (Pooja)",
-    monogram: "V & J",
-    ceremony: "Ring Ceremony",
+  // Couple & Parents Information
+  groom: {
+    name: "Vraj",
+    parents: "Rekha Kuwar & Prakashsinghji",
   },
-
-  // Family Information
-  families: {
-    groomParents: "Rekha Kanwer & Prakashsinghji",
-    brideParents: "Seema Kanwer & Parvatsinghji",
+  bride: {
+    name: "Pooja (Jiya)",
+    parents: "Seema Kuwar & Parvatsinghji",
   },
+  monogram: "V & P",
+  ceremony: "Ring Ceremony",
 
   // Date and Time (6 December 2026, 4:00 PM IST)
   dateTime: {
@@ -178,7 +176,7 @@ You can generate custom invitation links for individual guests or families by ad
 ### What this personalizes:
 1. **Hero Card Greeting:** Displays *"Dear [Guest Name] and family,"*.
 2. **WhatsApp RSVP:** When the guest clicks *"Confirm on WhatsApp"*, it auto-fills:  
-   *"Hi, this is [Guest Name]. We will be attending the Ring Ceremony of Vraj & Jiya on 6 December 2026."*
+   *"Hi, this is [Guest Name]. We will be attending the Ring Ceremony of Vraj & Pooja (Jiya) on 6 December 2026."*
 
 ---
 

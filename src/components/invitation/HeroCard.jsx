@@ -51,44 +51,64 @@ export default function HeroCard({ guestName }) {
         )}
       </div>
 
-      {/* Elders' Blessings & Parents */}
-      <div className="text-center space-y-2 my-4">
+      {/* Elders' Blessings Title & Invitation Line (No Box) */}
+      <div className="text-center my-3 space-y-1.5">
         <p className={`${fontClass} text-xs sm:text-sm tracking-wider uppercase text-[#8E5164] font-medium`}>
           {t('hero.elderBlessing')}
         </p>
 
-        <div className="py-2 px-3 rounded-lg bg-[#FAF0E1]/50 border border-[#D8A85E]/20 my-2">
-          <p className={`${fontClass} text-sm sm:text-base text-[#4A1224] font-semibold`}>
-            {eventConfig.families.groomParents}
-          </p>
-          <p className="text-xs text-[#D8A85E] font-serif my-0.5">&amp;</p>
-          <p className={`${fontClass} text-sm sm:text-base text-[#4A1224] font-semibold`}>
-            {eventConfig.families.brideParents}
-          </p>
-        </div>
-
-        <p className={`${fontClass} text-xs sm:text-sm text-[#8E5164] italic px-2`}>
+        <p className={`${fontClass} text-xs sm:text-sm text-[#8E5164] italic px-2 leading-relaxed`}>
           {t('hero.invite')}
         </p>
+
+        {/* Ceremony Monogram Badge */}
+        <div className="pt-1">
+          <div className="inline-block px-3 py-1 rounded-full border border-[#D8A85E]/50 text-[11px] sm:text-xs font-display tracking-[0.2em] text-[#B38136] uppercase bg-[#FFFBF5]">
+            {eventConfig.ceremony || eventConfig.couple?.ceremony}
+          </div>
+        </div>
       </div>
 
-      {/* Ceremony Monogram & Couple Names */}
-      <div className="text-center my-6">
-        <div className="inline-block px-3 py-1 rounded-full border border-[#D8A85E]/50 text-xs font-display tracking-[0.2em] text-[#B38136] uppercase bg-[#FFFBF5]">
-          {eventConfig.couple.ceremony}
+      {/* Couple and Respective Parents Section */}
+      <div className="text-center my-5 space-y-4">
+        {/* Groom Block */}
+        <div className="flex flex-col items-center">
+          <h1 
+            className="font-script text-[#4A1224] leading-tight drop-shadow-sm whitespace-nowrap"
+            style={{ fontSize: 'clamp(2.2rem, 7.5vw, 3.2rem)' }}
+          >
+            {eventConfig.groom.name}
+          </h1>
+          <p className="font-serif italic text-xs text-[#9E6D38] mt-1.5 mb-1 tracking-wider">
+            {t('hero.groomParentsLabel')}
+          </p>
+          <p className={`${fontClass} text-sm sm:text-base text-[#4A1224] font-semibold tracking-wide px-2 leading-snug`}>
+            {t('hero.groomParents') || eventConfig.groom.parents}
+          </p>
         </div>
 
-        <h1 className="font-script text-4xl sm:text-5xl text-[#4A1224] mt-3 mb-1 drop-shadow-sm">
-          {eventConfig.couple.groom}
-        </h1>
+        {/* Center Ornamental "&" Divider */}
         <div className="flex items-center justify-center gap-3 my-1">
-          <div className="h-[1px] w-12 bg-gradient-to-r from-transparent to-[#D8A85E]" />
-          <span className="font-serif italic text-lg text-[#B38136]">&amp;</span>
-          <div className="h-[1px] w-12 bg-gradient-to-l from-transparent to-[#D8A85E]" />
+          <div className="h-[1px] w-12 sm:w-16 bg-gradient-to-r from-transparent to-[#D8A85E]" />
+          <span className="font-serif italic text-lg sm:text-xl text-[#B38136]">&amp;</span>
+          <div className="h-[1px] w-12 sm:w-16 bg-gradient-to-l from-transparent to-[#D8A85E]" />
         </div>
-        <h1 className="font-script text-4xl sm:text-5xl text-[#4A1224] mb-3 drop-shadow-sm">
-          {eventConfig.couple.bride}
-        </h1>
+
+        {/* Bride Block */}
+        <div className="flex flex-col items-center">
+          <h1 
+            className="font-script text-[#4A1224] leading-tight drop-shadow-sm whitespace-nowrap"
+            style={{ fontSize: 'clamp(2.2rem, 7.5vw, 3.2rem)' }}
+          >
+            {eventConfig.bride.name}
+          </h1>
+          <p className="font-serif italic text-xs text-[#9E6D38] mt-1.5 mb-1 tracking-wider">
+            {t('hero.brideParentsLabel')}
+          </p>
+          <p className={`${fontClass} text-sm sm:text-base text-[#4A1224] font-semibold tracking-wide px-2 leading-snug`}>
+            {t('hero.brideParents') || eventConfig.bride.parents}
+          </p>
+        </div>
       </div>
 
       {/* Date & Time Highlight */}

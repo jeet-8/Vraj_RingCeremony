@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import soundEngine from '../../utils/proceduralAudio';
+import eventConfig from '../../../event.config.js';
 
 export default function CSSEnvelope({
   isOpening,
@@ -57,15 +58,28 @@ export default function CSSEnvelope({
               : { y: 50, opacity: 0, scale: 0.9 }
           }
           transition={{ duration: 1.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-x-6 top-1/4 h-[420px] bg-[#FAF6F0] rounded-xl border-2 border-[#D8A85E] p-6 flex flex-col items-center justify-center text-center shadow-2xl z-10"
+          className="absolute inset-x-4 top-[14%] h-[460px] bg-[#FAF6F0] rounded-xl border-2 border-[#D8A85E] p-4 flex flex-col items-center justify-center text-center shadow-2xl z-10"
         >
-          <span className="text-[#D8A85E] text-sm font-serif">卐 Shree Ganeshay Namah 卐</span>
-          <span className="text-[#8E5164] text-xs font-serif italic mt-2">Cordially invite you to celebrate</span>
-          <h2 className="text-[#B38136] font-display text-base font-bold tracking-widest mt-1">RING CEREMONY</h2>
-          <h1 className="text-[#4A1224] font-script text-4xl sm:text-5xl my-2">Vraj &amp; Jiya</h1>
+          <span className="text-[#875217] text-xs font-serif font-bold">卐 Shree Ganeshay Namah 卐</span>
+          <span className="text-[#8E5164] text-[10px] font-serif uppercase tracking-wider mt-1">With the blessings of our elders</span>
+          <span className="text-[#8E5164] text-[10px] font-serif italic mb-1">Cordially invite you to celebrate</span>
+          <h2 className="text-[#B38136] font-display text-xs font-bold tracking-widest">RING CEREMONY</h2>
+
+          {/* Groom */}
+          <h1 className="text-[#4A1224] font-script text-3xl mt-1 leading-tight">{eventConfig.groom.name}</h1>
+          <p className="text-[#9E6D38] font-serif italic text-[10px]">Son of</p>
+          <p className="text-[#4A1224] font-serif font-semibold text-xs">{eventConfig.groom.parents}</p>
+
+          <div className="w-16 h-[1px] bg-[#D8A85E]/50 my-1" />
+
+          {/* Bride */}
+          <h1 className="text-[#4A1224] font-script text-3xl leading-tight">{eventConfig.bride.name}</h1>
+          <p className="text-[#9E6D38] font-serif italic text-[10px]">Daughter of</p>
+          <p className="text-[#4A1224] font-serif font-semibold text-xs">{eventConfig.bride.parents}</p>
+
           <div className="w-24 h-[1px] bg-[#D8A85E] my-2" />
-          <p className="text-[#B38136] text-xs font-serif tracking-wider font-semibold">SUNDAY, 6 DECEMBER 2026</p>
-          <p className="text-[#5A2637] text-xs font-serif mt-1">R.K. Royal Banquet &amp; Party Lawn, Science City</p>
+          <p className="text-[#B38136] text-[10px] font-serif tracking-wider font-semibold">SUNDAY, 6 DECEMBER 2026</p>
+          <p className="text-[#5A2637] text-[10px] font-serif">R.K. Royal Banquet &amp; Party Lawn, Science City</p>
         </motion.div>
 
         {/* Bottom Flap */}
@@ -146,7 +160,7 @@ export default function CSSEnvelope({
           >
             <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border border-dashed border-[#D8A85E]/70 flex flex-col items-center justify-center">
               <span className="font-display font-bold text-sm sm:text-base text-[#FFEDBA] drop-shadow-sm">
-                V &amp; J
+                {eventConfig.monogram || eventConfig.couple?.monogram || 'V & P'}
               </span>
               <span className="text-[8px] text-[#DFBE95] font-serif">06.12.26</span>
             </div>

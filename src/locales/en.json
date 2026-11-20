@@ -1,8 +1,8 @@
 {
   "blessings": [
-    "Shree Khimaj Mata Namah",
     "Shree Ganeshay Namah",
-    "Shree Kheteshwar Namah"
+    "Shree Khimaj Mata Namah",
+    "Shree Kheteshwaray Namah"
   ],
   "opening": {
     "tapSeal": "Tap the seal to open",
@@ -14,6 +14,8 @@
     "invite": "cordially invite you to celebrate the joyous Ring Ceremony of",
     "groomParentsLabel": "Son of",
     "brideParentsLabel": "Daughter of",
+    "groomParents": "Rekha Kuwar & Prakashsinghji",
+    "brideParents": "Seema Kuwar & Parvatsinghji",
     "defaultGreeting": "Dear Family & Friends,",
     "guestGreetingPrefix": "Dear",
     "guestGreetingSuffix": "and family,"
@@ -28,7 +30,7 @@
   },
   "photo": {
     "title": "A Glimpse of Love",
-    "subtitle": "Vraj & Jiya (Pooja)"
+    "subtitle": "Vraj & Pooja (Jiya)"
   },
   "venue": {
     "title": "Celebration Venue",
@@ -55,7 +57,7 @@
     "title": "RSVP",
     "confirmWhatsapp": "Confirm on WhatsApp",
     "callHost": "Call Host",
-    "whatsappMessage": "Hi, this is {{guestName}}. We will be attending the Ring Ceremony of Vraj & Jiya on 6 December 2026."
+    "whatsappMessage": "Hi, this is {{guestName}}. We will be attending the Ring Ceremony of Vraj & Pooja (Jiya) on 6 December 2026."
   },
   "blessingsNote": {
     "quote": "Your presence, love, and warm blessings are the most cherished gift for our new beginning."
