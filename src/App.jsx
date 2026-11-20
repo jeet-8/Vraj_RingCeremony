@@ -128,33 +128,11 @@ export default function App() {
       {/* Floating Music Control */}
       <MusicButton />
 
-      {/* VIEW STATE 1: INTRO (Stacked Layout: Header with Row 1 & Row 2 + 3D Envelope below in flex-1) */}
+      {/* VIEW STATE 1: INTRO (Full Bleed 100dvh x 100vw Envelope with UI overlaid) */}
       {viewState === 'intro' && (
-        <div className="relative w-full h-[100dvh] flex flex-col overflow-hidden bg-[#170E14]">
-          {/* Header Block in normal document flow (Bug 1 Fix) */}
-          <header className="w-full flex-shrink-0 pt-safe px-3 sm:px-4 z-30 select-none pb-1">
-            <div className="w-full max-w-md mx-auto">
-              {/* Row 1: Language toggle on left, Skip intro on right */}
-              <div className="flex items-center justify-between py-1">
-                <LanguageSelector isFixed={false} />
-
-                <button
-                  onClick={handleSkip}
-                  className="px-2.5 py-1 rounded-full bg-[#24141E]/90 hover:bg-[#2F1A28] backdrop-blur-md border border-[#D8A85E]/40 text-[11px] sm:text-xs font-serif tracking-wider text-[#DFBE95] hover:text-[#FFEDBA] transition-all shadow-md active:scale-95 pointer-events-auto"
-                >
-                  {t('opening.skip')} →
-                </button>
-              </div>
-
-              {/* Row 2 & 3: Three blessing lines and ornamental divider in normal flow */}
-              <div className="mt-3">
-                <TopBlessingLines isOpening={isOpening} />
-              </div>
-            </div>
-          </header>
-
-          {/* Envelope 3D Canvas / CSS Scene takes remaining height (flex: 1) (Bug 1 & Bug 3) */}
-          <div className="relative flex-1 w-full overflow-hidden">
+        <div className="relative w-full h-[100dvh] overflow-hidden bg-[#C88C9C]">
+          {/* 1. Full-Bleed 3D WebGL Canvas / Fallback (100dvh x 100vw) */}
+          <div className="absolute inset-0 w-full h-full z-0">
             {tier <= 2 ? (
               <ErrorBoundary
                 onError={() => setTier(3)}
@@ -182,6 +160,32 @@ export default function App() {
               />
             )}
           </div>
+
+          {/* 2. Top UI Header Overlaid over Canvas (pointer-events-none except interactive buttons) */}
+          <header className="absolute top-0 left-0 right-0 pt-safe px-3 sm:px-4 z-30 select-none pointer-events-none">
+            {/* Soft subtle gradient fade behind blessing text so it stays ultra-readable on paper */}
+            <div className="absolute inset-0 h-44 bg-gradient-to-b from-[#24141E]/50 via-[#24141E]/20 to-transparent pointer-events-none" />
+
+            <div className="relative w-full max-w-md mx-auto pt-1">
+              {/* Row 1: Language toggle on left, Skip intro on right */}
+              <div className="flex items-center justify-between py-1 pointer-events-auto">
+                <LanguageSelector isFixed={false} />
+
+                <button
+                  type="button"
+                  onClick={handleSkip}
+                  className="px-2.5 py-1 rounded-full bg-[#24141E]/90 hover:bg-[#2F1A28] backdrop-blur-md border border-[#D8A85E]/40 text-[11px] sm:text-xs font-serif tracking-wider text-[#DFBE95] hover:text-[#FFEDBA] transition-all shadow-md active:scale-95 cursor-pointer pointer-events-auto"
+                >
+                  {t('opening.skip')} →
+                </button>
+              </div>
+
+              {/* Row 2: Three blessing lines and ornamental divider */}
+              <div className="mt-2.5 sm:mt-3 pointer-events-none">
+                <TopBlessingLines isOpening={isOpening} />
+              </div>
+            </div>
+          </header>
         </div>
       )}
 

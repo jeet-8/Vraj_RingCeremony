@@ -9,7 +9,7 @@ export default function CSSEnvelope({
   onOpeningComplete,
 }) {
   const { t } = useTranslation();
-  const [stage, setStage] = useState('idle'); // 'idle' | 'cracking' | 'opening' | 'revealed'
+  const [stage, setStage] = useState('idle'); // 'idle' | 'opening' | 'revealed'
 
   // If isOpening becomes true from parent, start opening sequence immediately
   React.useEffect(() => {
@@ -24,12 +24,7 @@ export default function CSSEnvelope({
     soundEngine.unlock();
     soundEngine.play();
     if (onOpeningStart) onOpeningStart();
-    setStage('cracking');
-
-    // Sequence timing matching GSAP
-    setTimeout(() => {
-      setStage('opening');
-    }, 800);
+    setStage('opening');
 
     setTimeout(() => {
       setStage('revealed');
@@ -40,36 +35,54 @@ export default function CSSEnvelope({
   return (
     <div
       onClick={handleOpen}
-      className="relative w-full h-full flex items-center justify-center bg-gradient-to-b from-[#1A0E17] via-[#2A1524] to-[#150912] overflow-hidden select-none px-4 cursor-pointer"
+      className="relative w-full h-full flex items-center justify-center bg-[#C88C9C] overflow-hidden select-none px-4 cursor-pointer"
     >
-      {/* CSS Envelope Container */}
-      <div className="relative w-[300px] sm:w-[350px] h-[200px] sm:h-[235px] max-w-[86vw]">
-        {/* Envelope Base Pocket */}
-        <div className="absolute inset-0 bg-[#D9AAB7] rounded-sm shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-[#E8C0CE] overflow-hidden">
-          <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#5A2637_1px,transparent_1px)] [background-size:12px_12px]" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-[#C28E9E]/30 via-transparent to-[#FFE3EC]/40" />
+      {/* CSS Envelope Container: Full bleed fill */}
+      <div className="relative w-full h-full max-w-lg flex items-center justify-center">
+        {/* Full Envelope Base Pocket */}
+        <div className="absolute inset-0 bg-[#C88C9C] overflow-hidden">
+          {/* Subtle paper leaf texture simulation */}
+          <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#5A2637_1px,transparent_1px)] [background-size:16px_16px]" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-[#9E5D70]/30 via-transparent to-[#FFE3EC]/40" />
         </div>
 
         {/* Inside Invitation Card */}
         <motion.div
-          initial={{ y: 0, opacity: 0 }}
+          initial={{ y: 50, opacity: 0, scale: 0.9 }}
           animate={
             stage === 'opening'
-              ? { y: -140, opacity: 1, scale: 1.05 }
+              ? { y: -40, opacity: 1, scale: 1.0 }
               : stage === 'revealed'
-              ? { y: -200, opacity: 0, scale: 1.2 }
-              : { y: 0, opacity: 0 }
+              ? { y: 0, opacity: 1, scale: 1.05 }
+              : { y: 50, opacity: 0, scale: 0.9 }
           }
-          transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-x-3 top-2 h-[200px] sm:h-[230px] bg-[#FAF6F0] rounded-sm border-2 border-[#D8A85E] p-4 flex flex-col items-center justify-center text-center shadow-xl z-10"
+          transition={{ duration: 1.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="absolute inset-x-6 top-1/4 h-[420px] bg-[#FAF6F0] rounded-xl border-2 border-[#D8A85E] p-6 flex flex-col items-center justify-center text-center shadow-2xl z-10"
         >
-          <span className="text-[#D8A85E] text-xs font-serif">卐 Shree Ganeshay Namah 卐</span>
-          <span className="text-[#8E5164] text-xs font-serif italic mt-1">Cordially invite you to celebrate</span>
-          <h2 className="text-[#B38136] font-display text-sm font-bold tracking-widest mt-1">RING CEREMONY</h2>
-          <h1 className="text-[#4A1224] font-script text-3xl sm:text-4xl mt-1">Vraj &amp; Jiya</h1>
-          <div className="w-16 h-[1px] bg-[#D8A85E] my-2" />
-          <p className="text-[#B38136] text-xs font-serif tracking-wider font-semibold">6 DECEMBER 2026</p>
-          <p className="text-[#5A2637] text-[11px] font-serif mt-0.5">R.K. Royal Banquet, Science City</p>
+          <span className="text-[#D8A85E] text-sm font-serif">卐 Shree Ganeshay Namah 卐</span>
+          <span className="text-[#8E5164] text-xs font-serif italic mt-2">Cordially invite you to celebrate</span>
+          <h2 className="text-[#B38136] font-display text-base font-bold tracking-widest mt-1">RING CEREMONY</h2>
+          <h1 className="text-[#4A1224] font-script text-4xl sm:text-5xl my-2">Vraj &amp; Jiya</h1>
+          <div className="w-24 h-[1px] bg-[#D8A85E] my-2" />
+          <p className="text-[#B38136] text-xs font-serif tracking-wider font-semibold">SUNDAY, 6 DECEMBER 2026</p>
+          <p className="text-[#5A2637] text-xs font-serif mt-1">R.K. Royal Banquet &amp; Party Lawn, Science City</p>
+        </motion.div>
+
+        {/* Bottom Flap */}
+        <motion.div
+          animate={
+            stage === 'opening' || stage === 'revealed'
+              ? { rotateX: -110 }
+              : { rotateX: 0 }
+          }
+          transition={{ duration: 1.0, delay: 0.4 }}
+          style={{ transformOrigin: 'bottom center' }}
+          className="absolute left-0 right-0 bottom-0 h-1/2 z-20 pointer-events-none"
+        >
+          <div
+            className="w-full h-full bg-[#BF8192] shadow-inner"
+            style={{ clipPath: 'polygon(0% 100%, 50% 15%, 100% 100%)' }}
+          />
         </motion.div>
 
         {/* Left Flap */}
@@ -79,12 +92,12 @@ export default function CSSEnvelope({
               ? { rotateY: -110 }
               : { rotateY: 0 }
           }
-          transition={{ duration: 0.8, delay: 0.1 }}
+          transition={{ duration: 1.0, delay: 0.5 }}
           style={{ transformOrigin: 'left center' }}
-          className="absolute left-0 top-0 bottom-0 w-1/2 border-r border-[#B88796]/40 z-20 pointer-events-none"
+          className="absolute left-0 top-0 bottom-0 w-1/2 z-20 pointer-events-none"
         >
           <div
-            className="w-full h-full bg-[#D4A3B1]"
+            className="w-full h-full bg-[#B87A8C]"
             style={{ clipPath: 'polygon(0% 0%, 100% 50%, 0% 100%)' }}
           />
         </motion.div>
@@ -96,106 +109,49 @@ export default function CSSEnvelope({
               ? { rotateY: 110 }
               : { rotateY: 0 }
           }
-          transition={{ duration: 0.8, delay: 0.2 }}
+          transition={{ duration: 1.0, delay: 0.55 }}
           style={{ transformOrigin: 'right center' }}
-          className="absolute right-0 top-0 bottom-0 w-1/2 border-l border-[#B88796]/40 z-20 pointer-events-none"
+          className="absolute right-0 top-0 bottom-0 w-1/2 z-20 pointer-events-none"
         >
           <div
-            className="w-full h-full bg-[#CCA0AD]"
+            className="w-full h-full bg-[#B27385]"
             style={{ clipPath: 'polygon(100% 0%, 0% 50%, 100% 100%)' }}
           />
         </motion.div>
 
-        {/* Bottom Flap */}
+        {/* Top V-Flap (Hinged at top, opens upwards ~170 deg, CARRYING SEAL ATTACHED!) */}
         <motion.div
           animate={
             stage === 'opening' || stage === 'revealed'
-              ? { rotateX: -110 }
+              ? { rotateX: 170 }
               : { rotateX: 0 }
           }
-          transition={{ duration: 0.8 }}
-          style={{ transformOrigin: 'bottom center' }}
-          className="absolute left-0 right-0 bottom-0 h-1/2 z-20 pointer-events-none"
-        >
-          <div
-            className="w-full h-full bg-[#CE9BAA]"
-            style={{ clipPath: 'polygon(0% 100%, 50% 0%, 100% 100%)' }}
-          />
-        </motion.div>
-
-        {/* Top Flap (Hinged at top, opens upwards ~160 deg) */}
-        <motion.div
-          animate={
-            stage === 'opening' || stage === 'revealed'
-              ? { rotateX: 160 }
-              : { rotateX: 0 }
-          }
-          transition={{ duration: 0.9, delay: 0.3, ease: 'easeOut' }}
+          transition={{ duration: 1.4, ease: [0.25, 0.1, 0.25, 1] }}
           style={{ transformOrigin: 'top center' }}
-          className="absolute left-0 right-0 top-0 h-[65%] z-30 pointer-events-none"
+          className="absolute left-0 right-0 top-0 h-[38%] z-30 pointer-events-none"
         >
+          {/* Top Flap Mauve-Pink Paper */}
           <div
-            className="w-full h-full bg-[#E0B2BF] shadow-md border-t border-[#F8DCE5]"
+            className="w-full h-full bg-[#D195A5] shadow-lg border-t border-[#F5D5DF]"
             style={{ clipPath: 'polygon(0% 0%, 50% 100%, 100% 0%)' }}
           />
-        </motion.div>
 
-        {/* Satin Gold Ribbon */}
-        <motion.div
-          animate={
-            stage !== 'idle'
-              ? { x: 400, opacity: 0, rotate: 15 }
-              : { x: 0, opacity: 1, rotate: 0 }
-          }
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-8 bg-gradient-to-r from-[#D8A85E] via-[#FFEDBA] to-[#B38136] shadow-sm z-35 pointer-events-none"
-        />
-
-        {/* Wax Seal at Center */}
-        <AnimatePresence>
-          {stage === 'idle' && (
-            <motion.div
-              onClick={(e) => {
-                e.stopPropagation();
-                handleOpen();
-              }}
-              whileHover={{ scale: 1.08 }}
-              whileTap={{ scale: 0.95 }}
-              className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-[#731E35] via-[#4A1224] to-[#2B0A15] border-2 border-[#D8A85E] shadow-wax-seal flex flex-col items-center justify-center cursor-pointer z-40 animate-seal-pulse"
-            >
-              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border border-dashed border-[#D8A85E]/70 flex flex-col items-center justify-center">
-                <span className="font-display font-bold text-sm sm:text-base text-[#FFEDBA] drop-shadow-sm">
-                  V &amp; J
-                </span>
-                <span className="text-[8px] text-[#DFBE95] font-serif">06.12.26</span>
-              </div>
-            </motion.div>
-          )}
-
-          {/* Shattered Wax Pieces Animation */}
-          {stage === 'cracking' && (
-            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 pointer-events-none z-40">
-              {[...Array(8)].map((_, i) => {
-                const angle = (i * 360) / 8;
-                return (
-                  <motion.div
-                    key={i}
-                    initial={{ x: 0, y: 0, scale: 1, opacity: 1 }}
-                    animate={{
-                      x: Math.cos((angle * Math.PI) / 180) * 80,
-                      y: Math.sin((angle * Math.PI) / 180) * 80 + 40,
-                      scale: 0.2,
-                      opacity: 0,
-                      rotate: 180,
-                    }}
-                    transition={{ duration: 0.8, ease: 'easeOut' }}
-                    className="absolute w-4 h-4 bg-[#581829] rounded-sm border border-[#D8A85E]"
-                  />
-                );
-              })}
+          {/* Wax Seal Attached to Top Flap Tip */}
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOpen();
+            }}
+            className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-[#731E35] via-[#4A1224] to-[#2B0A15] border-2 border-[#D8A85E] shadow-wax-seal flex flex-col items-center justify-center cursor-pointer pointer-events-auto"
+          >
+            <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full border border-dashed border-[#D8A85E]/70 flex flex-col items-center justify-center">
+              <span className="font-display font-bold text-sm sm:text-base text-[#FFEDBA] drop-shadow-sm">
+                V &amp; J
+              </span>
+              <span className="text-[8px] text-[#DFBE95] font-serif">06.12.26</span>
             </div>
-          )}
-        </AnimatePresence>
+          </div>
+        </motion.div>
       </div>
 
       {/* Tap hint prompt */}
@@ -205,7 +161,7 @@ export default function CSSEnvelope({
             e.stopPropagation();
             handleOpen();
           }}
-          className="absolute bottom-12 sm:bottom-16 left-0 right-0 flex flex-col items-center justify-center pointer-events-auto cursor-pointer z-20 px-4"
+          className="absolute bottom-12 sm:bottom-16 left-0 right-0 flex flex-col items-center justify-center pointer-events-auto cursor-pointer z-40 px-4"
         >
           <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#24141E]/90 backdrop-blur-md border border-[#D8A85E]/50 animate-seal-pulse shadow-wax-seal">
             <span className="text-[#D8A85E] text-sm">✦</span>
@@ -214,7 +170,7 @@ export default function CSSEnvelope({
             </span>
             <span className="text-[#D8A85E] text-sm">✦</span>
           </div>
-          <span className="text-[10px] sm:text-[11px] tracking-widest text-[#E8B4B8]/75 mt-1.5 font-serif uppercase">
+          <span className="text-[10px] sm:text-[11px] tracking-widest text-[#FFDFE7]/90 mt-1.5 font-serif uppercase drop-shadow">
             Touch anywhere or tap the seal
           </span>
         </div>

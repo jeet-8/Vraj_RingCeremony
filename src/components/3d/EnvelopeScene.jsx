@@ -11,19 +11,19 @@ function SweepingSheenLight({ isOpening }) {
 
   useFrame(({ clock }) => {
     if (lightRef.current && !isOpening) {
-      const t = clock.getElapsedTime() * 0.8;
-      lightRef.current.position.x = Math.sin(t) * 4.0;
-      lightRef.current.position.y = Math.cos(t * 0.7) * 2.5;
+      const t = clock.getElapsedTime() * 0.6;
+      lightRef.current.position.x = Math.sin(t) * 3.2;
+      lightRef.current.position.y = Math.cos(t * 0.8) * 2.0;
     }
   });
 
   return (
     <pointLight
       ref={lightRef}
-      position={[0, 0, 3.5]}
-      intensity={0.65}
-      distance={8}
-      color="#FFE8C2"
+      position={[0, 0, 3.2]}
+      intensity={0.75}
+      distance={7.5}
+      color="#FFF4DC"
     />
   );
 }
@@ -35,6 +35,17 @@ export default function EnvelopeScene({
 }) {
   const { t } = useTranslation();
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [showFlash, setShowFlash] = useState(false);
+
+  // Soft light flash trigger before transition
+  useEffect(() => {
+    if (!isOpening) return;
+    const flashTimer = setTimeout(() => {
+      setShowFlash(true);
+    }, 5600);
+
+    return () => clearTimeout(flashTimer);
+  }, [isOpening]);
 
   // Pointer Parallax Tilt (Desktop)
   const handlePointerMove = (e) => {
@@ -45,12 +56,12 @@ export default function EnvelopeScene({
     setTilt({ x: Math.max(-1, Math.min(1, x)), y: Math.max(-1, Math.min(1, y)) });
   };
 
-  // Device Orientation Tilt (Mobile)
+  // Device Orientation Tilt (Mobile - max 8 degrees)
   useEffect(() => {
     const handleOrientation = (e) => {
       if (isOpening || !e.beta || !e.gamma) return;
-      const x = Math.max(-1, Math.min(1, (e.beta - 45) / 30));
-      const y = Math.max(-1, Math.min(1, e.gamma / 30));
+      const x = Math.max(-1, Math.min(1, (e.beta - 45) / 25));
+      const y = Math.max(-1, Math.min(1, e.gamma / 25));
       setTilt({ x, y });
     };
 
@@ -58,7 +69,6 @@ export default function EnvelopeScene({
     return () => window.removeEventListener('deviceorientation', handleOrientation);
   }, [isOpening]);
 
-  // Request iOS Gyroscope Permission on First Tap
   const requestGyroPermission = () => {
     if (
       typeof DeviceOrientationEvent !== 'undefined' &&
@@ -70,7 +80,7 @@ export default function EnvelopeScene({
     }
   };
 
-  const handleInteractionStart = (source = 'canvas-overlay') => {
+  const handleInteractionStart = (source = 'canvas-click') => {
     console.log(`[Scene Debug] Interaction detected from: ${source}`);
     requestGyroPermission();
     soundEngine.unlock();
@@ -81,27 +91,48 @@ export default function EnvelopeScene({
 
   return (
     <div
-      onClick={(e) => {
-        handleInteractionStart('container-click');
-      }}
-      className="relative w-full h-full overflow-hidden flex items-center justify-center select-none cursor-pointer"
+      onClick={() => handleInteractionStart('container-click')}
+      className="relative w-full h-full overflow-hidden flex items-center justify-center select-none cursor-pointer bg-[#C88C9C]"
       onPointerMove={handlePointerMove}
     >
-      {/* 3D WebGL Canvas */}
+      {/* 3D WebGL Canvas: Full Bleed 100vw x 100dvh */}
       <Canvas
         camera={{ position: [0, 0, 4.8], fov: 45 }}
-        gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
+        gl={{
+          antialias: true,
+          alpha: false,
+          powerPreference: 'high-performance',
+        }}
         dpr={[1, Math.min(window.devicePixelRatio || 1, 2)]}
         className="w-full h-full cursor-pointer pointer-events-auto"
       >
-        {/* Cinematic Royal Lighting */}
-        <ambientLight intensity={0.7} color="#FFF2E6" />
-        <directionalLight position={[3, 4, 5]} intensity={1.2} color="#FFF0D0" />
-        <directionalLight position={[-4, -2, 3]} intensity={0.8} color="#E8B4B8" />
-        <pointLight position={[0, -2, 2.5]} intensity={0.4} color="#D8A85E" />
+        {/* Paper-matched clear color */}
+        <color attach="background" args={['#C88C9C']} />
+
+        {/* Ambient warmth */}
+        <ambientLight intensity={0.65} color="#FFF2E8" />
+
+        {/* Key Light from top-left (creates crisp leaf relief shadows) */}
+        <directionalLight
+          position={[-3.5, 4.2, 4.5]}
+          intensity={1.35}
+          color="#FFF5E0"
+        />
+
+        {/* Rim Light from opposite bottom-right */}
+        <directionalLight
+          position={[3.8, -3.2, 3.2]}
+          intensity={0.85}
+          color="#E6B4BE"
+        />
+
+        {/* Fill Light for subtle contrast softening */}
+        <pointLight position={[0, -1.5, 2.5]} intensity={0.4} color="#D8A85E" />
+
+        {/* Slow sweeping specular sheen light */}
         <SweepingSheenLight isOpening={isOpening} />
 
-        {/* 3D Envelope Mesh */}
+        {/* Full-Bleed 3D Envelope */}
         <EnvelopeMesh
           isOpening={isOpening}
           onOpeningStart={() => handleInteractionStart('mesh-start')}
@@ -110,11 +141,9 @@ export default function EnvelopeScene({
         />
       </Canvas>
 
-      {/* Tap Seal Prompt Hint Button (Bug 2: Triggers open animation reliably) */}
+      {/* Bottom: "Tap the seal to open" prompt hint button */}
       {!isOpening && (
-        <div
-          className="absolute bottom-12 sm:bottom-16 left-0 right-0 flex flex-col items-center justify-center pointer-events-auto z-20 px-4"
-        >
+        <div className="absolute bottom-12 sm:bottom-16 left-0 right-0 flex flex-col items-center justify-center pointer-events-auto z-20 px-4">
           <button
             type="button"
             onClick={(e) => {
@@ -129,11 +158,18 @@ export default function EnvelopeScene({
             </span>
             <span className="text-[#D8A85E] text-sm">✦</span>
           </button>
-          <span className="text-[10px] sm:text-[11px] tracking-widest text-[#E8B4B8]/75 mt-1.5 font-serif uppercase pointer-events-none">
+          <span className="text-[10px] sm:text-[11px] tracking-widest text-[#FFDFE7]/90 mt-1.5 font-serif uppercase pointer-events-none drop-shadow">
             Touch anywhere or tap the seal
           </span>
         </div>
       )}
+
+      {/* Soft light flash overlay right before transition at ~5.8s - 6.0s */}
+      <div
+        className={`absolute inset-0 bg-white/70 pointer-events-none transition-opacity duration-300 z-50 ${
+          showFlash ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
     </div>
   );
 }

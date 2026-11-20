@@ -1,261 +1,324 @@
-import React, { useRef, useMemo, useEffect, useState } from 'react';
+import React, { useRef, useMemo, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import gsap from 'gsap';
-import { createEmbossedFloralNormalTexture, createWaxSealMonogramTexture } from '../../utils/proceduralTextures';
+import {
+  createEmbossedLeafNormalTexture,
+  createSilkLiningNormalTexture,
+  createWaxSealMonogramTexture,
+} from '../../utils/proceduralTextures';
 import soundEngine from '../../utils/proceduralAudio';
 
-export default function EnvelopeMesh({ 
-  isOpening, 
-  onOpeningStart, 
+export default function EnvelopeMesh({
+  isOpening,
+  onOpeningStart,
   onOpeningComplete,
   tilt,
 }) {
   const { camera, viewport } = useThree();
 
-  // References
+  // Root references
   const envelopeGroupRef = useRef();
   const topFlapRef = useRef();
-  const bottomFlapRef = useRef();
-  const leftFlapRef = useRef();
-  const rightFlapRef = useRef();
-  const cardRef = useRef();
-  const ribbonRef = useRef();
-  const sealIntactRef = useRef();
-  const sealFragmentsGroupRef = useRef();
-  const fragmentsRef = useRef([]);
+  const lowerPocketRef = useRef();
+  const cardGroupRef = useRef();
+  const cardMeshRef = useRef();
+  const ribbonBandRef = useRef();
+  const bowRef = useRef();
+  const leftTailRef = useRef();
+  const rightTailRef = useRef();
+  const sealGroupRef = useRef();
+  const sealPulseRef = useRef();
+  const glowRingRef = useRef();
 
   const hasStartedAnimationRef = useRef(false);
   const onOpeningCompleteRef = useRef(onOpeningComplete);
   onOpeningCompleteRef.current = onOpeningComplete;
 
-  // Responsive scaling to fit mobile screen with ~16px side margins (Bug 3)
-  // Envelope width is 3.4. On mobile portrait, scale so envelope width is ~85% of viewport width.
-  const responsiveScale = useMemo(() => {
-    const targetWidthRatio = viewport.width < 3.2 ? 0.85 : 0.88;
-    return Math.min(1.0, (viewport.width * targetWidthRatio) / 3.4);
-  }, [viewport.width]);
+  // Viewport dimensions for full-bleed envelope (100vw x 100dvh)
+  const envW = viewport.width;
+  const envH = viewport.height;
 
-  // Textures
-  const normalMap = useMemo(() => createEmbossedFloralNormalTexture(512), []);
-  const sealMonogramTex = useMemo(() => createWaxSealMonogramTexture(512), []);
+  // Procedural Textures
+  const leafNormalMap = useMemo(() => createEmbossedLeafNormalTexture(1024), []);
+  const silkNormalMap = useMemo(() => createSilkLiningNormalTexture(512), []);
+  const sealMonogramTex = useMemo(() => createWaxSealMonogramTexture(1024), []);
 
-  // Paper Material (Blush-mauve with physical sheen and clearcoat)
+  // 1. Embossed Mauve-Pink Paper Material
   const paperMaterial = useMemo(() => {
     return new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color('#D9AAB7'),
-      roughness: 0.55,
+      color: new THREE.Color('#C88C9C'), // Satin dusty mauve-pink
+      roughness: 0.48,
       metalness: 0.05,
       sheen: 1.0,
-      sheenRoughness: 0.35,
-      sheenColor: new THREE.Color('#FFF1E6'),
-      clearcoat: 0.25,
-      clearcoatRoughness: 0.3,
-      normalMap: normalMap,
+      sheenRoughness: 0.38,
+      sheenColor: new THREE.Color('#FFF0F4'),
+      clearcoat: 0.22,
+      clearcoatRoughness: 0.30,
+      normalMap: leafNormalMap,
+      normalScale: new THREE.Vector2(0.8, 0.8),
+      side: THREE.DoubleSide,
+    });
+  }, [leafNormalMap]);
+
+  // 2. Shiny Champagne-Pink Satin Silk Lining Material
+  const liningMaterial = useMemo(() => {
+    return new THREE.MeshPhysicalMaterial({
+      color: new THREE.Color('#E6B8C4'),
+      roughness: 0.32,
+      metalness: 0.12,
+      sheen: 1.0,
+      sheenRoughness: 0.22,
+      sheenColor: new THREE.Color('#FFF5EB'),
+      clearcoat: 0.50,
+      clearcoatRoughness: 0.18,
+      normalMap: silkNormalMap,
       normalScale: new THREE.Vector2(0.5, 0.5),
       side: THREE.DoubleSide,
     });
-  }, [normalMap]);
+  }, [silkNormalMap]);
 
-  // Inside Lining Material
-  const liningMaterial = useMemo(() => {
-    return new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color('#C792A1'),
-      roughness: 0.5,
-      metalness: 0.08,
-      sheen: 0.8,
-      sheenColor: new THREE.Color('#FFE2B8'),
-      normalMap: normalMap,
-      normalScale: new THREE.Vector2(0.3, 0.3),
-      side: THREE.DoubleSide,
-    });
-  }, [normalMap]);
-
-  // Wax Material (Glossy wine/rose-gold)
+  // 3. Glossy Rose-Gold / Wine Wax Material
   const waxMaterial = useMemo(() => {
     return new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color('#581829'),
-      roughness: 0.2,
-      metalness: 0.15,
-      clearcoat: 0.8,
-      clearcoatRoughness: 0.15,
-      reflectivity: 0.9,
+      color: new THREE.Color('#581426'),
+      roughness: 0.18,
+      metalness: 0.20,
+      clearcoat: 0.90,
+      clearcoatRoughness: 0.12,
+      reflectivity: 0.95,
     });
   }, []);
 
-  // Satin Champagne-Gold Ribbon Material (Bug 2: realistic satin luster)
+  // 4. Satin Champagne Gold Ribbon & Bow Material
   const ribbonMaterial = useMemo(() => {
     return new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color('#F0C87E'),
-      emissive: new THREE.Color('#38240A'),
-      roughness: 0.25,
-      metalness: 0.3,
+      color: new THREE.Color('#E8BA6B'),
+      emissive: new THREE.Color('#38220A'),
+      roughness: 0.22,
+      metalness: 0.35,
       sheen: 1.0,
-      sheenRoughness: 0.2,
+      sheenRoughness: 0.20,
       sheenColor: new THREE.Color('#FFF6DB'),
-      clearcoat: 0.4,
-      clearcoatRoughness: 0.2,
+      clearcoat: 0.40,
+      clearcoatRoughness: 0.20,
+      side: THREE.DoubleSide,
     });
   }, []);
 
-  // Card Material
+  // 5. High-Resolution Opaque Royal Ivory Card Material
   const cardMaterial = useMemo(() => {
     const canvas = document.createElement('canvas');
-    canvas.width = 700;
-    canvas.height = 1000;
+    canvas.width = 1400;
+    canvas.height = 2000;
     const ctx = canvas.getContext('2d');
 
-    // Royal Ivory background
+    // Royal Ivory background (100% opaque)
     ctx.fillStyle = '#FAF6F0';
-    ctx.fillRect(0, 0, 700, 1000);
+    ctx.fillRect(0, 0, 1400, 2000);
 
-    // Ornate gold border
+    // Subtle paper border shading
+    ctx.fillStyle = '#F5ECE1';
+    ctx.fillRect(30, 30, 1340, 1940);
+    ctx.fillStyle = '#FAF6F0';
+    ctx.fillRect(40, 40, 1320, 1920);
+
+    // Ornate gold foil dual borders
     ctx.strokeStyle = '#D8A85E';
-    ctx.lineWidth = 6;
-    ctx.strokeRect(30, 30, 640, 940);
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(40, 40, 620, 920);
+    ctx.lineWidth = 8;
+    ctx.strokeRect(60, 60, 1280, 1880);
 
-    // Content
-    ctx.fillStyle = '#D8A85E';
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(80, 80, 1240, 1840);
+
+    // Corner filigree ornaments
+    const drawCorner = (x, y, flipX, flipY) => {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.scale(flipX, flipY);
+      ctx.strokeStyle = '#D8A85E';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(50, 0);
+      ctx.moveTo(0, 0);
+      ctx.lineTo(0, 50);
+      ctx.stroke();
+      ctx.restore();
+    };
+    drawCorner(100, 100, 1, 1);
+    drawCorner(1300, 100, -1, 1);
+    drawCorner(100, 1900, 1, -1);
+    drawCorner(1300, 1900, -1, -1);
+
+    // Sacred Ganesh motif
+    ctx.fillStyle = '#B38136';
     ctx.textAlign = 'center';
-    ctx.font = '32px serif';
-    ctx.fillText('卐 Shree Ganeshay Namah 卐', 350, 120);
+    ctx.textBaseline = 'middle';
+    ctx.font = '64px serif';
+    ctx.fillText('卐', 700, 190);
 
-    ctx.font = 'italic 28px "Cormorant Garamond", serif';
+    // Top blessing lines
+    ctx.font = '500 32px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#B38136';
+    ctx.fillText('Shree Khimaj Mata Namah  •  Shree Ganeshay Namah  •  Shree Kheteshwar Namah', 700, 280);
+
+    ctx.font = 'italic 42px "Cormorant Garamond", serif';
     ctx.fillStyle = '#8E5164';
-    ctx.fillText('Cordially invite you to celebrate the', 350, 200);
+    ctx.fillText('Cordially invite you to celebrate the', 700, 400);
 
-    ctx.font = 'bold 36px "Cinzel", serif';
+    ctx.font = 'bold 56px "Cinzel", serif';
     ctx.fillStyle = '#B38136';
-    ctx.fillText('RING CEREMONY', 350, 260);
+    ctx.fillText('RING CEREMONY', 700, 500);
 
-    ctx.font = 'italic 75px "Great Vibes", cursive';
+    ctx.font = 'italic 135px "Great Vibes", cursive';
     ctx.fillStyle = '#4A1224';
-    ctx.fillText('Vraj & Jiya', 350, 380);
+    ctx.fillText('Vraj & Jiya', 700, 720);
 
-    ctx.font = '24px "Cinzel", serif';
+    ctx.font = '28px "Cinzel", serif';
+    ctx.fillStyle = '#8E5164';
+    ctx.fillText('WITH BLESSINGS FROM ELDERS & FAMILIES', 700, 880);
+
+    ctx.font = 'bold 36px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#4A1224';
+    ctx.fillText('Rekha Kanwer & Prakashsinghji', 700, 950);
+    ctx.font = 'italic 30px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#D8A85E';
+    ctx.fillText('&', 700, 995);
+    ctx.font = 'bold 36px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#4A1224';
+    ctx.fillText('Seema Kanwer & Parvatsinghji', 700, 1040);
+
+    // Thin separator
+    ctx.strokeStyle = '#D8A85E';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(350, 1120);
+    ctx.lineTo(1050, 1120);
+    ctx.stroke();
+
+    ctx.font = 'bold 44px "Cinzel", serif';
     ctx.fillStyle = '#B38136';
-    ctx.fillText('SUNDAY, 6 DECEMBER 2026', 350, 460);
+    ctx.fillText('SUNDAY, 6 DECEMBER 2026', 700, 1200);
 
-    ctx.font = '22px "Cormorant Garamond", serif';
+    ctx.font = '36px "Cormorant Garamond", serif';
     ctx.fillStyle = '#5A2637';
-    ctx.fillText('R.K. Royal Banquet & Party Lawn, Science City', 350, 520);
+    ctx.fillText('4:00 PM Arrival & Welcome', 700, 1270);
+
+    ctx.font = '36px "Cormorant Garamond", serif';
+    ctx.fillStyle = '#5A2637';
+    ctx.fillText('R.K. Royal Banquet & Party Lawn, Science City', 700, 1340);
 
     const texture = new THREE.CanvasTexture(canvas);
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.generateMipmaps = true;
+    texture.minFilter = THREE.LinearMipmapLinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.needsUpdate = true;
+
     return new THREE.MeshStandardMaterial({
       map: texture,
-      roughness: 0.6,
+      roughness: 0.50,
       metalness: 0.05,
+      transparent: false,
+      depthWrite: true,
+      side: THREE.FrontSide,
     });
   }, []);
 
-  // Flap Geometries with generous overlap so NO gaps exist when closed!
-  // Envelope body dimensions: width = 3.4, height = 2.2
+  // 6. Wax Seal Radius
+  const sealR = useMemo(() => Math.min(envW * 0.16, 0.36), [envW]);
+
+  // 7. Flap Geometries: Flaps meet seamlessly to completely enclose card & bow!
   const flapGeometries = useMemo(() => {
-    // Top Flap (Hinged at top y = 1.1, folds down reaching y = -0.4)
+    const w = envW * 1.08;
+    const h = envH * 1.08;
+
+    // Top V-Flap: Hinged at top (y = 0 in local space, world y = envH / 2).
+    // Apex points down to 38% screen height: apexY = -h * 0.38 (world y = envH * 0.12).
     const topShape = new THREE.Shape();
-    topShape.moveTo(-1.7, 0);
-    topShape.lineTo(1.7, 0);
-    topShape.lineTo(0, -1.5);
+    topShape.moveTo(-w / 2, 0);
+    topShape.lineTo(w / 2, 0);
+    topShape.lineTo(0, -h * 0.38);
     topShape.closePath();
 
-    // Bottom Flap (Hinged at bottom y = -1.1, folds up reaching y = +0.35)
-    const bottomShape = new THREE.Shape();
-    bottomShape.moveTo(-1.7, 0);
-    bottomShape.lineTo(1.7, 0);
-    bottomShape.lineTo(0, 1.45);
-    bottomShape.closePath();
-
-    // Left Flap (Hinged at left x = -1.7, folds right reaching x = +0.25)
-    const leftShape = new THREE.Shape();
-    leftShape.moveTo(0, -1.1);
-    leftShape.lineTo(0, 1.1);
-    leftShape.lineTo(1.95, 0);
-    leftShape.closePath();
-
-    // Right Flap (Hinged at right x = 1.7, folds left reaching x = -0.25)
-    const rightShape = new THREE.Shape();
-    rightShape.moveTo(0, -1.1);
-    rightShape.lineTo(0, 1.1);
-    rightShape.lineTo(-1.95, 0);
-    rightShape.closePath();
+    // Lower Front Pocket: Hinged at bottom (y = 0 in local space, world y = -envH / 2).
+    // Covers the full width across the lower screen up to local y = h * 0.65 (world y = +envH * 0.15).
+    const lowerShape = new THREE.Shape();
+    lowerShape.moveTo(-w / 2, 0);
+    lowerShape.lineTo(w / 2, 0);
+    lowerShape.lineTo(w / 2, h * 0.65);
+    lowerShape.lineTo(0, h * 0.58);
+    lowerShape.lineTo(-w / 2, h * 0.65);
+    lowerShape.closePath();
 
     return {
       top: new THREE.ShapeGeometry(topShape),
-      bottom: new THREE.ShapeGeometry(bottomShape),
-      left: new THREE.ShapeGeometry(leftShape),
-      right: new THREE.ShapeGeometry(rightShape),
+      lower: new THREE.ShapeGeometry(lowerShape),
+      apexY: -h * 0.38,
+      w,
+      h,
     };
-  }, []);
+  }, [envW, envH]);
 
-  // Wax Fragments data (8 radial fragments)
-  const fragmentsData = useMemo(() => {
-    const frags = [];
-    const count = 8;
-    for (let i = 0; i < count; i++) {
-      const angle = (i * 2 * Math.PI) / count;
-      frags.push({
-        id: i,
-        angle,
-        initialX: Math.cos(angle) * 0.12,
-        initialY: Math.sin(angle) * 0.12,
-        initialRotZ: angle,
-      });
-    }
-    return frags;
-  }, []);
+  // Card dimensions (tucked inside the pocket)
+  const cardWidth = useMemo(() => envW * 0.86, [envW]);
+  const cardHeight = useMemo(() => envH * 0.68, [envH]);
 
-  // Trigger Open handler with temporary debug logging (Bug 2)
-  const handleTriggerOpen = (source = 'unknown', e) => {
+  // Trigger Open handler with haptic feedback
+  const handleTriggerOpen = (source = 'canvas-click', e) => {
     if (e && e.stopPropagation) e.stopPropagation();
     console.log(`[Envelope Debug] Interaction detected from: ${source}`);
 
-    if (isOpening || hasStartedAnimationRef.current) {
-      console.log('[Envelope Debug] Envelope already opening, ignoring trigger');
-      return;
+    if (isOpening || hasStartedAnimationRef.current) return;
+
+    if (typeof navigator !== 'undefined' && navigator.vibrate) {
+      try {
+        navigator.vibrate(15);
+      } catch (err) {}
     }
 
-    console.log('[Envelope Debug] Triggering envelope open animation');
     soundEngine.unlock();
     if (onOpeningStart) onOpeningStart();
   };
 
-  // Idle floating and parallax tilt animation
+  // Idle animations: breathing pulse of wax seal + parallax tilt (max 8 deg)
   useFrame((state) => {
-    if (!envelopeGroupRef.current) return;
+    const time = state.clock.getElapsedTime();
 
     if (!isOpening && !hasStartedAnimationRef.current) {
-      const time = state.clock.getElapsedTime();
-      const floatY = Math.sin(time * 1.5) * 0.04;
+      if (sealPulseRef.current) {
+        const pulse = 1.0 + Math.sin(time * 2.2) * 0.02;
+        sealPulseRef.current.scale.set(pulse, pulse, pulse);
+      }
+      if (glowRingRef.current) {
+        glowRingRef.current.material.opacity = 0.25 + Math.sin(time * 2.2) * 0.15;
+      }
 
-      // Parallax tilt (smoothed, max 8 deg)
-      const targetRotX = (tilt?.x || 0) * 0.14;
-      const targetRotY = (tilt?.y || 0) * 0.14;
+      // Parallax tilt (smoothed, max 8 deg ~ 0.14 rad)
+      if (envelopeGroupRef.current) {
+        const targetRotX = (tilt?.x || 0) * 0.12;
+        const targetRotY = (tilt?.y || 0) * 0.12;
 
-      envelopeGroupRef.current.position.y = THREE.MathUtils.lerp(
-        envelopeGroupRef.current.position.y,
-        0.1 + floatY,
-        0.08
-      );
-      envelopeGroupRef.current.rotation.x = THREE.MathUtils.lerp(
-        envelopeGroupRef.current.rotation.x,
-        targetRotX,
-        0.08
-      );
-      envelopeGroupRef.current.rotation.y = THREE.MathUtils.lerp(
-        envelopeGroupRef.current.rotation.y,
-        targetRotY,
-        0.08
-      );
+        envelopeGroupRef.current.rotation.x = THREE.MathUtils.lerp(
+          envelopeGroupRef.current.rotation.x,
+          targetRotX,
+          0.06
+        );
+        envelopeGroupRef.current.rotation.y = THREE.MathUtils.lerp(
+          envelopeGroupRef.current.rotation.y,
+          targetRotY,
+          0.06
+        );
+      }
     }
   });
 
-  // GSAP 6-Second Orchestrated Opening Timeline with try/catch and fallback (Bug 2)
+  // 7-Second GSAP Timeline (ease power2.inOut)
   useEffect(() => {
     if (!isOpening || hasStartedAnimationRef.current) return;
     hasStartedAnimationRef.current = true;
-    console.log('[Envelope Debug] GSAP opening timeline starting...');
+    console.log('[Envelope Debug] Starting 7-second GSAP opening sequence...');
 
     let tl;
     let fallbackTimer;
@@ -263,195 +326,192 @@ export default function EnvelopeMesh({
     try {
       tl = gsap.timeline({
         onComplete: () => {
-          console.log('[Envelope Debug] GSAP opening timeline completed successfully.');
+          console.log('[Envelope Debug] 7-second opening timeline finished.');
           clearTimeout(fallbackTimer);
           if (onOpeningCompleteRef.current) onOpeningCompleteRef.current();
         },
       });
 
-      // 0.0s: Satin Ribbon untwists and slides off first
-      if (ribbonRef.current) {
+      // 0.0s: User taps seal -> slight inward press
+      if (sealGroupRef.current) {
         tl.to(
-          ribbonRef.current.rotation,
+          sealGroupRef.current.position,
           {
-            z: 0.35,
-            duration: 0.6,
+            z: 0.015,
+            duration: 0.15,
+            yoyo: true,
+            repeat: 1,
             ease: 'power2.inOut',
           },
           0.0
         );
+      }
+
+      // 0.4s: V-flap lifts from its tip and rotates back ~170° around top hinge,
+      // CARRYING THE SEAL ATTACHED UP AND AWAY (DO NOT SHATTER IT!)
+      if (topFlapRef.current) {
         tl.to(
-          ribbonRef.current.position,
+          topFlapRef.current.rotation,
           {
-            x: 5.0,
-            duration: 0.8,
-            ease: 'power2.in',
+            x: -Math.PI * 0.94,
+            duration: 1.4,
+            ease: 'power2.inOut',
           },
-          0.2
+          0.4
         );
       }
 
-      // 0.8s: Wax seal pulses with gold spark, then shatters
-      if (sealIntactRef.current) {
-        tl.to(
-          sealIntactRef.current.scale,
-          {
-            x: 1.25,
-            y: 1.25,
-            z: 1.25,
-            duration: 0.3,
-            ease: 'back.out(2)',
-          },
-          0.7
-        )
-        .set(sealIntactRef.current, { visible: false }, 1.0)
-        .set(sealFragmentsGroupRef.current, { visible: true }, 1.0);
+      // 1.2s: Reveal card inside envelope pocket as top flap opens
+      if (cardGroupRef.current) {
+        tl.set(cardGroupRef.current, { visible: true }, 1.2);
       }
 
-      // 1.0s: Shatter 8 fragments radially away
-      fragmentsRef.current.forEach((frag, idx) => {
-        if (!frag) return;
-        const angle = (idx * 2 * Math.PI) / 8;
-        const distance = 1.3 + Math.random() * 0.5;
+      // 1.4s: Shiny satin lining revealed, camera pushes slightly forward
+      tl.to(
+        camera.position,
+        {
+          z: 4.15,
+          duration: 1.2,
+          ease: 'power2.inOut',
+        },
+        1.4
+      );
+
+      // Lower pocket folds slightly open to reveal card
+      if (lowerPocketRef.current) {
         tl.to(
-          frag.position,
+          lowerPocketRef.current.rotation,
           {
-            x: Math.cos(angle) * distance,
-            y: Math.sin(angle) * distance - 1.2,
-            z: 0.8 + Math.random() * 0.5,
-            duration: 1.0,
-            ease: 'power2.out',
+            x: Math.PI * 0.45,
+            duration: 1.2,
+            ease: 'power2.inOut',
           },
-          1.0
+          1.5
         );
+      }
+
+      // 2.4s: Card inside with tied silk ribbon and knotted bow is fully revealed.
+
+      // 3.6s: Bow unties: ribbon tails loosen and slide off, ribbon falls away
+      if (bowRef.current) {
         tl.to(
-          frag.rotation,
-          {
-            x: Math.random() * 8,
-            y: Math.random() * 8,
-            z: Math.random() * 8,
-            duration: 1.0,
-            ease: 'power2.out',
-          },
-          1.0
-        );
-        tl.to(
-          frag.scale,
+          bowRef.current.scale,
           {
             x: 0,
             y: 0,
             z: 0,
             duration: 0.5,
-            ease: 'power1.in',
+            ease: 'power2.in',
           },
-          1.5
-        );
-      });
-
-      // 1.6s: Bottom and side flaps fold open in sequence (stagger 0.15s)
-      if (bottomFlapRef.current) {
-        tl.to(
-          bottomFlapRef.current.rotation,
-          {
-            x: -Math.PI * 0.98,
-            duration: 0.85,
-            ease: 'power2.inOut',
-          },
-          1.6
+          3.6
         );
       }
-      if (leftFlapRef.current) {
+      if (leftTailRef.current) {
         tl.to(
-          leftFlapRef.current.rotation,
+          leftTailRef.current.position,
           {
-            y: -Math.PI * 0.95,
-            duration: 0.85,
-            ease: 'power2.inOut',
+            y: -1.2,
+            z: -0.1,
+            duration: 0.7,
+            ease: 'power2.in',
           },
-          1.75
+          3.6
+        );
+        tl.to(
+          leftTailRef.current.rotation,
+          {
+            z: -0.8,
+            duration: 0.7,
+          },
+          3.6
         );
       }
-      if (rightFlapRef.current) {
+      if (rightTailRef.current) {
         tl.to(
-          rightFlapRef.current.rotation,
+          rightTailRef.current.position,
           {
-            y: Math.PI * 0.95,
-            duration: 0.85,
-            ease: 'power2.inOut',
+            y: -1.2,
+            z: -0.1,
+            duration: 0.7,
+            ease: 'power2.in',
           },
-          1.9
+          3.65
+        );
+        tl.to(
+          rightTailRef.current.rotation,
+          {
+            z: 0.8,
+            duration: 0.7,
+          },
+          3.65
         );
       }
-
-      // 2.6s: Top flap opens about 160 degrees with slight overshoot
-      if (topFlapRef.current) {
+      if (ribbonBandRef.current) {
         tl.to(
-          topFlapRef.current.rotation,
+          ribbonBandRef.current.position,
           {
-            x: Math.PI * 0.92,
-            duration: 0.95,
-            ease: 'back.out(1.4)',
+            x: 3.5,
+            duration: 0.8,
+            ease: 'power2.in',
           },
-          2.6
-        );
-      }
-
-      // 3.2s: Card slides up out of envelope, camera dollies in
-      if (cardRef.current) {
-        tl.to(
-          cardRef.current.position,
-          {
-            y: 2.1,
-            z: 0.1,
-            duration: 1.4,
-            ease: 'power3.out',
-          },
-          3.2
+          3.8
         );
         tl.to(
-          camera.position,
+          ribbonBandRef.current.rotation,
           {
-            z: 3.2,
-            y: 0.4,
-            duration: 1.6,
-            ease: 'power2.inOut',
+            z: 0.3,
+            duration: 0.8,
           },
-          3.2
+          3.8
         );
       }
 
-      // 4.5s: Card scales to fill screen, soft bloom transition
+      // 4.8s: Card rises out of envelope and scales up to fill screen (with 16px margins).
+      // Envelope body fades and drops down out of view.
+      if (cardGroupRef.current) {
+        tl.to(
+          cardGroupRef.current.position,
+          {
+            y: 0.05,
+            z: 0.65,
+            duration: 1.2,
+            ease: 'power2.out',
+          },
+          4.8
+        );
+        tl.to(
+          cardGroupRef.current.scale,
+          {
+            x: 1.14,
+            y: 1.14,
+            z: 1.14,
+            duration: 1.2,
+            ease: 'power2.out',
+          },
+          4.8
+        );
+      }
+
       if (envelopeGroupRef.current) {
         tl.to(
           envelopeGroupRef.current.position,
           {
-            y: -0.4,
-            duration: 0.8,
-            ease: 'power2.inOut',
+            y: -2.8,
+            duration: 1.2,
+            ease: 'power2.in',
           },
-          4.5
-        );
-        tl.to(
-          envelopeGroupRef.current.scale,
-          {
-            x: responsiveScale * 1.35,
-            y: responsiveScale * 1.35,
-            z: responsiveScale * 1.35,
-            duration: 0.9,
-            ease: 'power2.inOut',
-          },
-          4.5
+          4.9
         );
       }
 
-      // Safety timeout: if timeline stalls, automatically fall back to crossfade open (Bug 2)
+      // 6.0s: Soft light flash, then swap to crisp real DOM/HTML card.
       fallbackTimer = setTimeout(() => {
-        console.warn('[Envelope Debug] Fallback timer triggered, forcing completion');
+        console.warn('[Envelope Debug] Safety fallback timer triggered.');
         if (onOpeningCompleteRef.current) onOpeningCompleteRef.current();
-      }, 5500);
+      }, 7200);
 
     } catch (err) {
-      console.error('[Envelope Debug] GSAP animation error, falling back to crossfade:', err);
+      console.error('[Envelope Debug] GSAP timeline error:', err);
       if (onOpeningCompleteRef.current) onOpeningCompleteRef.current();
     }
 
@@ -459,132 +519,211 @@ export default function EnvelopeMesh({
       if (tl) tl.kill();
       clearTimeout(fallbackTimer);
     };
-  }, [isOpening]);
+  }, [isOpening, camera]);
 
   return (
-    <group
-      ref={envelopeGroupRef}
-      scale={[responsiveScale, responsiveScale, responsiveScale]}
-      position={[0, 0.1, 0]}
-    >
-      {/* Generous Invisible Hit Area (160px / 1.8 unit circle around seal) (Bug 2) */}
+    <group ref={envelopeGroupRef} position={[0, 0, 0]}>
+      {/* Full-screen invisible interaction hit mesh */}
       <mesh
-        position={[0, 0, 0.05]}
-        onPointerDown={(e) => handleTriggerOpen('invisible-hit-area', e)}
-        onClick={(e) => handleTriggerOpen('invisible-hit-area', e)}
+        position={[0, 0, 0.1]}
+        onPointerDown={(e) => handleTriggerOpen('screen-hit', e)}
+        onClick={(e) => handleTriggerOpen('screen-hit', e)}
       >
-        <circleGeometry args={[0.9, 32]} />
+        <planeGeometry args={[envW * 1.5, envH * 1.5]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
 
-      {/* 1. Envelope Back Plate */}
+      {/* 1. Envelope Backplate: Fills entire screen 100vw x 100dvh */}
       <mesh
-        position={[0, 0, -0.015]}
+        position={[0, 0, -0.02]}
         material={paperMaterial}
-        onPointerDown={(e) => handleTriggerOpen('envelope-backplate', e)}
-        onClick={(e) => handleTriggerOpen('envelope-backplate', e)}
+        onPointerDown={(e) => handleTriggerOpen('backplate', e)}
+        onClick={(e) => handleTriggerOpen('backplate', e)}
       >
-        <planeGeometry args={[3.4, 2.2]} />
+        <planeGeometry args={[envW * 1.08, envH * 1.08]} />
       </mesh>
 
-      {/* Inside pocket lining */}
-      <mesh position={[0, 0, -0.01]} material={liningMaterial}>
-        <planeGeometry args={[3.38, 2.18]} />
+      {/* Inside Lining (Silky champagne-pink satin inside pocket) */}
+      <mesh position={[0, 0, -0.015]} material={liningMaterial}>
+        <planeGeometry args={[envW * 1.05, envH * 1.05]} />
       </mesh>
 
-      {/* 2. Inside Invitation Card */}
-      <mesh ref={cardRef} position={[0, -0.05, 0.005]} material={cardMaterial}>
-        <planeGeometry args={[3.1, 2.1]} />
-      </mesh>
+      {/* 2. Inside Invitation Card Group (Hidden initially until flap opens) */}
+      <group
+        ref={cardGroupRef}
+        position={[0, -0.08, 0.005]}
+        visible={false}
+      >
+        {/* Card Mesh: 100% Opaque Royal Ivory */}
+        <mesh ref={cardMeshRef} material={cardMaterial}>
+          <planeGeometry args={[cardWidth, cardHeight]} />
+        </mesh>
 
-      {/* 3. Bottom Flap (Hinged at bottom edge: y = -1.1) */}
-      <group ref={bottomFlapRef} position={[0, -1.1, 0.015]}>
+        {/* Satin Champagne Ribbon tied horizontally across card center */}
+        <group ref={ribbonBandRef} position={[0, 0, 0.005]}>
+          <mesh material={ribbonMaterial}>
+            <planeGeometry args={[cardWidth * 1.02, 0.22]} />
+          </mesh>
+        </group>
+
+        {/* 3D Knotted Bow across card center */}
+        <group position={[0, 0, 0.015]}>
+          <group ref={bowRef}>
+            {/* Center Knot Sphere */}
+            <mesh material={ribbonMaterial}>
+              <sphereGeometry args={[0.07, 16, 16]} />
+            </mesh>
+            {/* Left Loop */}
+            <mesh
+              position={[-0.14, 0.02, 0.01]}
+              rotation={[0, 0.2, 0.3]}
+              material={ribbonMaterial}
+            >
+              <torusGeometry args={[0.10, 0.032, 16, 24, Math.PI * 1.6]} />
+            </mesh>
+            {/* Right Loop */}
+            <mesh
+              position={[0.14, 0.02, 0.01]}
+              rotation={[0, -0.2, -0.3]}
+              material={ribbonMaterial}
+            >
+              <torusGeometry args={[0.10, 0.032, 16, 24, Math.PI * 1.6]} />
+            </mesh>
+          </group>
+
+          {/* Left Ribbon Tail */}
+          <mesh
+            ref={leftTailRef}
+            position={[-0.08, -0.22, 0.008]}
+            rotation={[0, 0, -0.25]}
+            material={ribbonMaterial}
+          >
+            <planeGeometry args={[0.07, 0.35]} />
+          </mesh>
+
+          {/* Right Ribbon Tail */}
+          <mesh
+            ref={rightTailRef}
+            position={[0.08, -0.22, 0.008]}
+            rotation={[0, 0, 0.25]}
+            material={ribbonMaterial}
+          >
+            <planeGeometry args={[0.07, 0.35]} />
+          </mesh>
+        </group>
+      </group>
+
+      {/* 3. Lower Envelope Pocket: Full-width cover across lower screen */}
+      <group ref={lowerPocketRef} position={[0, -envH / 2, 0.016]}>
         <mesh
-          geometry={flapGeometries.bottom}
+          geometry={flapGeometries.lower}
           material={paperMaterial}
-          onPointerDown={(e) => handleTriggerOpen('bottom-flap', e)}
-          onClick={(e) => handleTriggerOpen('bottom-flap', e)}
+          onPointerDown={(e) => handleTriggerOpen('lower-pocket', e)}
+          onClick={(e) => handleTriggerOpen('lower-pocket', e)}
+        />
+        {/* Inside pocket lining */}
+        <mesh
+          geometry={flapGeometries.lower}
+          material={liningMaterial}
+          position={[0, 0, -0.002]}
+          rotation={[0, Math.PI, 0]}
         />
       </group>
 
-      {/* 4. Left Flap (Hinged at left edge: x = -1.7) */}
-      <group ref={leftFlapRef} position={[-1.7, 0, 0.018]}>
-        <mesh
-          geometry={flapGeometries.left}
-          material={paperMaterial}
-          onPointerDown={(e) => handleTriggerOpen('left-flap', e)}
-          onClick={(e) => handleTriggerOpen('left-flap', e)}
-        />
-      </group>
-
-      {/* 5. Right Flap (Hinged at right edge: x = 1.7) */}
-      <group ref={rightFlapRef} position={[1.7, 0, 0.02]}>
-        <mesh
-          geometry={flapGeometries.right}
-          material={paperMaterial}
-          onPointerDown={(e) => handleTriggerOpen('right-flap', e)}
-          onClick={(e) => handleTriggerOpen('right-flap', e)}
-        />
-      </group>
-
-      {/* 6. Top Flap (Hinged at top edge: y = 1.1) */}
-      <group ref={topFlapRef} position={[0, 1.1, 0.024]}>
+      {/* 4. Top V-Flap: Hinged at top edge (y = envH / 2) */}
+      {/* Apex points down to world y = envH * 0.12, overlapping the pocket and wax seal */}
+      <group ref={topFlapRef} position={[0, envH / 2, 0.024]}>
+        {/* Outside Embossed Mauve-Pink Paper */}
         <mesh
           geometry={flapGeometries.top}
           material={paperMaterial}
           onPointerDown={(e) => handleTriggerOpen('top-flap', e)}
           onClick={(e) => handleTriggerOpen('top-flap', e)}
         />
-      </group>
 
-      {/* 7. Gold Satin Ribbon (Untwists and slides off) (Bug 2) */}
-      <group ref={ribbonRef} position={[0, 0, 0.03]}>
+        {/* Subtle crease shadow tube along left V-edge */}
         <mesh
-          material={ribbonMaterial}
-          onPointerDown={(e) => handleTriggerOpen('ribbon', e)}
-          onClick={(e) => handleTriggerOpen('ribbon', e)}
+          position={[-flapGeometries.w * 0.25, flapGeometries.apexY * 0.5, 0.002]}
+          rotation={[0, 0, Math.atan2(flapGeometries.apexY, flapGeometries.w * 0.5)]}
         >
-          <boxGeometry args={[3.44, 0.38, 0.015]} />
+          <planeGeometry args={[Math.hypot(flapGeometries.w * 0.5, Math.abs(flapGeometries.apexY)), 0.015]} />
+          <meshBasicMaterial color="#3D1220" transparent opacity={0.35} />
         </mesh>
-      </group>
 
-      {/* 8. Wax Seal (Lathe cylinder with embossed monogram) */}
-      <group position={[0, 0, 0.038]}>
-        {/* Intact Seal */}
+        {/* Subtle crease shadow tube along right V-edge */}
+        <mesh
+          position={[flapGeometries.w * 0.25, flapGeometries.apexY * 0.5, 0.002]}
+          rotation={[0, 0, -Math.atan2(flapGeometries.apexY, flapGeometries.w * 0.5)]}
+        >
+          <planeGeometry args={[Math.hypot(flapGeometries.w * 0.5, Math.abs(flapGeometries.apexY)), 0.015]} />
+          <meshBasicMaterial color="#3D1220" transparent opacity={0.35} />
+        </mesh>
+
+        {/* Underside Satin Silk Lining (Visible when top flap swings open 170 deg!) */}
+        <mesh
+          geometry={flapGeometries.top}
+          material={liningMaterial}
+          position={[0, 0, -0.002]}
+          rotation={[Math.PI, 0, 0]}
+        />
+
+        {/* 5. Sculpted 3D Wax Seal: ATTACHED DIRECTLY AS A CHILD OF TOP FLAP! */}
+        {/* Placed precisely at the tip of the V-flap: apexY = -envH * 0.38 */}
         <group
-          ref={sealIntactRef}
+          ref={sealGroupRef}
+          position={[0, flapGeometries.apexY, 0.03]}
           onPointerDown={(e) => handleTriggerOpen('seal', e)}
           onClick={(e) => handleTriggerOpen('seal', e)}
         >
-          {/* Outer beveled wax rim */}
-          <mesh material={waxMaterial}>
-            <cylinderGeometry args={[0.38, 0.42, 0.045, 32]} />
+          {/* Subtle contact shadow behind seal */}
+          <mesh position={[0, -0.015, -0.005]}>
+            <circleGeometry args={[sealR * 1.15, 36]} />
+            <meshBasicMaterial color="#000000" transparent opacity={0.35} />
           </mesh>
 
-          {/* Embossed Monogram Face */}
-          <mesh position={[0, 0, 0.026]}>
-            <circleGeometry args={[0.35, 32]} />
-            <meshStandardMaterial
-              map={sealMonogramTex}
-              roughness={0.25}
-              metalness={0.2}
+          {/* Idle Glow Ring */}
+          <mesh ref={glowRingRef} position={[0, 0, 0.002]}>
+            <ringGeometry args={[sealR * 1.02, sealR * 1.25, 36]} />
+            <meshBasicMaterial
+              color="#F4D086"
+              transparent
+              opacity={0.3}
+              blending={THREE.AdditiveBlending}
+              side={THREE.DoubleSide}
             />
           </mesh>
-        </group>
 
-        {/* Shattered Wax Fragments (initially hidden) */}
-        <group ref={sealFragmentsGroupRef} visible={false}>
-          {fragmentsData.map((frag, idx) => (
+          {/* Breathing Pulse Wax Seal Body */}
+          <group ref={sealPulseRef}>
+            {/* Outer melted wax cylinder base with bevel */}
             <mesh
-              key={frag.id}
-              ref={(el) => (fragmentsRef.current[idx] = el)}
-              position={[frag.initialX, frag.initialY, 0.01]}
-              rotation={[0, 0, frag.initialRotZ]}
               material={waxMaterial}
+              position={[0, 0, 0.018]}
+              rotation={[Math.PI / 2, 0, 0]}
             >
-              <coneGeometry args={[0.18, 0.05, 5]} />
+              <cylinderGeometry args={[sealR, sealR * 1.05, 0.036, 48]} />
             </mesh>
-          ))}
+
+            {/* Thick raised beveled wax rim */}
+            <mesh
+              material={waxMaterial}
+              position={[0, 0, 0.032]}
+            >
+              <torusGeometry args={[sealR * 0.90, 0.032, 16, 48]} />
+            </mesh>
+
+            {/* Embossed Monogram Face ("V & J" Monogram) */}
+            <mesh
+              position={[0, 0, 0.036]}
+            >
+              <circleGeometry args={[sealR * 0.88, 48]} />
+              <meshStandardMaterial
+                map={sealMonogramTex}
+                roughness={0.22}
+                metalness={0.15}
+              />
+            </mesh>
+          </group>
         </group>
       </group>
     </group>
