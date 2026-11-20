@@ -41,10 +41,17 @@ export default function TopBlessingLines({ isOpening = false, isHero = false }) 
                     delay: isHero ? 0.15 + idx * 0.12 : 0.2 + idx * 0.3,
                     duration: 0.6,
                   }}
-                  className={`${fontClass} font-medium uppercase gold-foil-text drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)] text-center leading-snug whitespace-nowrap`}
+                  className={`${fontClass} font-semibold uppercase text-center leading-snug whitespace-nowrap ${
+                    isHero 
+                      ? 'text-[#875217]' 
+                      : 'text-[#FEE5B2]'
+                  }`}
                   style={{
                     fontSize: 'clamp(0.72rem, 3.4vw, 0.95rem)',
-                    letterSpacing: 'clamp(0.06em, 1.4vw, 0.18em)',
+                    letterSpacing: 'clamp(0.08em, 1.5vw, 0.18em)',
+                    textShadow: isHero 
+                      ? '0 1px 0 rgba(255, 255, 255, 0.9)' 
+                      : '0 1px 3px rgba(0, 0, 0, 0.85), 0 0 1px rgba(0, 0, 0, 0.9)',
                   }}
                 >
                   {line}
@@ -59,9 +66,23 @@ export default function TopBlessingLines({ isOpening = false, isHero = false }) 
               transition={{ delay: isHero ? 0.5 : 1.1, duration: 0.7 }}
               className="flex items-center justify-center gap-2 mt-2 w-32 sm:w-44"
             >
-              <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D8A85E] to-transparent opacity-80" />
-              <span className="text-[#D8A85E] text-[11px] sm:text-xs font-serif opacity-90 select-none">✦ 卐 ✦</span>
-              <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D8A85E] to-transparent opacity-80" />
+              <div 
+                className={`h-[1px] flex-1 bg-gradient-to-r from-transparent ${
+                  isHero ? 'via-[#875217]/60' : 'via-[#D8A85E]'
+                } to-transparent`} 
+              />
+              <span 
+                className={`text-[11px] sm:text-xs font-serif font-bold select-none ${
+                  isHero ? 'text-[#875217]' : 'text-[#D8A85E]'
+                }`}
+              >
+                ✦ 卐 ✦
+              </span>
+              <div 
+                className={`h-[1px] flex-1 bg-gradient-to-r from-transparent ${
+                  isHero ? 'via-[#875217]/60' : 'via-[#D8A85E]'
+                } to-transparent`} 
+              />
             </motion.div>
           </div>
         </motion.div>

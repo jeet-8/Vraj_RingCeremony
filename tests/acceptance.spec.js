@@ -20,9 +20,9 @@ test.describe('Acceptance Tests for Bug Fixes', () => {
     const langSelector = page.getByRole('button', { name: 'EN', exact: true });
     const skipButton = page.locator('button', { hasText: 'Skip intro' });
 
-    const line1 = page.locator('text=Shree Khimaj Mata Namah');
-    const line2 = page.locator('text=Shree Ganeshay Namah');
-    const line3 = page.locator('text=Shree Kheteshwar Namah');
+    const line1 = page.locator('text=Shree Ganeshay Namah');
+    const line2 = page.locator('text=Shree Khimaj Mata Namah');
+    const line3 = page.locator('text=Shree Kheteshwaray Namah');
 
     await expect(langSelector).toBeVisible();
     await expect(skipButton).toBeVisible();

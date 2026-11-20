@@ -161,7 +161,7 @@ export default function EnvelopeMesh({
     // Top blessing lines
     ctx.font = '500 32px "Cormorant Garamond", serif';
     ctx.fillStyle = '#B38136';
-    ctx.fillText('Shree Khimaj Mata Namah  •  Shree Ganeshay Namah  •  Shree Kheteshwar Namah', 700, 280);
+    ctx.fillText('Shree Ganeshay Namah  •  Shree Khimaj Mata Namah  •  Shree Kheteshwaray Namah', 700, 280);
 
     ctx.font = 'italic 42px "Cormorant Garamond", serif';
     ctx.fillStyle = '#8E5164';

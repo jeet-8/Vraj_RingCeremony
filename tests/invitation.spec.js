@@ -1,13 +1,13 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Ring Ceremony Invitation Functional Tests', () => {
-  test('Page loads with Shree Khimaj Mata Namah, Shree Ganeshay Namah, Shree Kheteshwar Namah', async ({ page }) => {
+  test('Page loads with Shree Ganeshay Namah, Shree Khimaj Mata Namah, Shree Kheteshwaray Namah', async ({ page }) => {
     await page.goto('/');
 
     // Verify top blessing lines exist and are visible
-    const blessing1 = page.locator('text=Shree Khimaj Mata Namah');
-    const blessing2 = page.locator('text=Shree Ganeshay Namah');
-    const blessing3 = page.locator('text=Shree Kheteshwar Namah');
+    const blessing1 = page.locator('text=Shree Ganeshay Namah');
+    const blessing2 = page.locator('text=Shree Khimaj Mata Namah');
+    const blessing3 = page.locator('text=Shree Kheteshwaray Namah');
 
     await expect(blessing1).toBeVisible();
     await expect(blessing2).toBeVisible();
@@ -38,7 +38,7 @@ test.describe('Ring Ceremony Invitation Functional Tests', () => {
     await expect(englishBtn).toBeVisible();
     await englishBtn.click();
 
-    await expect(page.locator('text=Shree Khimaj Mata Namah')).toBeVisible();
+    await expect(page.locator('text=Shree Ganeshay Namah')).toBeVisible();
   });
 
   test('URL guest parameter personalizes greeting in Hero Card', async ({ page }) => {
@@ -59,8 +59,8 @@ test.describe('Ring Ceremony Invitation Functional Tests', () => {
     // Verify Hero Card elements
     await expect(page.locator('text=Vraj').first()).toBeVisible();
     await expect(page.locator('text=Jiya (Pooja)').first()).toBeVisible();
-    await expect(page.locator('text=Rekha Kanwer & Prakashsinghji').first()).toBeVisible();
-    await expect(page.locator('text=Seema Kanwer & Parvatsinghji').first()).toBeVisible();
+    await expect(page.locator('text=Rekha Kuwar & Prakashsinghji').first()).toBeVisible();
+    await expect(page.locator('text=Seema Kuwar & Parvatsinghji').first()).toBeVisible();
 
     // Verify Countdown Card
     await expect(page.locator('text=Counting Down to the Auspicious Moment')).toBeVisible();

@@ -8,38 +8,38 @@ export const eventConfig = {
   // Couple Information
   couple: {
     groom: "Vraj",
-    bride: "Jiya (Pooja)",
+    bride: "Pooja (Jiya)",
     groomFullName: "Vraj",
-    brideFullName: "Jiya (Pooja)",
-    monogram: "V & J",
-    monogramTitle: "Vraj & Jiya",
+    brideFullName: "Pooja (Jiya)",
+    monogram: "V & P",
+    monogramTitle: "Vraj & Pooja",
     ceremony: "Ring Ceremony",
     subtitle: "Engagement Celebration",
   },
 
   // Family Information
   families: {
-    groomParents: "Rekha Kanwer & Prakashsinghji",
-    brideParents: "Seema Kanwer & Parvatsinghji",
+    groomParents: "Rekha Kuwar & Prakashsinghji",
+    brideParents: "Seema Kuwar & Parvatsinghji",
     blessingQuote: "With the divine blessings of our beloved elders and ancestors, we cordially invite you to celebrate the joyous Ring Ceremony of our children.",
   },
 
   // Top Blessing Lines (shown above the envelope and in Hero card)
   blessings: {
     en: [
-      "Shree Khimaj Mata Namah",
       "Shree Ganeshay Namah",
-      "Shree Kheteshwar Namah",
+      "Shree Khimaj Mata Namah",
+      "Shree Kheteshwaray Namah",
     ],
     hi: [
-      "श्री खिमज माता नमः",
       "श्री गणेशाय नमः",
-      "श्री खेतेश्वर नमः",
+      "श्री खिमज माता नमः",
+      "श्री खेतेश्वराय नमः",
     ],
     gu: [
-      "શ્રી ખીમજ માતા નમઃ",
       "શ્રી ગણેશાય નમઃ",
-      "શ્રી ખેતેશ્વર નમઃ",
+      "શ્રી ખીમજ માતા નમઃ",
+      "શ્રી ખેતેશ્વરાય નમઃ",
     ],
   },
 
@@ -102,48 +102,25 @@ export const eventConfig = {
     },
   ],
 
-  // Dress Code
-  dressCode: {
-    titleEn: "Royal Traditional & Pastel Elegance",
-    titleHi: "शाही पारंपरिक एवं पेस्टल परिधान",
-    titleGu: "શાહી પરંપરાગત અને પેસ્ટલ પોશાક",
-    descEn: "Indian Traditional or Indo-Western attire in delicate pastel shades and champagne tones.",
-    descHi: "मनमोहक पेस्टल और शैम्पेन रंगों में भारतीय पारंपरिक या इंडो-वेस्टर्न परिधान।",
-    descGu: "સુંદર પેસ્ટલ અને શેમ્પેઈન રંગોમાં ભારતીય પરંપરાગત અથવા ઇન્ડો-વેસ્ટર્ન પોશાક.",
-    palette: [
-      { name: "Champagne Gold", hex: "#E5C392", textColor: "#442b15" },
-      { name: "Blush Rose", hex: "#E8B4B8", textColor: "#4a1e27" },
-      { name: "Dusty Mauve", hex: "#A87C8A", textColor: "#ffffff" },
-      { name: "Royal Ivory", hex: "#FDFBF7", textColor: "#503827" },
-      { name: "Soft Mint", hex: "#D4E2D4", textColor: "#203a27" },
-    ],
-  },
+ 
 
   // Family Contacts & RSVP
   contacts: [
     {
-      name: "Rekha Kanwer & Prakashsinghji",
+      name: "Rekha Kuwar & Prakashsinghji",
       roleEn: "Groom's Family",
       roleHi: "वर पक्ष",
-      roleGu: "વર પક્ષ",
-      phone: "+919876543210",
-      displayPhone: "+91 98765 43210",
-      whatsapp: "919876543210",
+      roleGu: "વર પક્ષ"
     },
     {
-      name: "Seema Kanwer & Parvatsinghji",
+      name: "Seema Kuwar & Parvatsinghji",
       roleEn: "Bride's Family",
       roleHi: "वधू पक्ष",
       roleGu: "કન્યા પક્ષ",
-      phone: "+919876543211",
-      displayPhone: "+91 98765 43211",
-      whatsapp: "919876543211",
     },
   ],
 
-  // WhatsApp RSVP default number (primary contact)
-  rsvpWhatsappNumber: "919876543210",
-
+  
   // Audio configuration
   audio: {
     src: "/src/assets/music/music.mp3",
@@ -155,22 +132,11 @@ export const eventConfig = {
   photos: [
     {
       id: 1,
-      src: "/src/assets/photos/couple-1.svg",
-      alt: "Vraj & Jiya (Pooja) - Engagement Portrait",
+      src: "/src/assets/photos/WhatsApp Image 2026-11-20 at 21.20.16.jpeg",
+      alt: "Vraj & Pooja (Jiya) - Engagement Portrait",
       caption: "Two souls, one beautiful journey begins",
     },
-    {
-      id: 2,
-      src: "/src/assets/photos/couple-2.svg",
-      alt: "Vraj & Jiya (Pooja) - Romantic Moment",
-      caption: "Together is a wonderful place to be",
-    },
-    {
-      id: 3,
-      src: "/src/assets/photos/couple-3.svg",
-      alt: "Vraj & Jiya (Pooja) - Ring Exchange Preview",
-      caption: "A promise of forever sealed with love",
-    },
+   
   ],
 
   // SEO & Social Sharing

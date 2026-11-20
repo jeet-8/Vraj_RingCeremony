@@ -29,9 +29,9 @@ test.describe('Redesigned Full-Bleed 3D Opening Scene and Crisp Card', () => {
     await expect(langSelector).toBeVisible();
     await expect(skipButton).toBeVisible();
 
-    const line1 = page.locator('text=Shree Khimaj Mata Namah');
-    const line2 = page.locator('text=Shree Ganeshay Namah');
-    const line3 = page.locator('text=Shree Kheteshwar Namah');
+    const line1 = page.locator('text=Shree Ganeshay Namah');
+    const line2 = page.locator('text=Shree Khimaj Mata Namah');
+    const line3 = page.locator('text=Shree Kheteshwaray Namah');
     await expect(line1).toBeVisible();
     await expect(line2).toBeVisible();
     await expect(line3).toBeVisible();
@@ -62,7 +62,7 @@ test.describe('Redesigned Full-Bleed 3D Opening Scene and Crisp Card', () => {
     await page.goto('http://localhost:4173/');
     await page.waitForTimeout(2000);
 
-    const line1 = page.locator('text=Shree Khimaj Mata Namah');
+    const line1 = page.locator('text=Shree Ganeshay Namah');
     await expect(line1).toBeVisible();
 
     const shotPath = path.join(screenshotsDir, 'after-fullbleed-envelope-dpr3.png');

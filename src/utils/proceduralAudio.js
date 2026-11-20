@@ -21,7 +21,7 @@ class SoundEngine {
 
     this.audioElement = new Audio();
     this.audioElement.loop = true;
-    this.audioElement.volume = 0.55;
+    this.audioElement.volume = 0.95;
     this.audioElement.src = '/src/assets/music/music.mp3';
 
     this.audioElement.addEventListener('error', () => {
@@ -126,7 +126,7 @@ class SoundEngine {
 
       const masterGain = ctx.createGain();
       masterGain.gain.setValueAtTime(0.001, ctx.currentTime);
-      masterGain.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 2.0);
+      masterGain.gain.exponentialRampToValueAtTime(0.65, ctx.currentTime + 1.5);
       masterGain.connect(ctx.destination);
       this.currentGain = masterGain;
 
@@ -142,7 +142,7 @@ class SoundEngine {
         filter.type = 'lowpass';
         filter.frequency.setValueAtTime(450 + idx * 80, ctx.currentTime);
 
-        droneGain.gain.setValueAtTime(0.02, ctx.currentTime);
+        droneGain.gain.setValueAtTime(0.06, ctx.currentTime);
         droneOsc.connect(filter);
         filter.connect(droneGain);
         droneGain.connect(masterGain);
@@ -189,7 +189,7 @@ class SoundEngine {
         bandpass.Q.setValueAtTime(2.5, now);
 
         noteGain.gain.setValueAtTime(0.0001, now);
-        noteGain.gain.linearRampToValueAtTime(0.08, now + 0.2);
+        noteGain.gain.linearRampToValueAtTime(0.28, now + 0.2);
         noteGain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
         osc1.connect(bandpass);

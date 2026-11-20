@@ -10,7 +10,7 @@ test('Throttled 4x CPU run: Opening animation and responsive layout', async ({ p
   await page.waitForTimeout(1500);
 
   // Check header layout with 4x CPU throttling
-  const line1 = page.locator('text=Shree Khimaj Mata Namah');
+  const line1 = page.locator('text=Shree Ganeshay Namah');
   await expect(line1).toBeVisible();
 
   // Click the hint button to trigger opening animation under 4x CPU throttling

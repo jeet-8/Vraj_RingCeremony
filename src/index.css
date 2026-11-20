@@ -14,7 +14,6 @@
   background: linear-gradient(135deg, #FFEDBA 0%, #D8A85E 40%, #FFF3D6 60%, #B88334 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 15px rgba(216, 168, 94, 0.25);
 }
 
 .gold-foil-border {
