@@ -119,12 +119,16 @@ export const eventConfig = {
   contacts: [
     {
       name: "Rekha Kuwar & Prakashsinghji",
+      nameHi: "रेखा कुंवर & प्रकाशसिंहजी",
+      nameGu: "રેખા કુંવર & પ્રકાશસિંહજી",
       roleEn: "Groom's Family",
       roleHi: "वर पक्ष",
       roleGu: "વર પક્ષ"
     },
     {
       name: "Seema Kuwar & Parvatsinghji",
+      nameHi: "सीमा कुंवर & पर्वतसिंहजी",
+      nameGu: "સીમા કુંવર & પર્વતસિંહજી",
       roleEn: "Bride's Family",
       roleHi: "वधू पक्ष",
       roleGu: "કન્યા પક્ષ",

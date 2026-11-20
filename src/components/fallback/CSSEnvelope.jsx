@@ -67,15 +67,15 @@ export default function CSSEnvelope({
 
           {/* Groom */}
           <h1 className="text-[#4A1224] font-script text-3xl mt-1 leading-tight">{eventConfig.groom.name}</h1>
-          <p className="text-[#9E6D38] font-serif italic text-[10px]">Son of</p>
-          <p className="text-[#4A1224] font-serif font-semibold text-xs">{eventConfig.groom.parents}</p>
+          <p className="text-[#9E6D38] font-serif italic text-[10px]">{t('hero.groomParentsLabel') || 'Son of'}</p>
+          <p className="text-[#4A1224] font-serif font-semibold text-xs">{t('hero.groomParents') || eventConfig.groom.parents}</p>
 
           <div className="w-16 h-[1px] bg-[#D8A85E]/50 my-1" />
 
           {/* Bride */}
           <h1 className="text-[#4A1224] font-script text-3xl leading-tight">{eventConfig.bride.name}</h1>
-          <p className="text-[#9E6D38] font-serif italic text-[10px]">Daughter of</p>
-          <p className="text-[#4A1224] font-serif font-semibold text-xs">{eventConfig.bride.parents}</p>
+          <p className="text-[#9E6D38] font-serif italic text-[10px]">{t('hero.brideParentsLabel') || 'Daughter of'}</p>
+          <p className="text-[#4A1224] font-serif font-semibold text-xs">{t('hero.brideParents') || eventConfig.bride.parents}</p>
 
           <div className="w-24 h-[1px] bg-[#D8A85E] my-2" />
           <p className="text-[#B38136] text-[10px] font-serif tracking-wider font-semibold">SUNDAY, 6 DECEMBER 2026</p>

@@ -80,7 +80,7 @@ export default function ContactsAndRsvpCard({ guestName }) {
               >
                 <div>
                   <p className="font-serif text-xs font-bold text-[#4A1224]">
-                    {contact.name}
+                    {currentLang === 'hi' && contact.nameHi ? contact.nameHi : currentLang === 'gu' && contact.nameGu ? contact.nameGu : contact.name}
                   </p>
                   <p className="text-[11px] text-[#8E5164] font-serif">
                     {role} • {contact.displayPhone}
