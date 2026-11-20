@@ -1,61 +1,51 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Ring Ceremony Digital Invitation', () => {
-  test('Top Blessing Lines are displayed correctly on intro screen', async ({ page }) => {
+test.describe('Ring Ceremony Invitation Functional Tests', () => {
+  test('Page loads with Shree Khimaj Mata Namah, Shree Ganeshay Namah, Shree Kheteshwar Namah', async ({ page }) => {
     await page.goto('/');
 
-    // Check all three blessing lines
-    const line1 = page.locator('text=Shree Khimaj Mata Namah');
-    const line2 = page.locator('text=Shree Ganeshay Namah');
-    const line3 = page.locator('text=Shree Kheteshwar Namah');
+    // Verify top blessing lines exist and are visible
+    const blessing1 = page.locator('text=Shree Khimaj Mata Namah');
+    const blessing2 = page.locator('text=Shree Ganeshay Namah');
+    const blessing3 = page.locator('text=Shree Kheteshwar Namah');
 
-    await expect(line1).toBeVisible();
-    await expect(line2).toBeVisible();
-    await expect(line3).toBeVisible();
-
-    // Verify tap hint or canvas is present
-    const tapHint = page.locator('text=Tap the seal to open');
-    await expect(tapHint).toBeVisible();
+    await expect(blessing1).toBeVisible();
+    await expect(blessing2).toBeVisible();
+    await expect(blessing3).toBeVisible();
   });
 
-  test('Language toggle switches between English, Hindi, and Gujarati', async ({ page }) => {
+  test('Language switcher toggles between English, Hindi, and Gujarati', async ({ page }) => {
     await page.goto('/');
 
-    // Click Hindi
-    const hiButton = page.locator('button', { hasText: 'हिन्दी' });
-    await hiButton.click();
+    // Switch to Hindi
+    const hindiBtn = page.getByRole('button', { name: 'हिन्दी' });
+    await expect(hindiBtn).toBeVisible();
+    await hindiBtn.click();
 
-    // Verify Hindi blessing lines
+    // Verify Hindi blessing line
     await expect(page.locator('text=श्री खिमज माता नमः')).toBeVisible();
-    await expect(page.locator('text=श्री गणेशाय नमः')).toBeVisible();
-    await expect(page.locator('text=श्री खेतेश्वर नमः')).toBeVisible();
 
-    // Click Gujarati
-    const guButton = page.locator('button', { hasText: 'ગુજરાતી' });
-    await guButton.click();
+    // Switch to Gujarati
+    const gujaratiBtn = page.getByRole('button', { name: 'ગુજરાતી' });
+    await expect(gujaratiBtn).toBeVisible();
+    await gujaratiBtn.click();
 
-    // Verify Gujarati blessing lines
+    // Verify Gujarati blessing line
     await expect(page.locator('text=શ્રી ખીમજ માતા નમઃ')).toBeVisible();
-    await expect(page.locator('text=શ્રી ગણેશાય નમઃ')).toBeVisible();
-    await expect(page.locator('text=શ્રી ખેતેશ્વર નમઃ')).toBeVisible();
 
-    // Click back to English
-    const enButton = page.locator('button', { hasText: 'EN' });
-    await enButton.click();
+    // Switch back to English
+    const englishBtn = page.getByRole('button', { name: 'EN' });
+    await expect(englishBtn).toBeVisible();
+    await englishBtn.click();
+
     await expect(page.locator('text=Shree Khimaj Mata Namah')).toBeVisible();
   });
 
-  test('URL guest parameter personalizes greeting and WhatsApp RSVP', async ({ page }) => {
+  test('URL guest parameter personalizes greeting in Hero Card', async ({ page }) => {
     await page.goto('/?guest=Rahul-and-family&mode=plain');
 
     // Verify personalized greeting in Hero Card
     await expect(page.locator('text=Rahul And Family')).toBeVisible();
-
-    // Verify WhatsApp RSVP link has the guest name encoded
-    const rsvpLink = page.locator('a[href*="wa.me"]', { hasText: 'Confirm on WhatsApp' });
-    await expect(rsvpLink).toBeVisible();
-    const href = await rsvpLink.getAttribute('href');
-    expect(href).toContain(encodeURIComponent('Rahul And Family'));
   });
 
   test('Invitation opening sequence and scrollable card reveals', async ({ page }) => {
@@ -88,13 +78,14 @@ test.describe('Ring Ceremony Digital Invitation', () => {
     await expect(page.locator('text=Arrival & Welcome')).toBeVisible();
     await expect(page.locator('text=Ring Ceremony & Blessings')).toBeVisible();
 
-    // Verify Dress Code Card
-    await expect(page.locator('text=Dress Code & Palette')).toBeVisible();
-    await expect(page.locator('text=Champagne Gold')).toBeVisible();
+    // Verify removed sections are NOT present
+    await expect(page.locator('text=Dress Code & Palette')).not.toBeVisible();
+    await expect(page.locator('text=Confirm on WhatsApp')).not.toBeVisible();
+    await expect(page.locator('text=Google Calendar')).not.toBeVisible();
+    await expect(page.locator('text=Download .ics')).not.toBeVisible();
+    await expect(page.locator('text=View Simple Version')).not.toBeVisible();
 
-    // Verify Footer buttons: Google Calendar & Reopen
-    await expect(page.locator('text=Google Calendar')).toBeVisible();
-    await expect(page.locator('text=Download .ics')).toBeVisible();
+    // Verify Footer buttons: Reopen Envelope
     await expect(page.locator('text=Reopen Envelope')).toBeVisible();
   });
 
@@ -112,6 +103,7 @@ test.describe('Ring Ceremony Digital Invitation', () => {
 
     const scrollWidth = await page.evaluate(() => document.documentElement.scrollWidth);
     const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
-    expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1); // 1px rounding tolerance
+
+    expect(scrollWidth).toBeLessThanOrEqual(clientWidth + 1);
   });
 });

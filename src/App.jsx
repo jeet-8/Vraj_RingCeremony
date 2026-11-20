@@ -196,7 +196,6 @@ export default function App() {
           <ScrollableInvitation
             guestName={guestName}
             onReopen={handleReopen}
-            onSwitchToSimple={() => setViewState('plain')}
           />
         </>
       )}

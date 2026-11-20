@@ -4,8 +4,6 @@ import CountdownCard from '../invitation/CountdownCard';
 import PhotoGalleryCard from '../invitation/PhotoGalleryCard';
 import VenueCard from '../invitation/VenueCard';
 import ScheduleCard from '../invitation/ScheduleCard';
-import DressCodeCard from '../invitation/DressCodeCard';
-import ContactsAndRsvpCard from '../invitation/ContactsAndRsvpCard';
 import FooterCard from '../invitation/FooterCard';
 
 export default function Plain2DInvitation({ guestName, onSwitchTo3D }) {
@@ -19,7 +17,7 @@ export default function Plain2DInvitation({ guestName, onSwitchTo3D }) {
         {onSwitchTo3D && (
           <button
             onClick={onSwitchTo3D}
-            className="px-3 py-1 rounded-full bg-[#24141E] border border-[#D8A85E]/50 text-xs font-serif text-[#FFEDBA] hover:bg-[#321B2B] transition-all"
+            className="px-3 py-1 rounded-full bg-[#24141E] border border-[#D8A85E]/50 text-xs font-serif text-[#FFEDBA] hover:bg-[#321B2B] transition-all cursor-pointer"
           >
             ✨ Switch to 3D View
           </button>
@@ -33,9 +31,7 @@ export default function Plain2DInvitation({ guestName, onSwitchTo3D }) {
         <PhotoGalleryCard />
         <VenueCard />
         <ScheduleCard />
-        <DressCodeCard />
-        <ContactsAndRsvpCard guestName={guestName} />
-        <FooterCard onSwitchToSimple={null} onReopen={onSwitchTo3D} />
+        <FooterCard onReopen={onSwitchTo3D} />
       </main>
     </div>
   );

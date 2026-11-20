@@ -6,11 +6,9 @@ import CountdownCard from './CountdownCard';
 import PhotoGalleryCard from './PhotoGalleryCard';
 import VenueCard from './VenueCard';
 import ScheduleCard from './ScheduleCard';
-import DressCodeCard from './DressCodeCard';
-import ContactsAndRsvpCard from './ContactsAndRsvpCard';
 import FooterCard from './FooterCard';
 
-export default function ScrollableInvitation({ guestName, onReopen, onSwitchToSimple }) {
+export default function ScrollableInvitation({ guestName, onReopen }) {
   const scrollContainerRef = useRef(null);
 
   // Initialize Lenis smooth scroll
@@ -63,14 +61,8 @@ export default function ScrollableInvitation({ guestName, onReopen, onSwitchToSi
         {/* 5. Schedule Timeline */}
         <ScheduleCard />
 
-        {/* 6. Dress Code */}
-        <DressCodeCard />
-
-        {/* 7. Family Contacts & WhatsApp RSVP */}
-        <ContactsAndRsvpCard guestName={guestName} />
-
-        {/* 8. Footer & Calendar */}
-        <FooterCard onReopen={onReopen} onSwitchToSimple={onSwitchToSimple} />
+        {/* 6. Footer (Reopen & Share) */}
+        <FooterCard onReopen={onReopen} />
       </main>
     </motion.div>
   );
