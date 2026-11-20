@@ -31,11 +31,15 @@ export default function PhotoGalleryCard() {
   const photos = eventConfig.photos;
 
   const nextPhoto = () => {
-    setCurrentIndex((prev) => (prev + 1) % photos.length);
+    if (photos.length > 1) {
+      setCurrentIndex((prev) => (prev + 1) % photos.length);
+    }
   };
 
   const prevPhoto = () => {
-    setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
+    if (photos.length > 1) {
+      setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
+    }
   };
 
   const currentPhoto = photos[currentIndex];
@@ -82,51 +86,55 @@ export default function PhotoGalleryCard() {
             <p className="font-serif italic text-xs text-[#FFEDBA]">
               {currentPhoto.caption}
             </p>
-            <span className="text-[10px] text-[#DFBE95] tracking-widest uppercase font-serif mt-1 inline-block opacity-80">
-              Tap to enlarge 🔍
-            </span>
+           
           </div>
         </div>
 
-        {/* Carousel Navigation Arrows */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            prevPhoto();
-          }}
-          className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#24141E]/70 hover:bg-[#24141E] text-[#FFEDBA] flex items-center justify-center border border-[#D8A85E]/40 text-xs backdrop-blur-sm transition-all"
-          aria-label="Previous photo"
-        >
-          ‹
-        </button>
+        {/* Carousel Navigation Arrows (only if multiple photos) */}
+        {photos.length > 1 && (
+          <>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                prevPhoto();
+              }}
+              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#24141E]/70 hover:bg-[#24141E] text-[#FFEDBA] flex items-center justify-center border border-[#D8A85E]/40 text-xs backdrop-blur-sm transition-all"
+              aria-label="Previous photo"
+            >
+              ‹
+            </button>
 
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            nextPhoto();
-          }}
-          className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#24141E]/70 hover:bg-[#24141E] text-[#FFEDBA] flex items-center justify-center border border-[#D8A85E]/40 text-xs backdrop-blur-sm transition-all"
-          aria-label="Next photo"
-        >
-          ›
-        </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                nextPhoto();
+              }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#24141E]/70 hover:bg-[#24141E] text-[#FFEDBA] flex items-center justify-center border border-[#D8A85E]/40 text-xs backdrop-blur-sm transition-all"
+              aria-label="Next photo"
+            >
+              ›
+            </button>
+          </>
+        )}
       </div>
 
       {/* Dots Indicator */}
-      <div className="flex justify-center items-center gap-2 mt-4">
-        {photos.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => setCurrentIndex(idx)}
-            className={`w-2.5 h-2.5 rounded-full transition-all ${
-              idx === currentIndex
-                ? 'bg-[#B38136] scale-125'
-                : 'bg-[#D8A85E]/40 hover:bg-[#D8A85E]/70'
-            }`}
-            aria-label={`Go to slide ${idx + 1}`}
-          />
-        ))}
-      </div>
+      {photos.length > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-4">
+          {photos.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentIndex(idx)}
+              className={`w-2.5 h-2.5 rounded-full transition-all ${
+                idx === currentIndex
+                  ? 'bg-[#B38136] scale-125'
+                  : 'bg-[#D8A85E]/40 hover:bg-[#D8A85E]/70'
+              }`}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Lightbox Modal */}
       <AnimatePresence>
