@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-export default function LanguageSelector() {
+export default function LanguageSelector({ isFixed = false }) {
   const { i18n } = useTranslation();
   const currentLang = i18n.language || 'en';
 
@@ -15,15 +15,19 @@ export default function LanguageSelector() {
     i18n.changeLanguage(code);
   };
 
+  const containerClasses = isFixed
+    ? "fixed top-3 left-3 z-40 flex items-center bg-[#24141E]/90 backdrop-blur-md border border-[#D8A85E]/40 rounded-full p-0.5 shadow-lg"
+    : "flex items-center bg-[#24141E]/90 backdrop-blur-md border border-[#D8A85E]/40 rounded-full p-0.5 shadow-md pointer-events-auto";
+
   return (
-    <div className="fixed top-4 left-4 z-40 flex items-center bg-[#24141E]/80 backdrop-blur-md border border-[#D8A85E]/40 rounded-full p-1 shadow-lg">
+    <div className={containerClasses}>
       {languages.map((lang) => {
         const isActive = currentLang === lang.code;
         return (
           <button
             key={lang.code}
             onClick={() => handleLanguageChange(lang.code)}
-            className={`px-2.5 py-1 rounded-full text-xs transition-all ${lang.font} ${
+            className={`px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full text-[11px] sm:text-xs transition-all ${lang.font} ${
               isActive
                 ? 'bg-gradient-to-r from-[#D8A85E] to-[#B38136] text-[#170E14] font-bold shadow-sm'
                 : 'text-[#DFBE95] hover:text-[#FFEDBA]'

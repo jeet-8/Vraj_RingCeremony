@@ -1,12 +1,13 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 45000,
+  timeout: 35000,
   expect: {
     timeout: 10000,
   },
   fullyParallel: false,
+  workers: 1,
   reporter: 'list',
   use: {
     baseURL: 'http://localhost:4173',
@@ -28,9 +29,17 @@ export default defineConfig({
       },
     },
     {
-      name: 'Desktop-1920x1080',
+      name: 'Mobile-360x640',
       use: {
-        viewport: { width: 1920, height: 1080 },
+        viewport: { width: 360, height: 640 },
+        isMobile: true,
+      },
+    },
+    {
+      name: 'Mobile-412x915',
+      use: {
+        viewport: { width: 412, height: 915 },
+        isMobile: true,
       },
     },
   ],

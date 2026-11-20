@@ -21,45 +21,46 @@ export default function TopBlessingLines({ isOpening = false, isHero = false }) 
     <AnimatePresence>
       {!isOpening && (
         <motion.div
-          initial={{ opacity: 0, y: -15 }}
+          initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20, transition: { duration: 0.6, ease: 'easeInOut' } }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
-          className={`w-full text-center z-30 select-none ${
-            isHero ? 'my-4' : 'fixed top-0 left-0 right-0 pt-safe px-4 pointer-events-none'
+          exit={{ opacity: 0, y: -12, transition: { duration: 0.5, ease: 'easeInOut' } }}
+          transition={{ duration: 0.6, ease: 'easeOut' }}
+          className={`w-full text-center select-none ${
+            isHero ? 'my-3' : 'px-2 pointer-events-none'
           }`}
-          style={{
-            paddingTop: isHero ? '0' : 'max(1rem, env(safe-area-inset-top, 16px))',
-          }}
         >
           <div className="max-w-md mx-auto flex flex-col items-center justify-center">
-            {/* 3 Blessing Lines with Staggered Fade-in */}
-            <div className="flex flex-col items-center space-y-1">
+            {/* 3 Blessing Lines with responsive clamp sizing so each fits on a single line */}
+            <div className="flex flex-col items-center space-y-1 sm:space-y-1.5 w-full">
               {lines.map((line, idx) => (
                 <motion.p
                   key={`${currentLang}-${idx}`}
-                  initial={{ opacity: 0, y: 6 }}
+                  initial={{ opacity: 0, y: 4 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
-                    delay: isHero ? 0.2 + idx * 0.15 : 0.3 + idx * 0.4,
-                    duration: 0.7,
+                    delay: isHero ? 0.15 + idx * 0.12 : 0.2 + idx * 0.3,
+                    duration: 0.6,
                   }}
-                  className={`${fontClass} text-xs sm:text-sm tracking-[0.16em] sm:tracking-[0.22em] font-medium uppercase gold-foil-text drop-shadow-[0_1px_4px_rgba(0,0,0,0.6)]`}
+                  className={`${fontClass} font-medium uppercase gold-foil-text drop-shadow-[0_1px_3px_rgba(0,0,0,0.7)] text-center leading-snug whitespace-nowrap`}
+                  style={{
+                    fontSize: 'clamp(0.72rem, 3.4vw, 0.95rem)',
+                    letterSpacing: 'clamp(0.06em, 1.4vw, 0.18em)',
+                  }}
                 >
                   {line}
                 </motion.p>
               ))}
             </div>
 
-            {/* Ornamental Mandala / Paisley Gold Divider */}
+            {/* Ornamental Mandala / Paisley Gold Divider (Row 3) */}
             <motion.div
               initial={{ scaleX: 0, opacity: 0 }}
               animate={{ scaleX: 1, opacity: 1 }}
-              transition={{ delay: isHero ? 0.6 : 1.5, duration: 0.8 }}
-              className="flex items-center justify-center gap-2 mt-2 w-36 sm:w-48"
+              transition={{ delay: isHero ? 0.5 : 1.1, duration: 0.7 }}
+              className="flex items-center justify-center gap-2 mt-2 w-32 sm:w-44"
             >
               <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D8A85E] to-transparent opacity-80" />
-              <span className="text-[#D8A85E] text-xs font-serif opacity-90 select-none">✦ 卐 ✦</span>
+              <span className="text-[#D8A85E] text-[11px] sm:text-xs font-serif opacity-90 select-none">✦ 卐 ✦</span>
               <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#D8A85E] to-transparent opacity-80" />
             </motion.div>
           </div>

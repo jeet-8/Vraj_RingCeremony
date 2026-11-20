@@ -7,13 +7,20 @@ export default function CSSEnvelope({
   isOpening,
   onOpeningStart,
   onOpeningComplete,
-  onSkip,
 }) {
   const { t } = useTranslation();
   const [stage, setStage] = useState('idle'); // 'idle' | 'cracking' | 'opening' | 'revealed'
 
+  // If isOpening becomes true from parent, start opening sequence immediately
+  React.useEffect(() => {
+    if (isOpening && stage === 'idle') {
+      handleOpen();
+    }
+  }, [isOpening, stage]);
+
   const handleOpen = () => {
     if (stage !== 'idle') return;
+    console.log('[CSSEnvelope Debug] Open triggered');
     soundEngine.unlock();
     soundEngine.play();
     if (onOpeningStart) onOpeningStart();
@@ -31,36 +38,30 @@ export default function CSSEnvelope({
   };
 
   return (
-    <div className="relative w-full h-[100dvh] flex items-center justify-center bg-gradient-to-b from-[#1A0E17] via-[#2A1524] to-[#150912] overflow-hidden select-none px-4">
-      {/* Skip Button */}
-      <button
-        onClick={onSkip}
-        className="absolute top-4 right-4 z-40 px-3 py-1.5 rounded-full bg-[#24141E]/70 hover:bg-[#24141E] backdrop-blur-md border border-[#D8A85E]/30 text-xs font-serif tracking-widest text-[#DFBE95] hover:text-[#FFEDBA] transition-all shadow-md active:scale-95"
-      >
-        {t('opening.skip')} →
-      </button>
-
+    <div
+      onClick={handleOpen}
+      className="relative w-full h-full flex items-center justify-center bg-gradient-to-b from-[#1A0E17] via-[#2A1524] to-[#150912] overflow-hidden select-none px-4 cursor-pointer"
+    >
       {/* CSS Envelope Container */}
-      <div className="relative w-[320px] sm:w-[360px] h-[220px] sm:h-[245px] max-w-[90vw]">
+      <div className="relative w-[300px] sm:w-[350px] h-[200px] sm:h-[235px] max-w-[86vw]">
         {/* Envelope Base Pocket */}
         <div className="absolute inset-0 bg-[#D9AAB7] rounded-sm shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-[#E8C0CE] overflow-hidden">
-          {/* Subtle floral paper pattern */}
           <div className="absolute inset-0 opacity-15 bg-[radial-gradient(#5A2637_1px,transparent_1px)] [background-size:12px_12px]" />
           <div className="absolute inset-0 bg-gradient-to-tr from-[#C28E9E]/30 via-transparent to-[#FFE3EC]/40" />
         </div>
 
-        {/* Inside Invitation Card (glides up at stage 'opening') */}
+        {/* Inside Invitation Card */}
         <motion.div
           initial={{ y: 0, opacity: 0 }}
           animate={
             stage === 'opening'
-              ? { y: -160, opacity: 1, scale: 1.05 }
+              ? { y: -140, opacity: 1, scale: 1.05 }
               : stage === 'revealed'
-              ? { y: -220, opacity: 0, scale: 1.2 }
+              ? { y: -200, opacity: 0, scale: 1.2 }
               : { y: 0, opacity: 0 }
           }
           transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-x-3 top-2 h-[220px] sm:h-[240px] bg-[#FAF6F0] rounded-sm border-2 border-[#D8A85E] p-4 flex flex-col items-center justify-center text-center shadow-xl z-10"
+          className="absolute inset-x-3 top-2 h-[200px] sm:h-[230px] bg-[#FAF6F0] rounded-sm border-2 border-[#D8A85E] p-4 flex flex-col items-center justify-center text-center shadow-xl z-10"
         >
           <span className="text-[#D8A85E] text-xs font-serif">卐 Shree Ganeshay Namah 卐</span>
           <span className="text-[#8E5164] text-xs font-serif italic mt-1">Cordially invite you to celebrate</span>
@@ -154,7 +155,10 @@ export default function CSSEnvelope({
         <AnimatePresence>
           {stage === 'idle' && (
             <motion.div
-              onClick={handleOpen}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleOpen();
+              }}
               whileHover={{ scale: 1.08 }}
               whileTap={{ scale: 0.95 }}
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-[#731E35] via-[#4A1224] to-[#2B0A15] border-2 border-[#D8A85E] shadow-wax-seal flex flex-col items-center justify-center cursor-pointer z-40 animate-seal-pulse"
@@ -197,18 +201,21 @@ export default function CSSEnvelope({
       {/* Tap hint prompt */}
       {stage === 'idle' && (
         <div
-          onClick={handleOpen}
-          className="absolute bottom-16 sm:bottom-20 left-0 right-0 flex flex-col items-center justify-center pointer-events-auto cursor-pointer z-20 px-4"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleOpen();
+          }}
+          className="absolute bottom-12 sm:bottom-16 left-0 right-0 flex flex-col items-center justify-center pointer-events-auto cursor-pointer z-20 px-4"
         >
-          <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#24141E]/80 backdrop-blur-md border border-[#D8A85E]/40 animate-seal-pulse shadow-wax-seal">
-            <span className="text-[#D8A85E] text-base">✦</span>
-            <span className="font-serif text-sm tracking-[0.15em] text-[#FFEDBA] font-medium uppercase">
+          <div className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#24141E]/90 backdrop-blur-md border border-[#D8A85E]/50 animate-seal-pulse shadow-wax-seal">
+            <span className="text-[#D8A85E] text-sm">✦</span>
+            <span className="font-serif text-xs sm:text-sm tracking-[0.14em] text-[#FFEDBA] font-medium uppercase whitespace-nowrap">
               {t('opening.tapSeal')}
             </span>
-            <span className="text-[#D8A85E] text-base">✦</span>
+            <span className="text-[#D8A85E] text-sm">✦</span>
           </div>
-          <span className="text-[11px] tracking-widest text-[#E8B4B8]/70 mt-2 font-serif uppercase">
-            Tap the seal to open
+          <span className="text-[10px] sm:text-[11px] tracking-widest text-[#E8B4B8]/75 mt-1.5 font-serif uppercase">
+            Touch anywhere or tap the seal
           </span>
         </div>
       )}

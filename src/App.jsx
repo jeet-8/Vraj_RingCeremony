@@ -18,9 +18,9 @@ const EnvelopeScene = lazy(() => import('./components/3d/EnvelopeScene'));
 function LoadingInvitation() {
   const { t } = useTranslation();
   return (
-    <div className="w-full h-[100dvh] flex flex-col items-center justify-center bg-[#170E14] text-center px-4">
-      <div className="w-16 h-16 rounded-full border-2 border-t-[#D8A85E] border-r-transparent border-b-[#D8A85E]/30 border-l-transparent animate-spin mb-4" />
-      <p className="font-serif italic text-sm tracking-widest text-[#FFEDBA]">
+    <div className="w-full h-full flex flex-col items-center justify-center bg-[#170E14] text-center px-4">
+      <div className="w-12 h-12 rounded-full border-2 border-t-[#D8A85E] border-r-transparent border-b-[#D8A85E]/30 border-l-transparent animate-spin mb-3" />
+      <p className="font-serif italic text-xs tracking-widest text-[#FFEDBA]">
         {t('opening.preparing')}
       </p>
     </div>
@@ -28,6 +28,7 @@ function LoadingInvitation() {
 }
 
 export default function App() {
+  const { t } = useTranslation();
   const [viewState, setViewState] = useState('intro'); // 'intro' | 'invitation' | 'plain'
   const [isOpening, setIsOpening] = useState(false);
   const [tier, setTier] = useState(1); // 1 = full 3D, 2 = lite 3D, 3 = CSS envelope
@@ -58,10 +59,11 @@ export default function App() {
     }
   }, []);
 
-  // Performance watchdog: If FPS < 30 for 2s during intro, drop tier
+  // Performance watchdog: If FPS < 30 for 2s during idle intro, drop tier
   const lowFpsCountRef = useRef(0);
   useEffect(() => {
-    if (viewState !== 'intro' || tier === 3) return;
+    // Never drop tier while opening animation is already in progress
+    if (viewState !== 'intro' || isOpening || tier === 3) return;
 
     let lastTime = performance.now();
     let frameId;
@@ -89,20 +91,23 @@ export default function App() {
     return () => cancelAnimationFrame(frameId);
   }, [viewState, tier]);
 
-  // Handle Envelope Opening Start (Tap on Seal)
+  // Handle Envelope Opening Start (Tap on Seal or Ribbon)
   const handleOpeningStart = () => {
+    console.log('[App Debug] handleOpeningStart called');
     setIsOpening(true);
     soundEngine.unlock();
   };
 
   // Handle Envelope Opening Complete (GSAP timeline finish ~6s)
   const handleOpeningComplete = () => {
+    console.log('[App Debug] handleOpeningComplete called');
     setViewState('invitation');
     soundEngine.play();
   };
 
-  // Handle Skip
+  // Handle Skip (Always works, instant transition)
   const handleSkip = () => {
+    console.log('[App Debug] handleSkip called');
     soundEngine.unlock();
     soundEngine.play();
     setViewState('invitation');
@@ -120,69 +125,90 @@ export default function App() {
       {/* In-app Browser Notice Banner */}
       <InAppBrowserBanner />
 
-      {/* Global Language Toggle */}
-      <LanguageSelector />
-
       {/* Floating Music Control */}
       <MusicButton />
 
-      {/* VIEW STATE 1: INTRO (3D or CSS Envelope with Top Blessing Lines) */}
+      {/* VIEW STATE 1: INTRO (Stacked Layout: Header with Row 1 & Row 2 + 3D Envelope below in flex-1) */}
       {viewState === 'intro' && (
-        <div className="relative w-full h-[100dvh]">
-          {/* Top 3 Blessing Lines (fades out when opening starts) */}
-          <TopBlessingLines isOpening={isOpening} />
+        <div className="relative w-full h-[100dvh] flex flex-col overflow-hidden bg-[#170E14]">
+          {/* Header Block in normal document flow (Bug 1 Fix) */}
+          <header className="w-full flex-shrink-0 pt-safe px-3 sm:px-4 z-30 select-none pb-1">
+            <div className="w-full max-w-md mx-auto">
+              {/* Row 1: Language toggle on left, Skip intro on right */}
+              <div className="flex items-center justify-between py-1">
+                <LanguageSelector isFixed={false} />
 
-          {/* 3D Envelope with ErrorBoundary auto-falling back to Tier 3 */}
-          {tier <= 2 ? (
-            <ErrorBoundary
-              onError={() => setTier(3)}
-              fallback={
-                <CSSEnvelope
-                  isOpening={isOpening}
-                  onOpeningStart={handleOpeningStart}
-                  onOpeningComplete={handleOpeningComplete}
-                  onSkip={handleSkip}
-                />
-              }
-            >
-              <Suspense fallback={<LoadingInvitation />}>
-                <EnvelopeScene
-                  isOpening={isOpening}
-                  onOpeningStart={handleOpeningStart}
-                  onOpeningComplete={handleOpeningComplete}
-                  onSkip={handleSkip}
-                />
-              </Suspense>
-            </ErrorBoundary>
-          ) : (
-            <CSSEnvelope
-              isOpening={isOpening}
-              onOpeningStart={handleOpeningStart}
-              onOpeningComplete={handleOpeningComplete}
-              onSkip={handleSkip}
-            />
-          )}
+                <button
+                  onClick={handleSkip}
+                  className="px-2.5 py-1 rounded-full bg-[#24141E]/90 hover:bg-[#2F1A28] backdrop-blur-md border border-[#D8A85E]/40 text-[11px] sm:text-xs font-serif tracking-wider text-[#DFBE95] hover:text-[#FFEDBA] transition-all shadow-md active:scale-95 pointer-events-auto"
+                >
+                  {t('opening.skip')} →
+                </button>
+              </div>
+
+              {/* Row 2 & 3: Three blessing lines and ornamental divider in normal flow */}
+              <div className="mt-3">
+                <TopBlessingLines isOpening={isOpening} />
+              </div>
+            </div>
+          </header>
+
+          {/* Envelope 3D Canvas / CSS Scene takes remaining height (flex: 1) (Bug 1 & Bug 3) */}
+          <div className="relative flex-1 w-full overflow-hidden">
+            {tier <= 2 ? (
+              <ErrorBoundary
+                onError={() => setTier(3)}
+                fallback={
+                  <CSSEnvelope
+                    isOpening={isOpening}
+                    onOpeningStart={handleOpeningStart}
+                    onOpeningComplete={handleOpeningComplete}
+                  />
+                }
+              >
+                <Suspense fallback={<LoadingInvitation />}>
+                  <EnvelopeScene
+                    isOpening={isOpening}
+                    onOpeningStart={handleOpeningStart}
+                    onOpeningComplete={handleOpeningComplete}
+                  />
+                </Suspense>
+              </ErrorBoundary>
+            ) : (
+              <CSSEnvelope
+                isOpening={isOpening}
+                onOpeningStart={handleOpeningStart}
+                onOpeningComplete={handleOpeningComplete}
+              />
+            )}
+          </div>
         </div>
       )}
 
       {/* VIEW STATE 2: SCROLLABLE LUXURY INVITATION */}
       {viewState === 'invitation' && (
-        <ScrollableInvitation
-          guestName={guestName}
-          onReopen={handleReopen}
-          onSwitchToSimple={() => setViewState('plain')}
-        />
+        <>
+          <LanguageSelector isFixed={true} />
+          <ScrollableInvitation
+            guestName={guestName}
+            onReopen={handleReopen}
+            onSwitchToSimple={() => setViewState('plain')}
+          />
+        </>
       )}
 
       {/* VIEW STATE 3: PLAIN 2D BACKUP INVITATION */}
       {viewState === 'plain' && (
-        <Plain2DInvitation
-          guestName={guestName}
-          onSwitchTo3D={() => {
-            setViewState('intro');
-            setIsOpening(false);
-          }}
-        />
+        <>
+          <LanguageSelector isFixed={true} />
+          <Plain2DInvitation
+            guestName={guestName}
+            onSwitchTo3D={() => {
+              setViewState('intro');
+              setIsOpening(false);
+            }}
+          />
+        </>
       )}
     </div>
   );
