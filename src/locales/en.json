@@ -1,0 +1,79 @@
+{
+  "blessings": [
+    "Shree Khimaj Mata Namah",
+    "Shree Ganeshay Namah",
+    "Shree Kheteshwar Namah"
+  ],
+  "opening": {
+    "tapSeal": "Tap the seal to open",
+    "skip": "Skip intro",
+    "preparing": "Preparing your royal invitation..."
+  },
+  "hero": {
+    "elderBlessing": "With the divine blessings of our beloved elders",
+    "invite": "cordially invite you to celebrate the joyous Ring Ceremony of",
+    "groomParentsLabel": "Son of",
+    "brideParentsLabel": "Daughter of",
+    "defaultGreeting": "Dear Family & Friends,",
+    "guestGreetingPrefix": "Dear",
+    "guestGreetingSuffix": "and family,"
+  },
+  "countdown": {
+    "title": "Counting Down to the Auspicious Moment",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Mins",
+    "seconds": "Secs",
+    "arrived": "The Celebration Begins Today!"
+  },
+  "photo": {
+    "title": "A Glimpse of Love",
+    "subtitle": "Vraj & Jiya (Pooja)"
+  },
+  "venue": {
+    "title": "Celebration Venue",
+    "openMaps": "Open in Google Maps",
+    "viewDirection": "Get Directions",
+    "dateTitle": "Date & Time",
+    "venueTitle": "Location"
+  },
+  "schedule": {
+    "title": "Auspicious Schedule",
+    "subtitle": "Flow of the Evening"
+  },
+  "dressCode": {
+    "title": "Dress Code & Palette",
+    "subtitle": "Royal Traditional & Pastel Elegance"
+  },
+  "contacts": {
+    "title": "Family Contacts & RSVP",
+    "subtitle": "Please honor us with your gracious presence",
+    "call": "Call",
+    "whatsapp": "WhatsApp"
+  },
+  "rsvp": {
+    "title": "RSVP",
+    "confirmWhatsapp": "Confirm on WhatsApp",
+    "callHost": "Call Host",
+    "whatsappMessage": "Hi, this is {{guestName}}. We will be attending the Ring Ceremony of Vraj & Jiya on 6 December 2026."
+  },
+  "blessingsNote": {
+    "quote": "Your presence, love, and warm blessings are the most cherished gift for our new beginning."
+  },
+  "footer": {
+    "addToCalendar": "Add to Calendar",
+    "googleCalendar": "Google Calendar",
+    "downloadIcs": "Download .ics",
+    "share": "Share Invitation",
+    "copied": "Link copied to clipboard!",
+    "reopen": "Reopen Envelope",
+    "musicPlaying": "Music Playing",
+    "musicMuted": "Music Muted",
+    "madeWithLove": "Celebrated with love & blessings",
+    "viewSimple": "View Simple Version"
+  },
+  "browserBanner": {
+    "text": "For the best interactive 3D experience, open in Chrome or Safari.",
+    "copyLink": "Copy Link"
+  }
+}

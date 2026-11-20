@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* Custom Gold Foil Text and Shimmer */
+.gold-foil-text {
+  background: linear-gradient(135deg, #FFEDBA 0%, #D8A85E 40%, #FFF3D6 60%, #B88334 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 15px rgba(216, 168, 94, 0.25);
+}
+
+.gold-foil-border {
+  border-image: linear-gradient(135deg, #FFEDBA 0%, #D8A85E 50%, #B88334 100%) 1;
+}
+
+/* Luxury Paper Relief & Grain */
+.paper-emboss {
+  background-color: #FAF6F0;
+  box-shadow: 
+    inset 1px 1px 2px rgba(255, 255, 255, 0.8),
+    inset -1px -1px 2px rgba(0, 0, 0, 0.05),
+    0 10px 30px -5px rgba(36, 20, 30, 0.2),
+    0 0 0 1px rgba(216, 168, 94, 0.25);
+}
+
+.paper-card {
+  background: radial-gradient(circle at 50% 0%, #FAF5EE 0%, #F5EDE2 100%);
+  position: relative;
+}
+
+/* Gold Ornamental Divider */
+.gold-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+}
+.gold-divider::before,
+.gold-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #D8A85E, transparent);
+}
+
+/* Smooth Scrolling Setup */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Custom Scrollbar for luxury feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #170E14;
+}
+::-webkit-scrollbar-thumb {
+  background: #D8A85E;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FFEDBA;
+}
+
+/* Safe Area Inset Support */
+.pt-safe {
+  padding-top: max(1rem, var(--safe-top));
+}
+.pb-safe {
+  padding-bottom: max(1rem, var(--safe-bottom));
+}
+
+/* Pulse animation for seal hint */
+@keyframes sealPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.9;
+    box-shadow: 0 0 0 0 rgba(216, 168, 94, 0.5);
+  }
+  50% {
+    transform: scale(1.04);
+    opacity: 1;
+    box-shadow: 0 0 20px 4px rgba(216, 168, 94, 0.8);
+  }
+}
+.animate-seal-pulse {
+  animation: sealPulse 2.4s ease-in-out infinite;
+}
