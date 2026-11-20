@@ -5,24 +5,25 @@ import { useTranslation } from 'react-i18next';
 import EnvelopeMesh from './EnvelopeMesh';
 import soundEngine from '../../utils/proceduralAudio';
 
-// Sweeping Specular Sheen Light
+// Sweeping Specular Sheen Light (linear sweep across envelope paper, NOT orbiting in a circle around the seal)
 function SweepingSheenLight({ isOpening }) {
   const lightRef = useRef();
 
   useFrame(({ clock }) => {
     if (lightRef.current && !isOpening) {
-      const t = clock.getElapsedTime() * 0.6;
-      lightRef.current.position.x = Math.sin(t) * 3.2;
-      lightRef.current.position.y = Math.cos(t * 0.8) * 2.0;
+      const t = clock.getElapsedTime() * 0.45;
+      lightRef.current.position.x = Math.sin(t) * 4.2;
+      lightRef.current.position.y = 1.8;
+      lightRef.current.position.z = 3.2;
     }
   });
 
   return (
     <pointLight
       ref={lightRef}
-      position={[0, 0, 3.2]}
-      intensity={0.75}
-      distance={7.5}
+      position={[0, 1.8, 3.2]}
+      intensity={0.6}
+      distance={8.0}
       color="#FFF4DC"
     />
   );

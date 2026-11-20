@@ -725,32 +725,35 @@ export default function EnvelopeMesh({
 
           {/* Breathing Pulse Wax Seal Body */}
           <group ref={sealPulseRef}>
-            {/* Outer melted wax cylinder base with bevel */}
+            {/* Outer melted wax cylinder base (openEnded with no top cap to prevent any internal triangles or z-fighting) */}
             <mesh
               material={waxMaterial}
-              position={[0, 0, 0.018]}
+              position={[0, 0, 0.012]}
               rotation={[Math.PI / 2, 0, 0]}
             >
-              <cylinderGeometry args={[sealR, sealR * 1.05, 0.036, 48]} />
+              <cylinderGeometry args={[sealR, sealR * 1.05, 0.024, 64, 1, true]} />
             </mesh>
 
             {/* Thick raised beveled wax rim */}
             <mesh
               material={waxMaterial}
-              position={[0, 0, 0.032]}
+              position={[0, 0, 0.028]}
             >
-              <torusGeometry args={[sealR * 0.90, 0.032, 16, 48]} />
+              <torusGeometry args={[sealR * 0.90, 0.028, 24, 64]} />
             </mesh>
 
-            {/* Embossed Monogram Face ("V & P" Monogram) */}
+            {/* Embossed Monogram Face ("V & P" Monogram - clean, razor-sharp, zero z-fighting) */}
             <mesh
-              position={[0, 0, 0.036]}
+              position={[0, 0, 0.038]}
             >
-              <circleGeometry args={[sealR * 0.88, 48]} />
+              <circleGeometry args={[sealR * 0.88, 64]} />
               <meshStandardMaterial
                 map={sealMonogramTex}
-                roughness={0.22}
+                roughness={0.25}
                 metalness={0.15}
+                polygonOffset={true}
+                polygonOffsetFactor={-2}
+                polygonOffsetUnits={-2}
               />
             </mesh>
           </group>

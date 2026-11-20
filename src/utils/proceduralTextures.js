@@ -316,30 +316,23 @@ export function drawWaxSealFace(canvas, monogram = eventConfig?.monogram || 'V &
   ctx.arc(cx, cy, R * 0.94, 0, Math.PI * 2);
   ctx.stroke();
 
-  // 3. Simplified decorative gold border (clean thin gold ring + subtle accent dots)
-  // Thin elegant gold ring
+  // 3. Simplified decorative gold border (clean, smooth dual thin gold rings - NO spokes, beads, or wheel)
+  // Outer thin gold ring
   ctx.strokeStyle = '#D8A85E';
-  ctx.lineWidth = 3.5;
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
-  ctx.shadowBlur = 4;
-  ctx.shadowOffsetY = 2;
+  ctx.lineWidth = 3;
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+  ctx.shadowBlur = 3;
+  ctx.shadowOffsetY = 1.5;
   ctx.beginPath();
   ctx.arc(cx, cy, R * 0.88, 0, Math.PI * 2);
   ctx.stroke();
 
-  // 16 delicate gold accent beads along the ring
-  const beadCount = 16;
-  const beadR = R * 0.88;
-  ctx.fillStyle = '#FFEDBA';
-  ctx.shadowBlur = 2;
-  for (let i = 0; i < beadCount; i++) {
-    const angle = (i * 2 * Math.PI) / beadCount;
-    const bx = cx + Math.cos(angle) * beadR;
-    const by = cy + Math.sin(angle) * beadR;
-    ctx.beginPath();
-    ctx.arc(bx, by, 4, 0, Math.PI * 2);
-    ctx.fill();
-  }
+  // Inner delicate hairline gold ring
+  ctx.strokeStyle = '#F7CC7D';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(cx, cy, R * 0.85, 0, Math.PI * 2);
+  ctx.stroke();
 
   // Reset shadow for clean monogram rendering
   ctx.shadowColor = 'transparent';
