@@ -6,6 +6,7 @@ import {
   createEmbossedLeafNormalTexture,
   createSilkLiningNormalTexture,
   createWaxSealMonogramTexture,
+  drawWaxSealFace,
 } from '../../utils/proceduralTextures';
 import soundEngine from '../../utils/proceduralAudio';
 import eventConfig from '../../../event.config.js';
@@ -16,7 +17,7 @@ export default function EnvelopeMesh({
   onOpeningComplete,
   tilt,
 }) {
-  const { camera, viewport } = useThree();
+  const { camera, viewport, gl } = useThree();
 
   // Root references
   const envelopeGroupRef = useRef();
@@ -30,7 +31,6 @@ export default function EnvelopeMesh({
   const rightTailRef = useRef();
   const sealGroupRef = useRef();
   const sealPulseRef = useRef();
-  const glowRingRef = useRef();
 
   const hasStartedAnimationRef = useRef(false);
   const onOpeningCompleteRef = useRef(onOpeningComplete);
@@ -43,7 +43,34 @@ export default function EnvelopeMesh({
   // Procedural Textures
   const leafNormalMap = useMemo(() => createEmbossedLeafNormalTexture(1024), []);
   const silkNormalMap = useMemo(() => createSilkLiningNormalTexture(512), []);
-  const sealMonogramTex = useMemo(() => createWaxSealMonogramTexture(1024, eventConfig.monogram || eventConfig.couple?.monogram || 'V & P'), []);
+  const sealMonogramTex = useMemo(() => createWaxSealMonogramTexture(1024, eventConfig.monogram || 'V & P'), []);
+
+  // Renderer maximum anisotropy for razor-sharp texture filtering
+  useEffect(() => {
+    if (gl && sealMonogramTex) {
+      try {
+        const maxAniso = gl.capabilities?.getMaxAnisotropy ? gl.capabilities.getMaxAnisotropy() : 16;
+        sealMonogramTex.anisotropy = maxAniso;
+        sealMonogramTex.needsUpdate = true;
+      } catch (e) {}
+    }
+  }, [gl, sealMonogramTex]);
+
+  // Redraw seal face texture once custom Google Fonts are fully loaded in memory
+  useEffect(() => {
+    if (typeof document !== 'undefined' && document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(() => {
+        if (sealMonogramTex && sealMonogramTex.userData?.canvas) {
+          drawWaxSealFace(
+            sealMonogramTex.userData.canvas,
+            sealMonogramTex.userData.monogram,
+            sealMonogramTex.userData.dateText
+          );
+          sealMonogramTex.needsUpdate = true;
+        }
+      });
+    }
+  }, [sealMonogramTex]);
 
   // 1. Embossed Mauve-Pink Paper Material
   const paperMaterial = useMemo(() => {
@@ -244,8 +271,8 @@ export default function EnvelopeMesh({
     });
   }, []);
 
-  // 6. Wax Seal Radius
-  const sealR = useMemo(() => Math.min(envW * 0.16, 0.36), [envW]);
+  // 6. Wax Seal Radius (~38% of screen width on mobile, max 220px on desktop)
+  const sealR = useMemo(() => Math.min(envW * 0.19, 0.44), [envW]);
 
   // 7. Flap Geometries: Flaps meet seamlessly to completely enclose card & bow!
   const flapGeometries = useMemo(() => {
@@ -308,9 +335,6 @@ export default function EnvelopeMesh({
       if (sealPulseRef.current) {
         const pulse = 1.0 + Math.sin(time * 2.2) * 0.02;
         sealPulseRef.current.scale.set(pulse, pulse, pulse);
-      }
-      if (glowRingRef.current) {
-        glowRingRef.current.material.opacity = 0.25 + Math.sin(time * 2.2) * 0.15;
       }
 
       // Parallax tilt (smoothed, max 8 deg ~ 0.14 rad)
@@ -694,21 +718,9 @@ export default function EnvelopeMesh({
           onClick={(e) => handleTriggerOpen('seal', e)}
         >
           {/* Subtle contact shadow behind seal */}
-          <mesh position={[0, -0.015, -0.005]}>
-            <circleGeometry args={[sealR * 1.15, 36]} />
-            <meshBasicMaterial color="#000000" transparent opacity={0.35} />
-          </mesh>
-
-          {/* Idle Glow Ring */}
-          <mesh ref={glowRingRef} position={[0, 0, 0.002]}>
-            <ringGeometry args={[sealR * 1.02, sealR * 1.25, 36]} />
-            <meshBasicMaterial
-              color="#F4D086"
-              transparent
-              opacity={0.3}
-              blending={THREE.AdditiveBlending}
-              side={THREE.DoubleSide}
-            />
+          <mesh position={[0, -0.012, -0.003]}>
+            <circleGeometry args={[sealR * 1.10, 48]} />
+            <meshBasicMaterial color="#140208" transparent opacity={0.35} />
           </mesh>
 
           {/* Breathing Pulse Wax Seal Body */}

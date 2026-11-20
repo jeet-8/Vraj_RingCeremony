@@ -3,6 +3,26 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import eventConfig from '../../../event.config.js';
 
+// Eagerly resolve any photos located in src/assets/photos via Vite
+const bundledPhotos = import.meta.glob('/src/assets/photos/*', { eager: true, import: 'default' });
+
+function resolvePhotoSrc(src) {
+  if (!src) return '/photos/couple.jpg';
+  if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:')) {
+    return src;
+  }
+  if (bundledPhotos[src]) {
+    return bundledPhotos[src];
+  }
+  const cleanName = src.split('/').pop();
+  for (const [path, url] of Object.entries(bundledPhotos)) {
+    if (path.endsWith(cleanName)) {
+      return url;
+    }
+  }
+  return src;
+}
+
 export default function PhotoGalleryCard() {
   const { t, i18n } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -19,6 +39,7 @@ export default function PhotoGalleryCard() {
   };
 
   const currentPhoto = photos[currentIndex];
+  const currentPhotoSrc = resolvePhotoSrc(currentPhoto.src);
 
   const currentLang = i18n.language || 'en';
   const fontClass = currentLang === 'hi' 
@@ -41,11 +62,17 @@ export default function PhotoGalleryCard() {
 
       {/* Arched Photo Frame */}
       <div className="relative mx-auto w-full max-w-[320px] aspect-[4/5] rounded-t-[140px] rounded-b-xl overflow-hidden border-4 border-[#D8A85E]/60 shadow-2xl bg-[#1A0E17] group cursor-pointer"
-        onClick={() => setSelectedPhoto(currentPhoto)}
+        onClick={() => setSelectedPhoto({ ...currentPhoto, resolvedSrc: currentPhotoSrc })}
       >
         <img
-          src={currentPhoto.src}
+          src={currentPhotoSrc}
           alt={currentPhoto.alt}
+          onError={(e) => {
+            if (!e.currentTarget.dataset.retried) {
+              e.currentTarget.dataset.retried = 'true';
+              e.currentTarget.src = '/photos/couple.jpg';
+            }
+          }}
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
 
@@ -119,8 +146,14 @@ export default function PhotoGalleryCard() {
               onClick={(e) => e.stopPropagation()}
             >
               <img
-                src={selectedPhoto.src}
+                src={selectedPhoto.resolvedSrc || resolvePhotoSrc(selectedPhoto.src)}
                 alt={selectedPhoto.alt}
+                onError={(e) => {
+                  if (!e.currentTarget.dataset.retried) {
+                    e.currentTarget.dataset.retried = 'true';
+                    e.currentTarget.src = '/photos/couple.jpg';
+                  }
+                }}
                 className="w-full max-h-[75vh] object-contain bg-[#170E14]"
               />
               <div className="p-4 text-center bg-[#24141E] border-t border-[#D8A85E]/30">

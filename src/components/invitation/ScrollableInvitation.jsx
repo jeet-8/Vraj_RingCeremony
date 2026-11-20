@@ -55,11 +55,11 @@ export default function ScrollableInvitation({ guestName, onReopen }) {
         {/* 3. Photo Gallery with Arched Frame */}
         <PhotoGalleryCard />
 
-        {/* 4. Venue & Maps */}
-        <VenueCard />
-
-        {/* 5. Schedule Timeline */}
+        {/* 4. Auspicious Schedule (Second Last) */}
         <ScheduleCard />
+
+        {/* 5. Celebration Venue (Added at Last) */}
+        <VenueCard />
 
         {/* 6. Footer (Reopen & Share) */}
         <FooterCard onReopen={onReopen} />

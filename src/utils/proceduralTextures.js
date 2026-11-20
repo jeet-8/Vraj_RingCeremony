@@ -274,96 +274,236 @@ export function createSilkLiningNormalTexture(size = 512) {
 }
 
 /**
- * Creates high-resolution procedural wax seal stamp face texture with monogram
+ * Draws the high-resolution wax seal face on a 2D canvas.
+ * Can be called repeatedly (e.g. after document.fonts.ready resolves).
  */
-export function createWaxSealMonogramTexture(size = 1024, monogram = eventConfig?.monogram || eventConfig?.couple?.monogram || 'V & P') {
-  const canvas = document.createElement('canvas');
-  canvas.width = size;
-  canvas.height = size;
+export function drawWaxSealFace(canvas, monogram = eventConfig?.monogram || 'V & P', dateText = null) {
+  const size = canvas.width;
   const ctx = canvas.getContext('2d');
+  const cx = size / 2;
+  const cy = size / 2;
+  const R = size * 0.44; // Seal face disc radius (~450px on 1024x1024)
 
-  // Background deep royal burgundy / wine wax
-  ctx.fillStyle = '#5A1428';
-  ctx.fillRect(0, 0, size, size);
+  // Config-driven date string: "DD . MM . YYYY" (e.g. "06 . 12 . 2026")
+  if (!dateText) {
+    const day = String(eventConfig?.dateTime?.targetDay || 6).padStart(2, '0');
+    const month = String(eventConfig?.dateTime?.targetMonth || 12).padStart(2, '0');
+    const year = String(eventConfig?.dateTime?.targetYear || 2026);
+    dateText = `${day} . ${month} . ${year}`;
+  }
 
-  // Subtle radial gradient for wax dome depth
-  const domeGrad = ctx.createRadialGradient(
-    size * 0.48, size * 0.45, size * 0.05,
-    size * 0.50, size * 0.50, size * 0.48
+  ctx.clearRect(0, 0, size, size);
+
+  // 1. Deep royal wine / burgundy wax dome background with rich radial depth
+  const waxGrad = ctx.createRadialGradient(
+    cx - R * 0.1, cy - R * 0.12, R * 0.05,
+    cx, cy, R * 1.05
   );
-  domeGrad.addColorStop(0, '#751E36');
-  domeGrad.addColorStop(0.7, '#521425');
-  domeGrad.addColorStop(1, '#330814');
-  ctx.fillStyle = domeGrad;
-  ctx.fillRect(0, 0, size, size);
+  waxGrad.addColorStop(0, '#7A1C36');    // Warm top-left highlight
+  waxGrad.addColorStop(0.35, '#561326'); // Rich royal burgundy wine
+  waxGrad.addColorStop(0.75, '#3C0B1A'); // Deep wax body
+  waxGrad.addColorStop(1, '#24050F');    // Dark edge rim
 
-  // Outer beveled gold ring
-  ctx.strokeStyle = '#F2C169';
-  ctx.lineWidth = 16;
+  ctx.fillStyle = waxGrad;
   ctx.beginPath();
-  ctx.arc(size / 2, size / 2, size * 0.42, 0, Math.PI * 2);
+  ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 2. Subtle recessed inner depression ring for pressed relief feel
+  ctx.strokeStyle = 'rgba(20, 3, 8, 0.55)';
+  ctx.lineWidth = 10;
+  ctx.beginPath();
+  ctx.arc(cx, cy, R * 0.94, 0, Math.PI * 2);
   ctx.stroke();
 
-  // Dotted inner gold ring
-  const beadCount = 36;
-  const beadRadius = size * 0.37;
+  // 3. Simplified decorative gold border (clean thin gold ring + subtle accent dots)
+  // Thin elegant gold ring
+  ctx.strokeStyle = '#D8A85E';
+  ctx.lineWidth = 3.5;
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.65)';
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetY = 2;
+  ctx.beginPath();
+  ctx.arc(cx, cy, R * 0.88, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // 16 delicate gold accent beads along the ring
+  const beadCount = 16;
+  const beadR = R * 0.88;
   ctx.fillStyle = '#FFEDBA';
+  ctx.shadowBlur = 2;
   for (let i = 0; i < beadCount; i++) {
     const angle = (i * 2 * Math.PI) / beadCount;
-    const bx = size / 2 + Math.cos(angle) * beadRadius;
-    const by = size / 2 + Math.sin(angle) * beadRadius;
+    const bx = cx + Math.cos(angle) * beadR;
+    const by = cy + Math.sin(angle) * beadR;
     ctx.beginPath();
-    ctx.arc(bx, by, 6, 0, Math.PI * 2);
+    ctx.arc(bx, by, 4, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  // Inner thin gold ring
-  ctx.strokeStyle = '#D8A85E';
-  ctx.lineWidth = 4;
-  ctx.beginPath();
-  ctx.arc(size / 2, size / 2, size * 0.33, 0, Math.PI * 2);
-  ctx.stroke();
-
-  // Top Auspicious Symbol "卐"
-  ctx.font = 'bold 44px "Cinzel", Georgia, serif';
-  ctx.fillStyle = '#FFEDBA';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText('卐', size / 2, size * 0.25);
-
-  // Monogram in large bold serif with champagne-gold foil luster
-  ctx.font = 'bold 155px "Cinzel", "Cormorant Garamond", Georgia, serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-
-  // Gold foil gradient
-  const goldGrad = ctx.createLinearGradient(0, size * 0.32, 0, size * 0.65);
-  goldGrad.addColorStop(0, '#FFFFFF');
-  goldGrad.addColorStop(0.2, '#FFF1CC');
-  goldGrad.addColorStop(0.5, '#F5C26B');
-  goldGrad.addColorStop(0.8, '#D89E3E');
-  goldGrad.addColorStop(1, '#94621A');
-
-  ctx.fillStyle = goldGrad;
-  ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-  ctx.shadowOffsetX = 3;
-  ctx.shadowOffsetY = 4;
-  ctx.shadowBlur = 8;
-  ctx.fillText(monogram, size / 2, size * 0.49);
-
-  // Date banner underneath
+  // Reset shadow for clean monogram rendering
+  ctx.shadowColor = 'transparent';
   ctx.shadowBlur = 0;
   ctx.shadowOffsetX = 0;
   ctx.shadowOffsetY = 0;
-  ctx.font = '600 36px "Cinzel", Georgia, serif';
-  ctx.fillStyle = '#FFEDBA';
-  ctx.fillText('✦ 06.12.2026 ✦', size / 2, size * 0.68);
+
+  // 4. Large Bold Monogram (45-50% of inner seal diameter, centered slightly above middle)
+  const monoY = cy - 35; // Positioned slightly above the middle
+
+  // Parse initials and ampersand
+  let part1 = 'V';
+  let amp = '&';
+  let part2 = 'P';
+  if (typeof monogram === 'string' && monogram.includes('&')) {
+    const parts = monogram.split('&');
+    part1 = parts[0].trim();
+    part2 = parts[1].trim();
+  } else if (typeof monogram === 'string') {
+    part1 = monogram;
+    amp = '';
+    part2 = '';
+  }
+
+  // Letter sizing: large bold serif, '&' ~70% size in italic/script
+  const letterFontSize = 230; // Bold serif display
+  const ampFontSize = 160;    // ~70% size in italic script
+  const letterFont = `bold ${letterFontSize}px "Cinzel", "Cormorant Garamond", Georgia, serif`;
+  const ampFont = `italic 600 ${ampFontSize}px "Great Vibes", "Cormorant Garamond", cursive`;
+
+  // Measure exact widths
+  ctx.font = letterFont;
+  const w1 = ctx.measureText(part1).width;
+  ctx.font = ampFont;
+  const wAmp = amp ? ctx.measureText(amp).width : 0;
+  ctx.font = letterFont;
+  const w2 = part2 ? ctx.measureText(part2).width : 0;
+
+  const gap = 16;
+  const totalW = amp ? (w1 + gap + wAmp + gap + w2) : w1;
+  const startX = cx - (totalW / 2);
+
+  // Champagne-gold foil vertical gradient
+  const goldGrad = ctx.createLinearGradient(0, monoY - 120, 0, monoY + 90);
+  goldGrad.addColorStop(0, '#FFFFFF');
+  goldGrad.addColorStop(0.18, '#FFF4D6');
+  goldGrad.addColorStop(0.45, '#F5C774');
+  goldGrad.addColorStop(0.75, '#D69E45');
+  goldGrad.addColorStop(1, '#94621A');
+
+  // Draw Letter 1 (e.g. "V")
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+  ctx.shadowOffsetX = 2.5;
+  ctx.shadowOffsetY = 5;
+  ctx.shadowBlur = 8;
+  ctx.fillStyle = goldGrad;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'middle';
+
+  ctx.font = letterFont;
+  ctx.fillText(part1, startX, monoY);
+
+  // Draw Ampersand (e.g. "&")
+  if (amp) {
+    const ampX = startX + w1 + gap;
+    ctx.font = ampFont;
+    ctx.fillText(amp, ampX, monoY + 10);
+  }
+
+  // Draw Letter 2 (e.g. "P")
+  if (part2) {
+    const p2X = startX + w1 + gap + wAmp + gap;
+    ctx.font = letterFont;
+    ctx.fillText(part2, p2X, monoY);
+  }
+
+  // Reset shadow
+  ctx.shadowColor = 'transparent';
+  ctx.shadowBlur = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+
+  // 5. Decorative divider line with diamond between monogram and date
+  const divY = cy + 105;
+  const divGrad = ctx.createLinearGradient(cx - 130, 0, cx + 130, 0);
+  divGrad.addColorStop(0, 'rgba(216, 168, 94, 0)');
+  divGrad.addColorStop(0.25, '#D8A85E');
+  divGrad.addColorStop(0.5, '#FFF2D1');
+  divGrad.addColorStop(0.75, '#D8A85E');
+  divGrad.addColorStop(1, 'rgba(216, 168, 94, 0)');
+
+  // Left wing
+  ctx.strokeStyle = divGrad;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(cx - 125, divY);
+  ctx.lineTo(cx - 18, divY);
+  ctx.stroke();
+
+  // Center sparkling diamond
+  ctx.fillStyle = '#FFF5D6';
+  ctx.beginPath();
+  ctx.moveTo(cx, divY - 6.5);
+  ctx.lineTo(cx + 7, divY);
+  ctx.lineTo(cx, divY + 6.5);
+  ctx.lineTo(cx - 7, divY);
+  ctx.closePath();
+  ctx.fill();
+
+  // Right wing
+  ctx.beginPath();
+  ctx.moveTo(cx + 18, divY);
+  ctx.lineTo(cx + 125, divY);
+  ctx.stroke();
+
+  // 6. Highly Readable Date ("06 . 12 . 2026")
+  // Size: at least 9% of seal diameter (~84px on ~900px inner diameter)
+  const dateY = cy + 195;
+  const dateFontSize = 84;
+  ctx.font = `700 ${dateFontSize}px "Cinzel", "Cormorant Garamond", Georgia, serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  if ('letterSpacing' in ctx) {
+    ctx.letterSpacing = '0.12em';
+  }
+
+  // Thin dark outline for crisp contrast against wine wax
+  ctx.strokeStyle = 'rgba(20, 3, 8, 0.95)';
+  ctx.lineWidth = 7;
+  ctx.lineJoin = 'round';
+  ctx.strokeText(dateText, cx, dateY);
+
+  // Bright champagne-gold fill
+  const dateGrad = ctx.createLinearGradient(0, dateY - 40, 0, dateY + 40);
+  dateGrad.addColorStop(0, '#FFFFFF');
+  dateGrad.addColorStop(0.3, '#FFF4D6');
+  dateGrad.addColorStop(0.7, '#F7CC7D');
+  dateGrad.addColorStop(1, '#E0A343');
+
+  ctx.fillStyle = dateGrad;
+  ctx.fillText(dateText, cx, dateY);
+}
+
+/**
+ * Creates high-resolution procedural wax seal stamp face texture with monogram
+ */
+export function createWaxSealMonogramTexture(size = 1024, monogram = eventConfig?.monogram || 'V & P', dateText = null) {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+
+  drawWaxSealFace(canvas, monogram, dateText);
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.colorSpace = THREE.SRGBColorSpace;
   texture.generateMipmaps = true;
   texture.minFilter = THREE.LinearMipmapLinearFilter;
   texture.magFilter = THREE.LinearFilter;
+  texture.anisotropy = 16;
   texture.needsUpdate = true;
+
+  // Store metadata on texture for asynchronous redraw when fonts load
+  texture.userData = { canvas, monogram, dateText };
+
   return texture;
 }

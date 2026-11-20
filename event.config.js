@@ -143,11 +143,10 @@ export const eventConfig = {
   photos: [
     {
       id: 1,
-      src: "/src/assets/photos/WhatsApp Image 2026-11-20 at 21.20.16.jpeg",
+      src: "/photos/couple.jpg",
       alt: "Vraj & Pooja (Jiya) - Engagement Portrait",
       caption: "Two souls, one beautiful journey begins",
     },
-   
   ],
 
   // SEO & Social Sharing

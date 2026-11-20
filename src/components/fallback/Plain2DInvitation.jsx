@@ -29,8 +29,8 @@ export default function Plain2DInvitation({ guestName, onSwitchTo3D }) {
         <HeroCard guestName={guestName} />
         <CountdownCard />
         <PhotoGalleryCard />
-        <VenueCard />
         <ScheduleCard />
+        <VenueCard />
         <FooterCard onReopen={onSwitchTo3D} />
       </main>
     </div>
