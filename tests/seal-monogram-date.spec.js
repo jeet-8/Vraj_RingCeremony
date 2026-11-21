@@ -22,7 +22,7 @@ test.describe('Wax Seal Monogram & Date Verification', () => {
     await page.screenshot({ path: shotPath });
 
     // Verify tap hint or blessing lines are present and not overlapping
-    const tapHint = page.getByRole('button', { name: /tap to open/i });
+    const tapHint = page.getByRole('button', { name: /tap the seal to open/i });
     await expect(tapHint).toBeVisible();
 
     await context.close();

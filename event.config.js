@@ -1,3 +1,5 @@
+import bgMusic from "./src/assets/music/background-music.mp3";
+
 /**
  * EVENT CONFIGURATION
  * All event details for Vraj & Pooja's Ring Ceremony.
@@ -5,6 +7,9 @@
  */
 
 export const eventConfig = {
+  // Background Music
+  music: bgMusic,
+
   // Monogram & Title
   monogram: "V & P",
   monogramTitle: "Vraj & Pooja",
@@ -39,17 +44,17 @@ export const eventConfig = {
   blessings: {
     en: [
       "Shree Ganeshay Namah",
-      "Shree Khimaj Mata Namah",
+      "Shree Khimaj Matay Namah",
       "Shree Kheteshwaray Namah",
     ],
     hi: [
       "श्री गणेशाय नमः",
-      "श्री खिमज माता नमः",
+      "श्री खिमज माताय नमः",
       "श्री खेतेश्वराय नमः",
     ],
     gu: [
       "શ્રી ગણેશાય નમઃ",
-      "શ્રી ખીમજ માતા નમઃ",
+      "શ્રી ખીમજ માતાય નમઃ",
       "શ્રી ખેતેશ્વરાય નમઃ",
     ],
   },
@@ -138,7 +143,7 @@ export const eventConfig = {
   
   // Audio configuration
   audio: {
-    src: "/src/assets/music/music.mp3",
+    src: bgMusic,
     fallbackSynthName: "Soft Shehnai Raag Melody",
     defaultMuted: true,
   },
@@ -147,9 +152,21 @@ export const eventConfig = {
   photos: [
     {
       id: 1,
-      src: "/photos/couple.jpg",
+      src: "/photos/photo-1.jpg",
       alt: "Vraj & Pooja (Jiya) - Engagement Portrait",
       caption: "Two souls, one beautiful journey begins",
+    },
+    {
+      id: 2,
+      src: "/photos/photo-2.jpg",
+      alt: "Vraj & Pooja (Jiya) - Romantic Moment",
+      caption: "Together is a wonderful place to be",
+    },
+    {
+      id: 3,
+      src: "/photos/photo-3.jpg",
+      alt: "Vraj & Pooja (Jiya) - Sacred Celebration",
+      caption: "A promise of forever sealed with love",
     },
   ],
 

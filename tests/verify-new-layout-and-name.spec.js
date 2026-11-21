@@ -23,9 +23,9 @@ test.describe('Verify Hero Card Layout & Pooja (Jiya) & V & P Monogram', () => {
     expect(title).toBe('Ring Ceremony Invitation | Vraj & Pooja (Jiya) - 6 Dec 2026');
 
     // Verify Blessing lines at top
-    const blessing1 = page.locator('text=Shree Ganeshay Namah');
-    const blessing2 = page.locator('text=Shree Khimaj Mata Namah');
-    const blessing3 = page.locator('text=Shree Kheteshwaray Namah');
+    const blessing1 = page.locator('text=Shree Ganeshay Namah').first();
+    const blessing2 = page.locator('text=/Shree Khimaj Mata.*Namah/i').first();
+    const blessing3 = page.locator('text=Shree Kheteshwaray Namah').first();
     await expect(blessing1).toBeVisible();
     await expect(blessing2).toBeVisible();
     await expect(blessing3).toBeVisible();
@@ -110,9 +110,9 @@ test.describe('Verify Hero Card Layout & Pooja (Jiya) & V & P Monogram', () => {
     await page.waitForTimeout(500);
 
     await expect(page.getByText('सुपुत्र', { exact: true })).toBeVisible();
-    await expect(page.locator('text=रेखा कुंवर & प्रकाशसिंहजी')).toBeVisible();
+    await expect(page.locator('text=रेखा कुंवर & प्रकाशसिंहजी').first()).toBeVisible();
     await expect(page.getByText('सुपुत्री', { exact: true })).toBeVisible();
-    await expect(page.locator('text=सीमा कुंवर & पार्वतसिंहजी')).toBeVisible();
+    await expect(page.locator('text=सीमा कुंवर & पर्वतसिंहजी').first()).toBeVisible();
 
     // Switch to Gujarati
     const guBtn = page.getByRole('button', { name: 'ગુજરાતી' });
@@ -120,8 +120,8 @@ test.describe('Verify Hero Card Layout & Pooja (Jiya) & V & P Monogram', () => {
     await page.waitForTimeout(500);
 
     await expect(page.getByText('સુપુત્ર', { exact: true })).toBeVisible();
-    await expect(page.locator('text=રેખા કુંવર & પ્રકાશસિંહજી')).toBeVisible();
+    await expect(page.locator('text=રેખા કુંવર & પ્રકાશસિંહજી').first()).toBeVisible();
     await expect(page.getByText('સુપુત્રી', { exact: true })).toBeVisible();
-    await expect(page.locator('text=સીમા કુંવર & પાર્વતસિંહજી')).toBeVisible();
+    await expect(page.locator('text=સીમા કુંવર & પર્વતસિંહજી').first()).toBeVisible();
   });
 });

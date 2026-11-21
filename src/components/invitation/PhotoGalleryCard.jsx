@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import eventConfig from '../../../event.config.js';
+import ScratchArchCanvas from './ScratchArchCanvas';
 
-// Eagerly resolve any photos located in src/assets/photos via Vite
+// Fallback resolver for any bundled photos or static root paths
 const bundledPhotos = import.meta.glob('/src/assets/photos/*', { eager: true, import: 'default' });
 
 function resolvePhotoSrc(src) {
-  if (!src) return '/photos/couple.jpg';
+  if (!src) return '/photos/photo-1.jpg';
   if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:')) {
     return src;
   }
@@ -27,8 +28,35 @@ export default function PhotoGalleryCard() {
   const { t, i18n } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
+  const [revealedPhotos, setRevealedPhotos] = useState({});
+  const [imageLoadedMap, setImageLoadedMap] = useState({});
+  const [lightboxZoom, setLightboxZoom] = useState(1);
 
-  const photos = eventConfig.photos;
+  const photos = eventConfig.photos || [];
+  const currentPhoto = photos[currentIndex] || {
+    id: 1,
+    src: '/photos/photo-1.jpg',
+    alt: 'Vraj & Pooja (Jiya)',
+    caption: 'Two souls, one beautiful journey begins',
+  };
+
+  const currentPhotoSrc = resolvePhotoSrc(currentPhoto.src);
+  const isCurrentRevealed = !!revealedPhotos[currentPhoto.id];
+
+  const handlePhotoRevealed = useCallback((photoId) => {
+    setRevealedPhotos((prev) => ({
+      ...prev,
+      [photoId]: true,
+    }));
+  }, []);
+
+  const handleRevealAll = useCallback(() => {
+    const allRevealed = {};
+    photos.forEach((p) => {
+      allRevealed[p.id] = true;
+    });
+    setRevealedPhotos(allRevealed);
+  }, [photos]);
 
   const nextPhoto = () => {
     if (photos.length > 1) {
@@ -42,18 +70,16 @@ export default function PhotoGalleryCard() {
     }
   };
 
-  const currentPhoto = photos[currentIndex];
-  const currentPhotoSrc = resolvePhotoSrc(currentPhoto.src);
-
   const currentLang = i18n.language || 'en';
-  const fontClass = currentLang === 'hi' 
-    ? 'font-hindi' 
-    : currentLang === 'gu' 
-    ? 'font-gujarati' 
-    : 'font-serif';
+  const fontClass =
+    currentLang === 'hi'
+      ? 'font-hindi'
+      : currentLang === 'gu'
+      ? 'font-gujarati'
+      : 'font-serif';
 
   return (
-    <div className="relative w-full max-w-md mx-auto paper-card rounded-2xl p-6 shadow-xl border border-[#D8A85E]/30 mb-8 overflow-hidden">
+    <div className="relative w-full max-w-md mx-auto paper-card rounded-2xl p-5 sm:p-6 shadow-xl border border-[#D8A85E]/30 mb-8 overflow-hidden select-none">
       {/* Title */}
       <div className="text-center mb-4">
         <h3 className={`${fontClass} text-xs sm:text-sm font-semibold tracking-widest uppercase text-[#8E5164]`}>
@@ -64,52 +90,87 @@ export default function PhotoGalleryCard() {
         </p>
       </div>
 
-      {/* Arched Photo Frame */}
-      <div className="relative mx-auto w-full max-w-[320px] aspect-[4/5] rounded-t-[140px] rounded-b-xl overflow-hidden border-4 border-[#D8A85E]/60 shadow-2xl bg-[#1A0E17] group cursor-pointer"
-        onClick={() => setSelectedPhoto({ ...currentPhoto, resolvedSrc: currentPhotoSrc })}
+      {/* Arched Photo Frame (Clips photo & scratch canvas with same arch radius) */}
+      <div
+        className={`relative mx-auto w-full max-w-[310px] aspect-[4/5] rounded-t-[140px] rounded-b-xl overflow-hidden border-4 border-[#D8A85E]/60 shadow-2xl bg-[#1A0E17] group ${
+          isCurrentRevealed ? 'cursor-pointer' : 'cursor-crosshair'
+        }`}
+        onClick={() => {
+          if (isCurrentRevealed) {
+            setSelectedPhoto({ ...currentPhoto, resolvedSrc: currentPhotoSrc });
+            setLightboxZoom(1);
+          }
+        }}
       >
+        {/* Soft Skeleton Shimmer until image loads */}
+        {!imageLoadedMap[currentPhoto.id] && (
+          <div className="absolute inset-0 bg-gradient-to-r from-[#24141E] via-[#3D1E2D] to-[#24141E] animate-pulse z-0 flex items-center justify-center">
+            <span className="text-[#D8A85E]/40 text-2xl animate-spin">✦</span>
+          </div>
+        )}
+
+        {/* Normal HTML <img> under the scratch layer */}
         <img
+          key={currentPhotoSrc}
           src={currentPhotoSrc}
           alt={currentPhoto.alt}
+          loading={currentIndex === 0 ? 'eager' : 'lazy'}
+          onLoad={() => {
+            setImageLoadedMap((prev) => ({ ...prev, [currentPhoto.id]: true }));
+          }}
           onError={(e) => {
             if (!e.currentTarget.dataset.retried) {
               e.currentTarget.dataset.retried = 'true';
               e.currentTarget.src = '/photos/couple.jpg';
             }
           }}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className={`w-full h-full object-cover object-[center_30%] transition-transform duration-500 z-10 ${
+            isCurrentRevealed ? 'group-hover:scale-105' : ''
+          }`}
         />
 
-        {/* Subtle Gold Vignette & Tap to Enlarge Indicator */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#2B0A15]/80 via-transparent to-transparent flex items-end justify-center p-4">
+        {/* Interactive Scratch-to-Reveal Foil Layer */}
+        <ScratchArchCanvas
+          key={`scratch-${currentPhoto.id}`}
+          isRevealed={isCurrentRevealed}
+          onReveal={() => handlePhotoRevealed(currentPhoto.id)}
+          hintText={t('photo.scratchHint')}
+        />
+
+        {/* Subtle Bottom Gold Vignette & Indicator */}
+        <div className="absolute inset-x-0 bottom-0 pointer-events-none z-25 bg-gradient-to-t from-[#2B0A15]/90 via-[#2B0A15]/40 to-transparent flex items-end justify-center p-3.5">
           <div className="text-center">
-            <p className="font-serif italic text-xs text-[#FFEDBA]">
+            <p className="font-serif italic text-xs text-[#FFEDBA] drop-shadow">
               {currentPhoto.caption}
             </p>
-           
+            <span className="text-[10px] text-[#DFBE95] tracking-widest uppercase font-serif mt-1 inline-block opacity-90 drop-shadow">
+              {isCurrentRevealed ? t('photo.tapToEnlarge') : `✨ ${t('photo.scratchHint')}`}
+            </span>
           </div>
         </div>
 
-        {/* Carousel Navigation Arrows (only if multiple photos) */}
+        {/* Carousel Navigation Arrows (higher z-index, min 44px tap targets, pointer-events: auto) */}
         {photos.length > 1 && (
           <>
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 prevPhoto();
               }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#24141E]/70 hover:bg-[#24141E] text-[#FFEDBA] flex items-center justify-center border border-[#D8A85E]/40 text-xs backdrop-blur-sm transition-all"
+              className="absolute left-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] w-11 h-11 rounded-full bg-[#24141E]/80 hover:bg-[#24141E] text-[#FFEDBA] flex items-center justify-center border border-[#D8A85E]/50 text-sm backdrop-blur-sm transition-all z-40 active:scale-95 cursor-pointer shadow-lg"
               aria-label="Previous photo"
             >
               ‹
             </button>
 
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 nextPhoto();
               }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#24141E]/70 hover:bg-[#24141E] text-[#FFEDBA] flex items-center justify-center border border-[#D8A85E]/40 text-xs backdrop-blur-sm transition-all"
+              className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] w-11 h-11 rounded-full bg-[#24141E]/80 hover:bg-[#24141E] text-[#FFEDBA] flex items-center justify-center border border-[#D8A85E]/50 text-sm backdrop-blur-sm transition-all z-40 active:scale-95 cursor-pointer shadow-lg"
               aria-label="Next photo"
             >
               ›
@@ -118,25 +179,45 @@ export default function PhotoGalleryCard() {
         )}
       </div>
 
-      {/* Dots Indicator */}
+      {/* Dots Indicator with Revealed Status */}
       {photos.length > 1 && (
-        <div className="flex justify-center items-center gap-2 mt-4">
-          {photos.map((_, idx) => (
-            <button
-              key={idx}
-              onClick={() => setCurrentIndex(idx)}
-              className={`w-2.5 h-2.5 rounded-full transition-all ${
-                idx === currentIndex
-                  ? 'bg-[#B38136] scale-125'
-                  : 'bg-[#D8A85E]/40 hover:bg-[#D8A85E]/70'
-              }`}
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
+        <div className="flex justify-center items-center gap-2.5 mt-4">
+          {photos.map((p, idx) => {
+            const isDotRevealed = !!revealedPhotos[p.id];
+            const isActive = idx === currentIndex;
+            return (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setCurrentIndex(idx)}
+                className={`transition-all rounded-full flex items-center justify-center cursor-pointer ${
+                  isActive
+                    ? 'w-3 h-3 bg-[#D8A85E] shadow-sm ring-2 ring-[#FFEDBA]/40 scale-110'
+                    : isDotRevealed
+                    ? 'w-2.5 h-2.5 bg-[#B38136]/70 hover:bg-[#D8A85E]'
+                    : 'w-2.5 h-2.5 bg-[#4A1224]/40 border border-[#D8A85E]/50 hover:bg-[#D8A85E]/60'
+                }`}
+                aria-label={`Go to photo ${idx + 1}${isDotRevealed ? ' (revealed)' : ''}`}
+              />
+            );
+          })}
         </div>
       )}
 
-      {/* Lightbox Modal */}
+      {/* Accessible "Reveal all" Button */}
+      <div className="flex justify-center mt-3">
+        <button
+          type="button"
+          onClick={handleRevealAll}
+          className="px-4 py-1.5 rounded-full bg-[#24141E]/80 hover:bg-[#341C2C] border border-[#D8A85E]/50 text-[#FFEDBA] text-xs font-serif font-medium tracking-wide flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
+          aria-label={t('photo.revealAll')}
+        >
+          <span>✨</span>
+          <span>{t('photo.revealAll')}</span>
+        </button>
+      </div>
+
+      {/* Lightbox Modal with Zoom & Close Button */}
       <AnimatePresence>
         {selectedPhoto && (
           <motion.div
@@ -144,7 +225,7 @@ export default function PhotoGalleryCard() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedPhoto(null)}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 select-none"
+            className="fixed inset-0 z-50 bg-black/92 backdrop-blur-md flex items-center justify-center p-4 select-none"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -153,24 +234,42 @@ export default function PhotoGalleryCard() {
               className="relative max-w-lg w-full rounded-2xl overflow-hidden border-2 border-[#D8A85E] shadow-2xl bg-[#1A0E17]"
               onClick={(e) => e.stopPropagation()}
             >
-              <img
-                src={selectedPhoto.resolvedSrc || resolvePhotoSrc(selectedPhoto.src)}
-                alt={selectedPhoto.alt}
-                onError={(e) => {
-                  if (!e.currentTarget.dataset.retried) {
-                    e.currentTarget.dataset.retried = 'true';
-                    e.currentTarget.src = '/photos/couple.jpg';
-                  }
-                }}
-                className="w-full max-h-[75vh] object-contain bg-[#170E14]"
-              />
-              <div className="p-4 text-center bg-[#24141E] border-t border-[#D8A85E]/30">
-                <p className="font-serif italic text-sm text-[#FFEDBA]">
-                  {selectedPhoto.caption}
-                </p>
+              {/* Photo View with Zoom Toggle */}
+              <div
+                className="overflow-hidden flex items-center justify-center max-h-[72vh] bg-[#170E14] cursor-zoom-in"
+                onClick={() => setLightboxZoom((z) => (z === 1 ? 1.75 : 1))}
+              >
+                <img
+                  src={selectedPhoto.resolvedSrc || resolvePhotoSrc(selectedPhoto.src)}
+                  alt={selectedPhoto.alt}
+                  style={{
+                    transform: `scale(${lightboxZoom})`,
+                    transition: 'transform 300ms ease-out',
+                  }}
+                  onError={(e) => {
+                    if (!e.currentTarget.dataset.retried) {
+                      e.currentTarget.dataset.retried = 'true';
+                      e.currentTarget.src = '/photos/couple.jpg';
+                    }
+                  }}
+                  className="w-full max-h-[72vh] object-contain"
+                />
+              </div>
+
+              {/* Lightbox Footer Bar */}
+              <div className="p-4 flex items-center justify-between bg-[#24141E] border-t border-[#D8A85E]/30">
+                <div>
+                  <p className="font-serif italic text-xs sm:text-sm text-[#FFEDBA]">
+                    {selectedPhoto.caption}
+                  </p>
+                  <p className="font-serif text-[10px] text-[#DFBE95] opacity-75 mt-0.5">
+                    {lightboxZoom > 1 ? 'Tap photo to zoom out' : 'Tap photo to zoom in'}
+                  </p>
+                </div>
                 <button
+                  type="button"
                   onClick={() => setSelectedPhoto(null)}
-                  className="mt-3 px-4 py-1.5 rounded-full bg-[#D8A85E] text-[#170E14] font-serif font-semibold text-xs tracking-wider"
+                  className="min-w-[44px] min-h-[44px] px-4 py-2 rounded-full bg-[#D8A85E] hover:bg-[#E8CD96] text-[#170E14] font-serif font-semibold text-xs tracking-wider transition-all cursor-pointer shadow-md active:scale-95"
                 >
                   Close
                 </button>

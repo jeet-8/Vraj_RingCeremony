@@ -96,13 +96,16 @@ export default function App() {
     console.log('[App Debug] handleOpeningStart called');
     setIsOpening(true);
     soundEngine.unlock();
+    soundEngine.play();
   };
 
   // Handle Envelope Opening Complete (GSAP timeline finish ~6s)
   const handleOpeningComplete = () => {
     console.log('[App Debug] handleOpeningComplete called');
     setViewState('invitation');
-    soundEngine.play();
+    if (!soundEngine.isMuted) {
+      soundEngine.play();
+    }
   };
 
   // Handle Skip (Always works, instant transition)

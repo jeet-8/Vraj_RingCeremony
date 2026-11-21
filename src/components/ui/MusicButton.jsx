@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import soundEngine from '../../utils/proceduralAudio';
 
 export default function MusicButton() {
+  const { t } = useTranslation();
   const [isPlaying, setIsPlaying] = useState(soundEngine.isPlaying && !soundEngine.isMuted);
 
   useEffect(() => {
@@ -17,11 +19,16 @@ export default function MusicButton() {
     setIsPlaying(soundEngine.isPlaying && !soundEngine.isMuted);
   };
 
+  const label = isPlaying
+    ? (t('music.musicOn') || 'Music on')
+    : (t('music.muted') || 'Muted');
+
   return (
     <button
+      type="button"
       onClick={handleToggle}
-      className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-40 flex items-center gap-1.5 px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-[#24141E]/90 hover:bg-[#2F1A28] backdrop-blur-md border border-[#D8A85E]/50 text-[#FFEDBA] shadow-lg active:scale-95 transition-all pointer-events-auto"
-      aria-label={isPlaying ? 'Mute Music' : 'Play Music'}
+      className="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-40 flex items-center gap-1.5 px-3 py-2 sm:px-3.5 sm:py-2 min-h-[44px] min-w-[44px] rounded-full bg-[#24141E]/90 hover:bg-[#2F1A28] backdrop-blur-md border border-[#D8A85E]/50 text-[#FFEDBA] shadow-lg active:scale-95 transition-all pointer-events-auto cursor-pointer"
+      aria-label={isPlaying ? (t('music.muteMusic') || 'Mute Music') : (t('music.playMusic') || 'Play Music')}
     >
       {/* Animated Soundwave Visualizer */}
       <div className="flex items-center gap-0.5 h-3">
@@ -43,7 +50,7 @@ export default function MusicButton() {
       </div>
 
       <span className="font-serif text-[10px] sm:text-[11px] tracking-wider uppercase text-[#DFBE95]">
-        {isPlaying ? 'Shehnai ON' : 'Muted'}
+        {label}
       </span>
     </button>
   );

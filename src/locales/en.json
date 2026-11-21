@@ -30,7 +30,10 @@
   },
   "photo": {
     "title": "A Glimpse of Love",
-    "subtitle": "Vraj & Pooja (Jiya)"
+    "subtitle": "Vraj & Pooja (Jiya)",
+    "scratchHint": "Scratch to reveal",
+    "revealAll": "Reveal all",
+    "tapToEnlarge": "Tap to enlarge 🔍"
   },
   "venue": {
     "title": "Celebration Venue",
@@ -77,5 +80,11 @@
   "browserBanner": {
     "text": "For the best interactive 3D experience, open in Chrome or Safari.",
     "copyLink": "Copy Link"
+  },
+  "music": {
+    "musicOn": "Music on",
+    "muted": "Muted",
+    "playMusic": "Play Music",
+    "muteMusic": "Mute Music"
   }
 }
