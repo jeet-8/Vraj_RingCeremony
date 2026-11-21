@@ -52,11 +52,18 @@ test.describe('Verify Hero Card Layout & Pooja (Jiya) & V & P Monogram', () => {
     await expect(daughterOf).toBeVisible();
     await expect(brideParents).toBeVisible();
 
+    // Verify Grandparents Block
+    const grandsonOf = page.locator('text=Grandson of');
+    const grandparents = page.locator('text=Shrimati Morkidevi');
+    await expect(grandsonOf).toBeVisible();
+    await expect(grandparents).toBeVisible();
+
     // Verify vertical order:
-    // blessing1 < elderBlessing < invite < groomName < sonOf < groomParents < brideName < daughterOf < brideParents
+    // blessing1 < elderBlessing < invite < grandparents < groomName < sonOf < groomParents < brideName < daughterOf < brideParents
     const boxBlessing = await blessing1.boundingBox();
     const boxElder = await elderBlessing.boundingBox();
     const boxInvite = await invite.boundingBox();
+    const boxGrandparents = await grandparents.boundingBox();
     const boxGroom = await groomName.boundingBox();
     const boxSonOf = await sonOf.boundingBox();
     const boxGroomParents = await groomParents.boundingBox();
@@ -66,7 +73,8 @@ test.describe('Verify Hero Card Layout & Pooja (Jiya) & V & P Monogram', () => {
 
     expect(boxElder.y).toBeGreaterThan(boxBlessing.y);
     expect(boxInvite.y).toBeGreaterThan(boxElder.y);
-    expect(boxGroom.y).toBeGreaterThan(boxInvite.y);
+    expect(boxGrandparents.y).toBeGreaterThan(boxInvite.y);
+    expect(boxGroom.y).toBeGreaterThan(boxGrandparents.y);
     expect(boxSonOf.y).toBeGreaterThan(boxGroom.y);
     expect(boxGroomParents.y).toBeGreaterThan(boxSonOf.y);
     expect(boxBride.y).toBeGreaterThan(boxGroomParents.y);

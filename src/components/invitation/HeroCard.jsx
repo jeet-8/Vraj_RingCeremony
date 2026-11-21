@@ -69,8 +69,39 @@ export default function HeroCard({ guestName }) {
         </div>
       </div>
 
+      {/* Grandparents Section (centered between Ceremony Pill and Groom name) */}
+      {(() => {
+        const grandsonLabel = t('hero.grandsonLabel', '');
+        let grandparentsText = t('hero.groomGrandparentsLine') || eventConfig.groom?.grandparentsLine || '';
+        if (grandsonLabel && grandparentsText.startsWith(grandsonLabel)) {
+          grandparentsText = grandparentsText.slice(grandsonLabel.length).replace(/^[\s,:-]+/, '');
+        }
+
+        return (
+          <div className="my-3.5 sm:my-4 px-2 text-center">
+            {grandsonLabel ? (
+              <p className="font-serif italic text-xs text-[#9E6D38] mb-1 tracking-wider">
+                {grandsonLabel}
+              </p>
+            ) : null}
+            <p
+              className={`${fontClass} text-[13px] sm:text-[15px] text-[#4A1224] font-semibold tracking-wide leading-relaxed max-w-[92%] sm:max-w-[85%] mx-auto [text-wrap:balance]`}
+            >
+              {grandparentsText}
+            </p>
+
+            {/* Thin gold ornamental divider below text to separate from Vraj */}
+            <div className="flex items-center justify-center gap-2 mt-3.5 mb-1 opacity-80">
+              <div className="h-[1px] w-10 sm:w-16 bg-gradient-to-r from-transparent to-[#D8A85E]" />
+              <span className="text-[9px] text-[#B38136]">◆</span>
+              <div className="h-[1px] w-10 sm:w-16 bg-gradient-to-l from-transparent to-[#D8A85E]" />
+            </div>
+          </div>
+        );
+      })()}
+
       {/* Couple and Respective Parents Section */}
-      <div className="text-center my-5 space-y-4">
+      <div className="text-center my-4 space-y-4">
         {/* Groom Block */}
         <div className="flex flex-col items-center">
           <h1 

@@ -65,6 +65,11 @@ export default function CSSEnvelope({
           <span className="text-[#8E5164] text-[10px] font-serif italic mb-1">Cordially invite you to celebrate</span>
           <h2 className="text-[#B38136] font-display text-xs font-bold tracking-widest">RING CEREMONY</h2>
 
+          {/* Grandparents line */}
+          <p className="text-[#4A1224] font-serif font-semibold text-[9px] max-w-[90%] leading-tight my-1">
+            {t('hero.groomGrandparentsFull') || eventConfig.groom?.grandparentsLine}
+          </p>
+
           {/* Groom */}
           <h1 className="text-[#4A1224] font-script text-3xl mt-1 leading-tight">{eventConfig.groom.name}</h1>
           <p className="text-[#9E6D38] font-serif italic text-[10px]">{t('hero.groomParentsLabel') || 'Son of'}</p>

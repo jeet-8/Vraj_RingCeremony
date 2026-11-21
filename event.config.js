@@ -20,6 +20,15 @@ export const eventConfig = {
     name: "Vraj",
     fullName: "Vraj",
     parents: "Rekha Kuwar & Prakashsinghji",
+    grandparentsLine: "Grandson of Shrimati Morkidevi, wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently residing in Ahmedabad.",
+    grandparents: {
+      relation: "Grandson of",
+      grandmother: "Shrimati Morkidevi",
+      grandfather: "Shri Dhansinghji Rajpurohit",
+      nativePlace: "Chunda",
+      currentCity: "Ahmedabad",
+      fullText: "Grandson of Shrimati Morkidevi, wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently residing in Ahmedabad.",
+    },
   },
   bride: {
     name: "Pooja (Jiya)",
