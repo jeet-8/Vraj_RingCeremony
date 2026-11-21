@@ -40,7 +40,7 @@ export default function HeroCard({ guestName }) {
 
       {/* Kuldevi Blessing Line */}
       {(() => {
-        const blessingLine = t('hero.heroBlessingLine', eventConfig.hero?.blessingLine || eventConfig.heroBlessingLine || 'With the immense grace of Shri Kuldevi Khimaj Mataji, we have');
+        const blessingLine = t('hero.heroBlessingLine', eventConfig.hero?.blessingLine || eventConfig.heroBlessingLine || 'With the Immense Grace of Shri Kuldevi Khimaj Mataji, We Have');
         if (!blessingLine) return null;
 
         return (

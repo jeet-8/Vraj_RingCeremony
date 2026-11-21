@@ -65,7 +65,7 @@ export default function CSSEnvelope({
 
           {/* Kuldevi Blessing line */}
           <p className="text-[#4A1224] font-serif font-semibold text-[9px] max-w-[88%] leading-tight my-0.5">
-            {t('hero.heroBlessingLine', eventConfig.hero?.blessingLine || 'With the immense grace of Shri Kuldevi Khimaj Mataji, we have')}
+            {t('hero.heroBlessingLine', eventConfig.hero?.blessingLine || 'With the Immense Grace of Shri Kuldevi Khimaj Mataji, We Have')}
           </p>
 
           {/* Grandparents line */}

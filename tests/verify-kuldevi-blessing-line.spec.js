@@ -24,15 +24,16 @@ test.describe('Verify Kuldevi Blessing Line on Hero Card', () => {
       await expect(pill).toBeVisible();
 
       // Verify Kuldevi blessing line
-      const blessing = page.locator('text="With the immense grace of Shri Kuldevi Khimaj Mataji, we have"').first();
+      const blessing = page.locator('text="With the Immense Grace of Shri Kuldevi Khimaj Mataji, We Have"').first();
       await expect(blessing).toBeVisible();
 
       // Verify Grandson of
       const grandsonLabel = page.locator('text="Grandson of"').first();
       await expect(grandsonLabel).toBeVisible();
 
-      // Verify Shrimati Morkidevi paragraph
-      const grandparents = page.locator('text=/Shrimati Morkidevi/').first();
+      // Verify Shrimati Morkidevi paragraph with capitalized Wife and Residing
+      const grandparents = page.locator('text=/Shrimati Morkidevi, Wife of Shri Dhansinghji Rajpurohit.*Presently Residing in Ahmedabad/').first();
+      await expect(grandparents).toBeVisible();
       await expect(grandparents).toBeVisible();
 
       // Geometry checks

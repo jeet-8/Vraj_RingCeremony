@@ -20,14 +20,14 @@ export const eventConfig = {
     name: "Vraj",
     fullName: "Vraj",
     parents: "Rekha Kuwar & Prakashsinghji",
-    grandparentsLine: "Grandson of Shrimati Morkidevi, wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently residing in Ahmedabad.",
+    grandparentsLine: "Grandson of Shrimati Morkidevi, Wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently Residing in Ahmedabad.",
     grandparents: {
       relation: "Grandson of",
       grandmother: "Shrimati Morkidevi",
       grandfather: "Shri Dhansinghji Rajpurohit",
       nativePlace: "Chunda",
       currentCity: "Ahmedabad",
-      fullText: "Grandson of Shrimati Morkidevi, wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently residing in Ahmedabad.",
+      fullText: "Grandson of Shrimati Morkidevi, Wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently Residing in Ahmedabad.",
     },
   },
   bride: {
@@ -47,9 +47,9 @@ export const eventConfig = {
   ceremony: "Ring Ceremony",
   heroPillText: "Sagai - Dastur",
   hero: {
-    blessingLine: "With the immense grace of Shri Kuldevi Khimaj Mataji, we have",
+    blessingLine: "With the Immense Grace of Shri Kuldevi Khimaj Mataji, We Have",
   },
-  heroBlessingLine: "With the immense grace of Shri Kuldevi Khimaj Mataji, we have",
+  heroBlessingLine: "With the Immense Grace of Shri Kuldevi Khimaj Mataji, We Have",
   subtitle: "Engagement Celebration",
 
   // Couple alias for backward compatibility
@@ -62,7 +62,7 @@ export const eventConfig = {
     monogramTitle: "Vraj & Pooja",
     ceremony: "Ring Ceremony",
     heroPillText: "Sagai - Dastur",
-    heroBlessingLine: "With the immense grace of Shri Kuldevi Khimaj Mataji, we have",
+    heroBlessingLine: "With the Immense Grace of Shri Kuldevi Khimaj Mataji, We Have",
     subtitle: "Engagement Celebration",
   },
 
