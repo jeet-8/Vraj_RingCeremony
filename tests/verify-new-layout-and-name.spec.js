@@ -52,32 +52,40 @@ test.describe('Verify Hero Card Layout & Pooja (Jiya) & V & P Monogram', () => {
     await expect(daughterOf).toBeVisible();
     await expect(brideParents).toBeVisible();
 
-    // Verify Grandparents Block
+    // Verify Groom Grandparents Block
     const grandsonOf = page.locator('text=Grandson of');
-    const grandparents = page.locator('text=Shrimati Morkidevi');
+    const groomGrandparents = page.locator('text=Shrimati Morkidevi');
     await expect(grandsonOf).toBeVisible();
-    await expect(grandparents).toBeVisible();
+    await expect(groomGrandparents).toBeVisible();
+
+    // Verify Bride Grandparents Block
+    const granddaughterOf = page.locator('text=Granddaughter of');
+    const brideGrandparents = page.locator('text=Shri Deep Singhji');
+    await expect(granddaughterOf).toBeVisible();
+    await expect(brideGrandparents).toBeVisible();
 
     // Verify vertical order:
-    // blessing1 < elderBlessing < invite < grandparents < groomName < sonOf < groomParents < brideName < daughterOf < brideParents
+    // blessing1 < elderBlessing < invite < groomGrandparents < groomName < sonOf < groomParents < brideGrandparents < brideName < daughterOf < brideParents
     const boxBlessing = await blessing1.boundingBox();
     const boxElder = await elderBlessing.boundingBox();
     const boxInvite = await invite.boundingBox();
-    const boxGrandparents = await grandparents.boundingBox();
+    const boxGroomGrandparents = await groomGrandparents.boundingBox();
     const boxGroom = await groomName.boundingBox();
     const boxSonOf = await sonOf.boundingBox();
     const boxGroomParents = await groomParents.boundingBox();
+    const boxBrideGrandparents = await brideGrandparents.boundingBox();
     const boxBride = await brideName.boundingBox();
     const boxDaughterOf = await daughterOf.boundingBox();
     const boxBrideParents = await brideParents.boundingBox();
 
     expect(boxElder.y).toBeGreaterThan(boxBlessing.y);
     expect(boxInvite.y).toBeGreaterThan(boxElder.y);
-    expect(boxGrandparents.y).toBeGreaterThan(boxInvite.y);
-    expect(boxGroom.y).toBeGreaterThan(boxGrandparents.y);
+    expect(boxGroomGrandparents.y).toBeGreaterThan(boxInvite.y);
+    expect(boxGroom.y).toBeGreaterThan(boxGroomGrandparents.y);
     expect(boxSonOf.y).toBeGreaterThan(boxGroom.y);
     expect(boxGroomParents.y).toBeGreaterThan(boxSonOf.y);
-    expect(boxBride.y).toBeGreaterThan(boxGroomParents.y);
+    expect(boxBrideGrandparents.y).toBeGreaterThan(boxGroomParents.y);
+    expect(boxBride.y).toBeGreaterThan(boxBrideGrandparents.y);
     expect(boxDaughterOf.y).toBeGreaterThan(boxBride.y);
     expect(boxBrideParents.y).toBeGreaterThan(boxDaughterOf.y);
 

@@ -23,6 +23,11 @@
     "guestGreetingPrefix": "Dear",
     "guestGreetingSuffix": "and family,"
   },
+  "bride": {
+    "labelPosition": "before",
+    "grandLabel": "Granddaughter of",
+    "grandparentsLine": "Shri Deep Singhji, son of Shri Bhur Singhji Rajpurohit (Native: Bhasunda)"
+  },
   "countdown": {
     "title": "Counting Down to the Auspicious Moment",
     "days": "Days",

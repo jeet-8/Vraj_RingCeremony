@@ -125,6 +125,43 @@ export default function HeroCard({ guestName }) {
           <div className="h-[1px] w-12 sm:w-16 bg-gradient-to-l from-transparent to-[#D8A85E]" />
         </div>
 
+        {/* Bride Grandparents Block (between & divider and Pooja (Jiya)) */}
+        {(() => {
+          const labelPosition = t('bride.labelPosition', 'before');
+          const grandLabel = t('bride.grandLabel', eventConfig.bride?.grandLabel || 'Granddaughter of');
+          const grandparentsLine = t('bride.grandparentsLine', eventConfig.bride?.grandparentsLine || '');
+
+          const labelElement = (
+            <p className="font-serif italic text-xs text-[#9E6D38] tracking-wider">
+              {grandLabel}
+            </p>
+          );
+
+          const detailsElement = (
+            <p
+              className={`${fontClass} text-[13px] sm:text-[15px] text-[#4A1224] font-semibold tracking-wide leading-relaxed max-w-[88%] mx-auto [text-wrap:balance]`}
+            >
+              {grandparentsLine}
+            </p>
+          );
+
+          return (
+            <div className="mt-3.5 sm:mt-4 mb-2.5 sm:mb-3 px-2 text-center flex flex-col items-center justify-center gap-2">
+              {labelPosition === 'before' ? (
+                <>
+                  {labelElement}
+                  {detailsElement}
+                </>
+              ) : (
+                <>
+                  {detailsElement}
+                  {labelElement}
+                </>
+              )}
+            </div>
+          );
+        })()}
+
         {/* Bride Block */}
         <div className="flex flex-col items-center">
           <h1 

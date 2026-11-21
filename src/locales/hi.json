@@ -23,6 +23,11 @@
     "guestGreetingPrefix": "सादर सप्रेम,",
     "guestGreetingSuffix": "सपरिवार,"
   },
+  "bride": {
+    "labelPosition": "after",
+    "grandLabel": "की पोती",
+    "grandparentsLine": "श्री दीपसिंहजी पुत्र श्री भूरसिंहजी राजपुरोहित (ठि. भासुन्डा)"
+  },
   "countdown": {
     "title": "शुभ घड़ी की प्रतीक्षा",
     "days": "दिन",

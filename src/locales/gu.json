@@ -23,6 +23,11 @@
     "guestGreetingPrefix": "સ્નેહસહ,",
     "guestGreetingSuffix": "સહકુટુંબ,"
   },
+  "bride": {
+    "labelPosition": "after",
+    "grandLabel": "ની પૌત્રી",
+    "grandparentsLine": "શ્રી દીપસિંહજી પુત્ર શ્રી ભૂરસિંહજી રાજપુરોહિત (ઠિ. ભાસુંડા)"
+  },
   "countdown": {
     "title": "શુભ ઘડીની ગણતરી",
     "days": "દિવસ",

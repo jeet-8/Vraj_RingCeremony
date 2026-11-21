@@ -77,6 +77,14 @@ export default function CSSEnvelope({
 
           <div className="w-16 h-[1px] bg-[#D8A85E]/50 my-1" />
 
+          {/* Bride Grandparents */}
+          <div className="my-0.5 text-center">
+            <p className="text-[#9E6D38] font-serif italic text-[10px]">Granddaughter of</p>
+            <p className="text-[#4A1224] font-serif font-semibold text-[9px] max-w-[90%] leading-tight mx-auto">
+              {t('bride.grandparentsLine') || eventConfig.bride?.grandparentsLine}
+            </p>
+          </div>
+
           {/* Bride */}
           <h1 className="text-[#4A1224] font-script text-3xl leading-tight">{eventConfig.bride.name}</h1>
           <p className="text-[#9E6D38] font-serif italic text-[10px]">{t('hero.brideParentsLabel') || 'Daughter of'}</p>
