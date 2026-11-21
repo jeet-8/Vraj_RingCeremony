@@ -46,6 +46,10 @@ export const eventConfig = {
   },
   ceremony: "Ring Ceremony",
   heroPillText: "Sagai - Dastur",
+  hero: {
+    blessingLine: "With the immense grace of Shri Kuldevi Khimaj Mataji, we have",
+  },
+  heroBlessingLine: "With the immense grace of Shri Kuldevi Khimaj Mataji, we have",
   subtitle: "Engagement Celebration",
 
   // Couple alias for backward compatibility
@@ -58,6 +62,7 @@ export const eventConfig = {
     monogramTitle: "Vraj & Pooja",
     ceremony: "Ring Ceremony",
     heroPillText: "Sagai - Dastur",
+    heroBlessingLine: "With the immense grace of Shri Kuldevi Khimaj Mataji, we have",
     subtitle: "Engagement Celebration",
   },
 

@@ -61,7 +61,12 @@ export default function CSSEnvelope({
           className="absolute inset-x-4 top-[14%] h-[460px] bg-[#FAF6F0] rounded-xl border-2 border-[#D8A85E] p-4 flex flex-col items-center justify-center text-center shadow-2xl z-10"
         >
           <span className="text-[#875217] text-xs font-serif font-bold">卐 Shree Ganeshay Namah 卐</span>
-          <h2 className="text-[#B38136] font-display text-xs font-bold tracking-widest my-1">RING CEREMONY</h2>
+          <h2 className="text-[#B38136] font-display text-xs font-bold tracking-widest my-1">{t('hero.heroPillText', eventConfig.heroPillText || 'SAGAI - DASTUR')}</h2>
+
+          {/* Kuldevi Blessing line */}
+          <p className="text-[#4A1224] font-serif font-semibold text-[9px] max-w-[88%] leading-tight my-0.5">
+            {t('hero.heroBlessingLine', eventConfig.hero?.blessingLine || 'With the immense grace of Shri Kuldevi Khimaj Mataji, we have')}
+          </p>
 
           {/* Grandparents line */}
           <p className="text-[#4A1224] font-serif font-semibold text-[9px] max-w-[90%] leading-tight my-1">

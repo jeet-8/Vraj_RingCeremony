@@ -26,7 +26,7 @@ export default function HeroCard({ guestName }) {
       <TopBlessingLines isHero={true} />
 
       {/* Ceremony Monogram Badge */}
-      <div className="text-center my-2.5">
+      <div className="text-center mt-2.5 mb-0">
         <div
           className={`inline-block px-3.5 py-1 rounded-full border border-[#D8A85E]/50 text-[11px] sm:text-xs text-[#B38136] bg-[#FFFBF5] whitespace-nowrap ${
             currentLang === 'en'
@@ -38,7 +38,23 @@ export default function HeroCard({ guestName }) {
         </div>
       </div>
 
-      {/* Grandparents Section (centered between Ceremony Pill and Groom name) */}
+      {/* Kuldevi Blessing Line */}
+      {(() => {
+        const blessingLine = t('hero.heroBlessingLine', eventConfig.hero?.blessingLine || eventConfig.heroBlessingLine || 'With the immense grace of Shri Kuldevi Khimaj Mataji, we have');
+        if (!blessingLine) return null;
+
+        return (
+          <div className="mt-3.5 sm:mt-4 mb-2.5 sm:mb-3 px-2 text-center">
+            <p
+              className={`${fontClass} text-[13px] sm:text-[15px] text-[#4A1224] font-semibold tracking-wide leading-relaxed max-w-[88%] mx-auto [text-wrap:balance]`}
+            >
+              {blessingLine}
+            </p>
+          </div>
+        );
+      })()}
+
+      {/* Grandparents Section (centered between Blessing Line and Groom name) */}
       {(() => {
         const grandsonLabel = t('hero.grandsonLabel', '');
         let grandparentsText = t('hero.groomGrandparentsLine') || eventConfig.groom?.grandparentsLine || '';
@@ -47,7 +63,7 @@ export default function HeroCard({ guestName }) {
         }
 
         return (
-          <div className="my-3.5 sm:my-4 px-2 text-center">
+          <div className="mt-0 mb-3.5 sm:mb-4 px-2 text-center">
             {grandsonLabel ? (
               <p className="font-serif italic text-xs text-[#9E6D38] mb-1 tracking-wider">
                 {grandsonLabel}
