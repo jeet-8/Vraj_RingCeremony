@@ -27,8 +27,14 @@ export default function HeroCard({ guestName }) {
 
       {/* Ceremony Monogram Badge */}
       <div className="text-center my-2.5">
-        <div className="inline-block px-3.5 py-1 rounded-full border border-[#D8A85E]/50 text-[11px] sm:text-xs font-display tracking-[0.2em] text-[#B38136] uppercase bg-[#FFFBF5]">
-          {eventConfig.ceremony || eventConfig.couple?.ceremony}
+        <div
+          className={`inline-block px-3.5 py-1 rounded-full border border-[#D8A85E]/50 text-[11px] sm:text-xs text-[#B38136] bg-[#FFFBF5] whitespace-nowrap ${
+            currentLang === 'en'
+              ? 'font-display tracking-[0.16em] sm:tracking-[0.2em] uppercase'
+              : `${fontClass} tracking-normal sm:tracking-wide font-medium`
+          }`}
+        >
+          {t('hero.heroPillText', eventConfig.heroPillText || 'Sagai - Dastur')}
         </div>
       </div>
 

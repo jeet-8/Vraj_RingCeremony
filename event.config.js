@@ -45,6 +45,7 @@ export const eventConfig = {
     },
   },
   ceremony: "Ring Ceremony",
+  heroPillText: "Sagai - Dastur",
   subtitle: "Engagement Celebration",
 
   // Couple alias for backward compatibility
@@ -56,6 +57,7 @@ export const eventConfig = {
     monogram: "V & P",
     monogramTitle: "Vraj & Pooja",
     ceremony: "Ring Ceremony",
+    heroPillText: "Sagai - Dastur",
     subtitle: "Engagement Celebration",
   },
 
