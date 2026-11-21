@@ -25,47 +25,10 @@ export default function HeroCard({ guestName }) {
       {/* Top 3 Blessing Lines repeated in Hero Card */}
       <TopBlessingLines isHero={true} />
 
-      {/* Auspicious Ganesh Motif */}
-      <div className="flex flex-col items-center justify-center my-3">
-        <div className="w-12 h-12 rounded-full bg-[#FAF0E1] border border-[#D8A85E]/40 flex items-center justify-center shadow-inner">
-          <span className="text-2xl text-[#B38136]">卐</span>
-        </div>
-      </div>
-
-      {/* Personalized Greeting */}
-      <div className="text-center my-3">
-        {guestName ? (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-block px-4 py-1.5 rounded-full bg-[#FAF0E1]/80 border border-[#D8A85E]/30"
-          >
-            <p className="font-serif italic text-sm sm:text-base text-[#5A2637] font-semibold">
-              {t('hero.guestGreetingPrefix')} {guestName} {t('hero.guestGreetingSuffix')}
-            </p>
-          </motion.div>
-        ) : (
-          <p className="font-serif italic text-sm text-[#8E5164]">
-            {t('hero.defaultGreeting')}
-          </p>
-        )}
-      </div>
-
-      {/* Elders' Blessings Title & Invitation Line (No Box) */}
-      <div className="text-center my-3 space-y-1.5">
-        <p className={`${fontClass} text-xs sm:text-sm tracking-wider uppercase text-[#8E5164] font-medium`}>
-          {t('hero.elderBlessing')}
-        </p>
-
-        <p className={`${fontClass} text-xs sm:text-sm text-[#8E5164] italic px-2 leading-relaxed`}>
-          {t('hero.invite')}
-        </p>
-
-        {/* Ceremony Monogram Badge */}
-        <div className="pt-1">
-          <div className="inline-block px-3 py-1 rounded-full border border-[#D8A85E]/50 text-[11px] sm:text-xs font-display tracking-[0.2em] text-[#B38136] uppercase bg-[#FFFBF5]">
-            {eventConfig.ceremony || eventConfig.couple?.ceremony}
-          </div>
+      {/* Ceremony Monogram Badge */}
+      <div className="text-center my-2.5">
+        <div className="inline-block px-3.5 py-1 rounded-full border border-[#D8A85E]/50 text-[11px] sm:text-xs font-display tracking-[0.2em] text-[#B38136] uppercase bg-[#FFFBF5]">
+          {eventConfig.ceremony || eventConfig.couple?.ceremony}
         </div>
       </div>
 

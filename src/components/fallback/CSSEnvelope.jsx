@@ -61,9 +61,7 @@ export default function CSSEnvelope({
           className="absolute inset-x-4 top-[14%] h-[460px] bg-[#FAF6F0] rounded-xl border-2 border-[#D8A85E] p-4 flex flex-col items-center justify-center text-center shadow-2xl z-10"
         >
           <span className="text-[#875217] text-xs font-serif font-bold">卐 Shree Ganeshay Namah 卐</span>
-          <span className="text-[#8E5164] text-[10px] font-serif uppercase tracking-wider mt-1">With the blessings of our elders</span>
-          <span className="text-[#8E5164] text-[10px] font-serif italic mb-1">Cordially invite you to celebrate</span>
-          <h2 className="text-[#B38136] font-display text-xs font-bold tracking-widest">RING CEREMONY</h2>
+          <h2 className="text-[#B38136] font-display text-xs font-bold tracking-widest my-1">RING CEREMONY</h2>
 
           {/* Grandparents line */}
           <p className="text-[#4A1224] font-serif font-semibold text-[9px] max-w-[90%] leading-tight my-1">
