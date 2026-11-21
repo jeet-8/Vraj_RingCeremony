@@ -12,6 +12,7 @@ export const eventConfig = {
 
   // Monogram & Title
   monogram: "V & P",
+  monogramImage: "/vp-monogram.png",
   monogramTitle: "Vraj & Pooja",
 
   // Couple & Parents Information
@@ -148,25 +149,13 @@ export const eventConfig = {
     defaultMuted: true,
   },
 
-  // Photo Gallery placeholders
+  // Photo Gallery
   photos: [
     {
       id: 1,
       src: "/photos/photo-1.jpg",
-      alt: "Vraj & Pooja (Jiya) - Engagement Portrait",
+      alt: "Vraj & Pooja (Jiya)",
       caption: "Two souls, one beautiful journey begins",
-    },
-    {
-      id: 2,
-      src: "/photos/photo-2.jpg",
-      alt: "Vraj & Pooja (Jiya) - Romantic Moment",
-      caption: "Together is a wonderful place to be",
-    },
-    {
-      id: 3,
-      src: "/photos/photo-3.jpg",
-      alt: "Vraj & Pooja (Jiya) - Sacred Celebration",
-      caption: "A promise of forever sealed with love",
     },
   ],
 

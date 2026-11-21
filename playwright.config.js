@@ -44,7 +44,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npm.cmd run preview -- --port 4173',
+    command: 'cmd.exe /c npx vite preview --port 4173',
     port: 4173,
     reuseExistingServer: true,
     timeout: 30000,

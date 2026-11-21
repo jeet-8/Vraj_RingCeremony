@@ -93,30 +93,18 @@ test.describe('Interactive Scratch-to-Reveal Card', () => {
     await closeBtn.click();
     await page.waitForTimeout(300);
 
-    // 6. Test Next Slide Arrow (min 44px tap target)
+    // 6. Verify Next and Previous arrows and dots indicator are REMOVED (single photo only)
     const nextBtn = photoSection.getByLabel('Next photo');
-    if (await nextBtn.isVisible()) {
-      const box = await nextBtn.boundingBox();
-      expect(box.width).toBeGreaterThanOrEqual(44);
-      expect(box.height).toBeGreaterThanOrEqual(44);
+    const prevBtn = photoSection.getByLabel('Previous photo');
+    await expect(nextBtn).not.toBeVisible();
+    await expect(prevBtn).not.toBeVisible();
 
-      await nextBtn.click();
-      await page.waitForTimeout(600);
+    const dots = photoSection.locator('button[aria-label*="Go to photo"]');
+    await expect(dots).toHaveCount(0);
 
-      // Slide 2 has its own unrevealed foil
-      const canvasSlide2 = photoSection.locator('canvas');
-      await expect(canvasSlide2).toBeVisible();
-
-      // 7. Test "Reveal all" button
-      const revealAllBtn = photoSection.getByRole('button', { name: /reveal all/i });
-      await expect(revealAllBtn).toBeVisible();
-      await revealAllBtn.click();
-      await page.waitForTimeout(1000);
-
-      // Capture Slide 2 revealed
-      const revealAllShot = path.resolve('tests/screenshots/scratch-04-reveal-all.png');
-      await photoSection.screenshot({ path: revealAllShot });
-    }
+    // Capture clean single-photo state
+    const singlePhotoShot = path.resolve('tests/screenshots/scratch-04-single-photo.png');
+    await photoSection.screenshot({ path: singlePhotoShot });
 
     console.log('Scratch-to-reveal test completed with 0 errors and 0 404s!');
   });

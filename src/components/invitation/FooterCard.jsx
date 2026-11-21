@@ -36,11 +36,20 @@ export default function FooterCard({ onReopen }) {
 
   return (
     <footer className="w-full max-w-md mx-auto text-center pt-4 pb-20 px-4">
-      {/* Monogram Seal */}
-      <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[#581829] to-[#3A0F1B] border-2 border-[#D8A85E] shadow-wax-seal flex flex-col items-center justify-center mb-4">
-        <span className="font-display font-bold text-sm text-[#FFEDBA]">
-          {eventConfig.monogram || eventConfig.couple?.monogram || 'V & P'}
-        </span>
+      {/* Monogram Seal Badge */}
+      <div
+        style={{ width: 'clamp(80px, 24vw, 120px)', height: 'clamp(80px, 24vw, 120px)' }}
+        className="mx-auto rounded-full bg-[radial-gradient(circle_at_center,_#581829_0%,_#3A0F1B_70%,_#250711_100%)] border-2 border-[#D8A85E] shadow-wax-seal ring-1 ring-[#FFEDBA]/30 flex items-center justify-center overflow-hidden relative mb-3.5"
+      >
+        <img
+          src={eventConfig.monogramImage || '/vp-monogram.png'}
+          alt="Vraj and Pooja monogram"
+          width="120"
+          height="120"
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-contain p-[8%] select-none pointer-events-none drop-shadow-[0_0_8px_rgba(212,175,55,0.35)] mix-blend-screen transition-transform duration-700 hover:scale-105"
+        />
       </div>
 
       <h3 className="font-script text-3xl text-[#FFEDBA] mb-2">

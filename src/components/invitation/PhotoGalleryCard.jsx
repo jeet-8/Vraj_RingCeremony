@@ -26,14 +26,13 @@ function resolvePhotoSrc(src) {
 
 export default function PhotoGalleryCard() {
   const { t, i18n } = useTranslation();
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [revealedPhotos, setRevealedPhotos] = useState({});
   const [imageLoadedMap, setImageLoadedMap] = useState({});
   const [lightboxZoom, setLightboxZoom] = useState(1);
 
   const photos = eventConfig.photos || [];
-  const currentPhoto = photos[currentIndex] || {
+  const currentPhoto = photos[0] || {
     id: 1,
     src: '/photos/photo-1.jpg',
     alt: 'Vraj & Pooja (Jiya)',
@@ -58,18 +57,7 @@ export default function PhotoGalleryCard() {
     setRevealedPhotos(allRevealed);
   }, [photos]);
 
-  const nextPhoto = () => {
-    if (photos.length > 1) {
-      setCurrentIndex((prev) => (prev + 1) % photos.length);
-    }
-  };
-
-  const prevPhoto = () => {
-    if (photos.length > 1) {
-      setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
-    }
-  };
-
+  
   const currentLang = i18n.language || 'en';
   const fontClass =
     currentLang === 'hi'
@@ -114,7 +102,7 @@ export default function PhotoGalleryCard() {
           key={currentPhotoSrc}
           src={currentPhotoSrc}
           alt={currentPhoto.alt}
-          loading={currentIndex === 0 ? 'eager' : 'lazy'}
+          loading="eager"
           onLoad={() => {
             setImageLoadedMap((prev) => ({ ...prev, [currentPhoto.id]: true }));
           }}
@@ -148,74 +136,22 @@ export default function PhotoGalleryCard() {
             </span>
           </div>
         </div>
-
-        {/* Carousel Navigation Arrows (higher z-index, min 44px tap targets, pointer-events: auto) */}
-        {photos.length > 1 && (
-          <>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                prevPhoto();
-              }}
-              className="absolute left-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] w-11 h-11 rounded-full bg-[#24141E]/80 hover:bg-[#24141E] text-[#FFEDBA] flex items-center justify-center border border-[#D8A85E]/50 text-sm backdrop-blur-sm transition-all z-40 active:scale-95 cursor-pointer shadow-lg"
-              aria-label="Previous photo"
-            >
-              ‹
-            </button>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                nextPhoto();
-              }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 min-w-[44px] min-h-[44px] w-11 h-11 rounded-full bg-[#24141E]/80 hover:bg-[#24141E] text-[#FFEDBA] flex items-center justify-center border border-[#D8A85E]/50 text-sm backdrop-blur-sm transition-all z-40 active:scale-95 cursor-pointer shadow-lg"
-              aria-label="Next photo"
-            >
-              ›
-            </button>
-          </>
-        )}
       </div>
 
-      {/* Dots Indicator with Revealed Status */}
-      {photos.length > 1 && (
-        <div className="flex justify-center items-center gap-2.5 mt-4">
-          {photos.map((p, idx) => {
-            const isDotRevealed = !!revealedPhotos[p.id];
-            const isActive = idx === currentIndex;
-            return (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setCurrentIndex(idx)}
-                className={`transition-all rounded-full flex items-center justify-center cursor-pointer ${
-                  isActive
-                    ? 'w-3 h-3 bg-[#D8A85E] shadow-sm ring-2 ring-[#FFEDBA]/40 scale-110'
-                    : isDotRevealed
-                    ? 'w-2.5 h-2.5 bg-[#B38136]/70 hover:bg-[#D8A85E]'
-                    : 'w-2.5 h-2.5 bg-[#4A1224]/40 border border-[#D8A85E]/50 hover:bg-[#D8A85E]/60'
-                }`}
-                aria-label={`Go to photo ${idx + 1}${isDotRevealed ? ' (revealed)' : ''}`}
-              />
-            );
-          })}
+      {/* Accessible Reveal Button */}
+      {!isCurrentRevealed && (
+        <div className="flex justify-center mt-3">
+          <button
+            type="button"
+            onClick={handleRevealAll}
+            className="px-4 py-1.5 rounded-full bg-[#24141E]/80 hover:bg-[#341C2C] border border-[#D8A85E]/50 text-[#FFEDBA] text-xs font-serif font-medium tracking-wide flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
+            aria-label={t('photo.revealPhoto', t('photo.revealAll', 'Reveal photo'))}
+          >
+            <span>✨</span>
+            <span>{t('photo.revealPhoto', t('photo.revealAll', 'Reveal photo'))}</span>
+          </button>
         </div>
       )}
-
-      {/* Accessible "Reveal all" Button */}
-      <div className="flex justify-center mt-3">
-        <button
-          type="button"
-          onClick={handleRevealAll}
-          className="px-4 py-1.5 rounded-full bg-[#24141E]/80 hover:bg-[#341C2C] border border-[#D8A85E]/50 text-[#FFEDBA] text-xs font-serif font-medium tracking-wide flex items-center gap-1.5 transition-all shadow-md active:scale-95 cursor-pointer"
-          aria-label={t('photo.revealAll')}
-        >
-          <span>✨</span>
-          <span>{t('photo.revealAll')}</span>
-        </button>
-      </div>
 
       {/* Lightbox Modal with Zoom & Close Button */}
       <AnimatePresence>
