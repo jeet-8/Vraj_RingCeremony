@@ -56,7 +56,8 @@
   },
   "schedule": {
     "title": "Auspicious Schedule",
-    "subtitle": "Flow of the Evening"
+    "subtitle": "Flow of the Evening",
+    "welcomeDesc": "Kindly arrive on time to join the celebrations."
   },
   "dressCode": {
     "title": "Dress Code & Palette",

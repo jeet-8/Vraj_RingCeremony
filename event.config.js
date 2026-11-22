@@ -116,9 +116,9 @@ export const eventConfig = {
       titleEn: "Arrival & Welcome",
       titleHi: "आगमन एवं स्वागत",
       titleGu: "આગમન અને સ્વાગત",
-      descEn: "Traditional welcome with dhol, shehnai, and royal refreshments.",
-      descHi: "ढोल, शहनाई और शाही स्वागत अल्पाहार के साथ।",
-      descGu: "ઢોલ, શરણાઈ અને શાહી સ્વાગત અલ્પાહાર સાથે.",
+      descEn: "Kindly arrive on time to join the celebrations.",
+      descHi: "कृपया समय पर पधारकर उत्सव में सम्मिलित हों।",
+      descGu: "કૃપા કરીને સમયસર પધારી ઉત્સવમાં સામેલ થાઓ.",
       icon: "sparkles",
     },
     {

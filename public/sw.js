@@ -3,7 +3,7 @@
  * Ensures users always receive the freshest build without stale cache lockups.
  */
 
-const BUILD_VERSION = 'vraj-ceremony-v20261122_1530';
+const BUILD_VERSION = 'vraj-ceremony-v20261122_1620';
 const CACHE_NAME = `vraj-cache-${BUILD_VERSION}`;
 
 // 1. Immediately activate upon installation

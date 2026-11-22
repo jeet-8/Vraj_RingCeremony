@@ -34,11 +34,13 @@ export default function ScheduleCard() {
             ? item.titleGu 
             : item.titleEn;
 
-          const desc = currentLang === 'hi' 
-            ? item.descHi 
-            : currentLang === 'gu' 
-            ? item.descGu 
-            : item.descEn;
+          const desc = (idx === 0 && t('schedule.welcomeDesc'))
+            ? t('schedule.welcomeDesc')
+            : (currentLang === 'hi' 
+                ? item.descHi 
+                : currentLang === 'gu' 
+                ? item.descGu 
+                : item.descEn);
 
           return (
             <div key={idx} className="relative group">
@@ -55,7 +57,7 @@ export default function ScheduleCard() {
                 <h4 className={`${fontClass} text-sm sm:text-base font-bold text-[#4A1224] mt-1.5`}>
                   {title}
                 </h4>
-                <p className={`${fontClass} text-xs text-[#8E5164] mt-1 leading-relaxed`}>
+                <p className={`${fontClass} text-xs text-[#8E5164] mt-1 leading-relaxed [text-wrap:balance]`}>
                   {desc}
                 </p>
               </div>
