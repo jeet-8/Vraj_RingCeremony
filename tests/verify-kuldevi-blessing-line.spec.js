@@ -31,8 +31,8 @@ test.describe('Verify Kuldevi Blessing Line on Hero Card', () => {
       const grandsonLabel = page.locator('text="Grandson of"').first();
       await expect(grandsonLabel).toBeVisible();
 
-      // Verify Shrimati MoriBai paragraph with capitalized Wife and Residing
-      const grandparents = page.locator('text=/Shrimati MoriBai, Wife of Shri Dhansinghji Rajpurohit.*Presently Residing in Ahmedabad/').first();
+      // Verify Shrimati MoriBai paragraph with capitalized Wife
+      const grandparents = page.locator('text=/Shrimati MoriBai, Wife of Shri Dhansinghji Rajpurohit \\(Native: Chunda\\)/').first();
       await expect(grandparents).toBeVisible();
       await expect(grandparents).toBeVisible();
 

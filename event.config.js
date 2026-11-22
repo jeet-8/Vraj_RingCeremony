@@ -19,21 +19,20 @@ export const eventConfig = {
   groom: {
     name: "Vraj",
     fullName: "Vraj",
-    parents: "Rekha Kuwar & Prakashsinghji",
-    grandparentsLine: "Grandson of Shrimati MoriBai, Wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently Residing in Ahmedabad.",
+    parents: "Rekha Kuwar & Prakash singhji",
+    grandparentsLine: "Shrimati MoriBai, Wife of Shri Dhansinghji Rajpurohit (Native: Chunda)",
     grandparents: {
       relation: "Grandson of",
       grandmother: "Shrimati MoriBai",
       grandfather: "Shri Dhansinghji Rajpurohit",
       nativePlace: "Chunda",
-      currentCity: "Ahmedabad",
-      fullText: "Grandson of Shrimati MoriBai, Wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently Residing in Ahmedabad.",
+      fullText: "Grandson of Shrimati MoriBai, Wife of Shri Dhansinghji Rajpurohit (Native: Chunda)",
     },
   },
   bride: {
     name: "Pooja (Jiya)",
     fullName: "Pooja (Jiya)",
-    parents: "Seema Kuwar & Parvatsinghji",
+    parents: "Seema Kuwar & Parvat singhji",
     grandLabel: "Granddaughter of",
     grandparentsLine: "Shrimati  SukhiBai, Wife of Shri Deep Singhji Rajpurohit (Native: Bhachunda)",
     grandparents: {
@@ -149,17 +148,17 @@ export const eventConfig = {
   // Family Contacts & RSVP
   contacts: [
     {
-      name: "Rekha Kuwar & Prakashsinghji",
-      nameHi: "रेखा कुंवर & प्रकाशसिंहजी",
-      nameGu: "રેખા કુંવર & પ્રકાશસિંહજી",
+      name: "Rekha Kuwar & Prakash singhji",
+      nameHi: "रेखा कुंवर & प्रकाश सिंहजी",
+      nameGu: "રેખા કુંવર & પ્રકાશ સિંહજી",
       roleEn: "Groom's Family",
       roleHi: "वर पक्ष",
       roleGu: "વર પક્ષ"
     },
     {
-      name: "Seema Kuwar & Parvatsinghji",
-      nameHi: "सीमा कुंवर & पर्वतसिंहजी",
-      nameGu: "સીમા કુંવર & પર્વતસિંહજી",
+      name: "Seema Kuwar & Parvat singhji",
+      nameHi: "सीमा कुंवर & पर्वत सिंहजी",
+      nameGu: "સીમા કુંવર & પર્વત સિંહજી",
       roleEn: "Bride's Family",
       roleHi: "वधू पक्ष",
       roleGu: "કન્યા પક્ષ",

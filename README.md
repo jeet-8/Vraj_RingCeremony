@@ -98,11 +98,11 @@ export const eventConfig = {
   // Couple & Parents Information
   groom: {
     name: "Vraj",
-    parents: "Rekha Kuwar & Prakashsinghji",
+    parents: "Rekha Kuwar & Prakash singhji",
   },
   bride: {
     name: "Pooja (Jiya)",
-    parents: "Seema Kuwar & Parvatsinghji",
+    parents: "Seema Kuwar & Parvat singhji",
   },
   monogram: "V & P",
   ceremony: "Ring Ceremony",

@@ -141,10 +141,10 @@ export default function CSSEnvelope({
           <p className="text-[#4A1224] font-serif font-semibold text-[10px]">{t('hero.brideParents') || eventConfig.bride.parents}</p>
 
           <div className="w-24 h-[1px] bg-[#D8A85E] my-1.5" />
-          <p className="text-[#B38136] text-[9.5px] font-serif tracking-wider font-semibold">
+          <p className="text-[#B38136] text-[12px] font-serif tracking-wider font-semibold">
             {eventConfig.dateTime?.dateFormatted?.toUpperCase() || 'SUNDAY, 6 DECEMBER 2026'}
           </p>
-          <p className="text-[#5A2637] text-[8.5px] font-serif">
+          <p className="text-[#4A1224] text-[10.5px] font-serif font-semibold mt-1">
             {eventConfig.dateTime?.timeFormatted || '4:00 PM Onwards'} • {eventConfig.venue?.name}, {eventConfig.venue?.city}
           </p>
         </motion.div>

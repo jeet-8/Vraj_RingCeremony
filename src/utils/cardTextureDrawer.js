@@ -247,7 +247,7 @@ export function drawInvitationCardTexture(canvas, { t, currentLang = 'hi', event
   ctx.font = '14px serif';
   ctx.fillText('◆', midX, curY);
 
-  // 8. Groom Block: "Vraj", "Son of", "Rekha Kuwar & Prakashsinghji"
+  // 8. Groom Block: "Vraj", "Son of", "Rekha Kuwar & Prakash singhji"
   curY += 65;
   ctx.font = `italic 115px ${scriptFont}`;
   ctx.fillStyle = '#4A1224';
@@ -311,7 +311,7 @@ export function drawInvitationCardTexture(canvas, { t, currentLang = 'hi', event
     drawBrideGpLabel();
   }
 
-  // 11. Bride Block: "Pooja (Jiya)", "Daughter of", "Seema Kuwar & Parvatsinghji"
+  // 11. Bride Block: "Pooja (Jiya)", "Daughter of", "Seema Kuwar & Parvat singhji"
   curY += 40;
   ctx.font = `italic 115px ${scriptFont}`;
   ctx.fillStyle = '#4A1224';
@@ -338,19 +338,19 @@ export function drawInvitationCardTexture(canvas, { t, currentLang = 'hi', event
   ctx.lineTo(midX + 250, curY);
   ctx.stroke();
 
-  curY += 50;
+  curY += 60;
   const dateText = `✦  ${eventConfig.dateTime?.dateFormatted?.toUpperCase() || 'SUNDAY, 6 DECEMBER 2026'}  ✦`;
-  ctx.font = `bold 38px ${displayFont}`;
+  ctx.font = `600 60px ${displayFont}`;
   ctx.fillStyle = '#B38136';
   ctx.fillText(dateText, midX, curY);
 
-  curY += 46;
+  curY += 56;
   const timeText = eventConfig.dateTime?.timeFormatted || '4:00 PM Onwards';
-  ctx.font = `500 32px ${serifFont}`;
-  ctx.fillStyle = '#5A2637';
+  ctx.font = `600 48px ${serifFont}`;
+  ctx.fillStyle = '#4A1224';
   ctx.fillText(timeText, midX, curY);
 
-  curY += 46;
+  curY += 50;
   const venueText = `${eventConfig.venue?.name || 'R.K. Royal Banquet & Party Lawn'}, ${eventConfig.venue?.city || 'Science City'}`;
   ctx.font = `500 32px ${serifFont}`;
   ctx.fillStyle = '#5A2637';

@@ -15,7 +15,7 @@ export default function HeroCard({ guestName }) {
     : 'font-serif';
 
   return (
-    <div className="relative w-full max-w-md mx-auto paper-card rounded-2xl p-6 sm:p-8 shadow-2xl border border-[#D8A85E]/30 overflow-hidden mb-8">
+    <div className="relative w-full max-w-md mx-auto paper-card rounded-2xl px-4 py-6 sm:p-8 shadow-2xl border border-[#D8A85E]/30 overflow-hidden mb-8">
       {/* Delicate Gold Corner Ornaments */}
       <div className="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-[#D8A85E]/50 rounded-tl-lg pointer-events-none" />
       <div className="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-[#D8A85E]/50 rounded-tr-lg pointer-events-none" />
@@ -121,7 +121,10 @@ export default function HeroCard({ guestName }) {
           <p className="font-serif italic text-xs text-[#9E6D38] mt-1.5 mb-1 tracking-wider">
             {t('hero.groomParentsLabel')}
           </p>
-          <p className={`${fontClass} text-sm sm:text-base text-[#4A1224] font-semibold tracking-wide px-2 leading-snug`}>
+          <p
+            className={`${fontClass} text-[#4A1224] font-semibold tracking-wide px-2 leading-snug whitespace-nowrap`}
+            style={{ fontSize: 'clamp(13.5px, 3.8vw, 16px)' }}
+          >
             {t('hero.groomParents') || eventConfig.groom.parents}
           </p>
         </div>
@@ -181,22 +184,41 @@ export default function HeroCard({ guestName }) {
           <p className="font-serif italic text-xs text-[#9E6D38] mt-1.5 mb-1 tracking-wider">
             {t('hero.brideParentsLabel')}
           </p>
-          <p className={`${fontClass} text-sm sm:text-base text-[#4A1224] font-semibold tracking-wide px-2 leading-snug`}>
+          <p
+            className={`${fontClass} text-[#4A1224] font-semibold tracking-wide px-2 leading-snug whitespace-nowrap`}
+            style={{ fontSize: 'clamp(13.5px, 3.8vw, 16px)' }}
+          >
             {t('hero.brideParents') || eventConfig.bride.parents}
           </p>
         </div>
       </div>
 
       {/* Date & Time Highlight */}
-      <div className="mt-4 pt-4 border-t border-[#D8A85E]/30 text-center">
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-[#B38136]">✦</span>
-          <p className="font-display text-sm sm:text-base tracking-widest text-[#B38136] font-semibold">
+      <div className="mt-5 pt-5 border-t border-[#D8A85E]/30 text-center pb-5 sm:pb-6">
+        <div className="flex items-center justify-center gap-1.5 sm:gap-2">
+          <span
+            className="text-[#B38136] select-none flex-shrink-0"
+            style={{ fontSize: 'clamp(15px, 4.6vw, 24px)' }}
+          >
+            ✦
+          </span>
+          <p
+            className="font-display tracking-wider sm:tracking-widest text-[#B38136] font-semibold uppercase whitespace-nowrap"
+            style={{ fontSize: 'clamp(18px, 5.8vw, 30px)' }}
+          >
             {eventConfig.dateTime.dateFormatted.toUpperCase()}
           </p>
-          <span className="text-[#B38136]">✦</span>
+          <span
+            className="text-[#B38136] select-none flex-shrink-0"
+            style={{ fontSize: 'clamp(15px, 4.6vw, 24px)' }}
+          >
+            ✦
+          </span>
         </div>
-        <p className="font-serif text-xs sm:text-sm text-[#5A2637] mt-1 font-medium">
+        <p
+          className={`${fontClass} text-[#4A1224] font-medium sm:font-semibold mt-2.5 whitespace-nowrap tracking-wide`}
+          style={{ fontSize: 'clamp(16.5px, 5.1vw, 24px)' }}
+        >
           {eventConfig.dateTime.timeFormatted}
         </p>
       </div>
