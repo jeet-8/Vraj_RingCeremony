@@ -13,6 +13,11 @@ export default function LanguageSelector({ isFixed = false }) {
 
   const handleLanguageChange = (code) => {
     i18n.changeLanguage(code);
+    try {
+      if (typeof window !== 'undefined' && window.sessionStorage) {
+        sessionStorage.setItem('vraj_pooja_lang_session', code);
+      }
+    } catch (e) {}
   };
 
   const containerClasses = isFixed

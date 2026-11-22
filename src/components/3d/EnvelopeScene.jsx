@@ -160,7 +160,7 @@ export default function EnvelopeScene({
             <span className="text-[#D8A85E] text-sm">✦</span>
           </button>
           <span className="text-[10px] sm:text-[11px] tracking-widest text-[#FFDFE7]/90 mt-1.5 font-serif uppercase pointer-events-none drop-shadow">
-            Touch anywhere or tap the seal
+            {t('opening.touchHint', 'Touch anywhere or tap the seal')}
           </span>
         </div>
       )}

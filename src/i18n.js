@@ -4,17 +4,32 @@ import en from './locales/en.json';
 import hi from './locales/hi.json';
 import gu from './locales/gu.json';
 
-const STORAGE_KEY = 'vraj_pooja_lang';
+const SESSION_KEY = 'vraj_pooja_lang_session';
 
-// Retrieve user's explicitly saved choice if any; default to 'hi' for first-time visitors
-let initialLng = 'hi';
+// Delete any old localStorage language keys on load so a previously saved "en" can't override the default
 try {
-  const savedLng = typeof window !== 'undefined' && window.localStorage ? localStorage.getItem(STORAGE_KEY) : null;
-  if (savedLng && ['en', 'hi', 'gu'].includes(savedLng)) {
-    initialLng = savedLng;
+  if (typeof window !== 'undefined' && window.localStorage) {
+    localStorage.removeItem('vraj_pooja_lang');
+    localStorage.removeItem('i18nextLng');
+    localStorage.removeItem('i18next');
+    localStorage.removeItem('language');
+    localStorage.removeItem('lng');
   }
 } catch (e) {
-  // localStorage may be blocked or restricted (e.g. private browsing)
+  // Ignore localStorage restrictions
+}
+
+// Retrieve user's manual choice for THIS VISIT ONLY from sessionStorage; default to 'hi'
+let initialLng = 'hi';
+try {
+  if (typeof window !== 'undefined' && window.sessionStorage) {
+    const sessionLng = sessionStorage.getItem(SESSION_KEY);
+    if (sessionLng && ['en', 'hi', 'gu'].includes(sessionLng)) {
+      initialLng = sessionLng;
+    }
+  }
+} catch (e) {
+  // Ignore sessionStorage restrictions
 }
 
 i18n
@@ -37,14 +52,14 @@ if (typeof document !== 'undefined') {
   document.documentElement.lang = initialLng;
 }
 
-// Keep document.documentElement.lang synchronized and persist user choice
+// Keep document.documentElement.lang synchronized and persist user choice in sessionStorage
 i18n.on('languageChanged', (lng) => {
   if (typeof document !== 'undefined') {
     document.documentElement.lang = lng;
   }
   try {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      localStorage.setItem(STORAGE_KEY, lng);
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      sessionStorage.setItem(SESSION_KEY, lng);
     }
   } catch (e) {
     // Ignore quota or access errors

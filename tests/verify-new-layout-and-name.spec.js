@@ -58,7 +58,7 @@ test.describe('Verify Hero Card Layout & Pooja (Jiya) & V & P Monogram', () => {
 
     // Verify Groom Grandparents Block
     const grandsonOf = page.locator('text=Grandson of');
-    const groomGrandparents = page.locator('text=Shrimati Mori Bai');
+    const groomGrandparents = page.locator('text=Shrimati MoriBai');
     await expect(grandsonOf).toBeVisible();
     await expect(groomGrandparents).toBeVisible();
 

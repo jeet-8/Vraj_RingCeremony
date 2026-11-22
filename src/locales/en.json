@@ -6,6 +6,7 @@
   ],
   "opening": {
     "tapSeal": "Tap the seal to open",
+    "touchHint": "Touch anywhere or tap the seal",
     "skip": "Skip intro",
     "preparing": "Preparing your royal invitation..."
   },
@@ -15,8 +16,8 @@
     "elderBlessing": "With the divine blessings of our beloved elders",
     "invite": "cordially invite you to celebrate the joyous Ring Ceremony of",
     "grandsonLabel": "Grandson of",
-    "groomGrandparentsLine": "Shrimati Mori Bai, Wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently Residing in Ahmedabad.",
-    "groomGrandparentsFull": "Grandson of Shrimati Mori Bai, Wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently Residing in Ahmedabad.",
+    "groomGrandparentsLine": "Shrimati MoriBai, Wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently Residing in Ahmedabad.",
+    "groomGrandparentsFull": "Grandson of Shrimati MoriBai, Wife of Shri Dhansinghji Rajpurohit (Native: Chunda), Presently Residing in Ahmedabad.",
     "groomParentsLabel": "Son of",
     "brideParentsLabel": "Daughter of",
     "groomParents": "Rekha Kuwar & Prakashsinghji",
@@ -28,7 +29,7 @@
   "bride": {
     "labelPosition": "before",
     "grandLabel": "Granddaughter of",
-    "grandparentsLine": "Shrimati  Sukhi Bai, Wife of Shri Deep Singhji Rajpurohit (Native: Bhachunda)"
+    "grandparentsLine": "Shrimati  SukhiBai, Wife of Shri Deep Singhji Rajpurohit (Native: Bhachunda)"
   },
   "countdown": {
     "title": "Counting Down to the Auspicious Moment",
