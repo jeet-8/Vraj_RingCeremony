@@ -5,10 +5,10 @@ import eventConfig from '../../event.config.js';
 
 export default function TopBlessingLines({ isOpening = false, isHero = false }) {
   const { i18n } = useTranslation();
-  const currentLang = i18n.language || 'en';
+  const currentLang = i18n.language || 'hi';
 
-  // Get blessing lines for current language or fallback to English
-  const lines = eventConfig.blessings[currentLang] || eventConfig.blessings.en;
+  // Get blessing lines for current language or fallback to Hindi
+  const lines = eventConfig.blessings[currentLang] || eventConfig.blessings.hi || eventConfig.blessings.en;
 
   // Font class based on language
   const fontClass = currentLang === 'hi' 

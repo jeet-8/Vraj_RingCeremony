@@ -31,8 +31,8 @@ test.describe('Verify Kuldevi Blessing Line on Hero Card', () => {
       const grandsonLabel = page.locator('text="Grandson of"').first();
       await expect(grandsonLabel).toBeVisible();
 
-      // Verify Shrimati Morkidevi paragraph with capitalized Wife and Residing
-      const grandparents = page.locator('text=/Shrimati Morkidevi, Wife of Shri Dhansinghji Rajpurohit.*Presently Residing in Ahmedabad/').first();
+      // Verify Shrimati Mori Bai paragraph with capitalized Wife and Residing
+      const grandparents = page.locator('text=/Shrimati Mori Bai, Wife of Shri Dhansinghji Rajpurohit.*Presently Residing in Ahmedabad/').first();
       await expect(grandparents).toBeVisible();
       await expect(grandparents).toBeVisible();
 
@@ -72,7 +72,7 @@ test.describe('Verify Kuldevi Blessing Line on Hero Card', () => {
       const blessing = page.locator('text="श्री कुलदेवी खिमज माताजी की असीम कृपा से, हमारे यहाँ"').first();
       await expect(blessing).toBeVisible();
 
-      const grandparents = page.locator('text=/श्रीमति मोरकीदेवी/').first();
+      const grandparents = page.locator('text=/श्रीमति मोरीबाई/').first();
       await expect(grandparents).toBeVisible();
 
       const pillBox = await pill.boundingBox();
@@ -101,7 +101,7 @@ test.describe('Verify Kuldevi Blessing Line on Hero Card', () => {
       const blessing = page.locator('text="શ્રી કુળદેવી ખીમજ માતાજીની અસીમ કૃપાથી, અમારે ત્યાં"').first();
       await expect(blessing).toBeVisible();
 
-      const grandparents = page.locator('text=/શ્રીમતી મોરકીદેવી/').first();
+      const grandparents = page.locator('text=/શ્રીમતી મોરીબાઈ/').first();
       await expect(grandparents).toBeVisible();
 
       const pillBox = await pill.boundingBox();

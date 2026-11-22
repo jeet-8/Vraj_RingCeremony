@@ -58,7 +58,7 @@ export default function PhotoGalleryCard() {
   }, [photos]);
 
   
-  const currentLang = i18n.language || 'en';
+  const currentLang = i18n.language || 'hi';
   const fontClass =
     currentLang === 'hi'
       ? 'font-hindi'

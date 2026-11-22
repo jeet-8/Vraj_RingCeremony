@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function LanguageSelector({ isFixed = false }) {
   const { i18n } = useTranslation();
-  const currentLang = i18n.language || 'en';
+  const currentLang = i18n.language || 'hi';
 
   const languages = [
     { code: 'en', label: 'EN', font: 'font-serif' },

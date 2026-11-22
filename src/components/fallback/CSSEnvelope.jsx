@@ -9,7 +9,8 @@ export default function CSSEnvelope({
   onOpeningStart,
   onOpeningComplete,
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n?.language || 'hi';
   const [stage, setStage] = useState('idle'); // 'idle' | 'opening' | 'revealed'
 
   // If isOpening becomes true from parent, start opening sequence immediately
@@ -58,44 +59,70 @@ export default function CSSEnvelope({
               : { y: 50, opacity: 0, scale: 0.9 }
           }
           transition={{ duration: 1.8, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute inset-x-4 top-[14%] h-[460px] bg-[#FAF6F0] rounded-xl border-2 border-[#D8A85E] p-4 flex flex-col items-center justify-center text-center shadow-2xl z-10"
+          className="absolute inset-x-4 top-[14%] h-[460px] bg-[#FAF6F0] rounded-xl border-2 border-[#D8A85E] p-3 flex flex-col items-center justify-center text-center shadow-2xl z-10"
         >
-          <span className="text-[#875217] text-xs font-serif font-bold">卐 Shree Ganeshay Namah 卐</span>
+          {/* Top 3 Blessing Lines (Each on its own line) */}
+          <span className="text-[#875217] text-[10px] font-serif font-bold">✦ 卐 ✦</span>
+          {(eventConfig.blessings[currentLang] || eventConfig.blessings.hi || []).map((line, idx) => (
+            <span key={idx} className="text-[#875217] text-[8.5px] font-serif font-semibold uppercase leading-tight">
+              {line}
+            </span>
+          ))}
+
           <h2 className="text-[#B38136] font-display text-xs font-bold tracking-widest my-1">{t('hero.heroPillText', eventConfig.heroPillText || 'SAGAI - DASTUR')}</h2>
 
           {/* Kuldevi Blessing line */}
-          <p className="text-[#4A1224] font-serif font-semibold text-[9px] max-w-[88%] leading-tight my-0.5">
+          <p className="text-[#4A1224] font-serif font-semibold text-[8.5px] max-w-[88%] leading-tight my-0.5">
             {t('hero.heroBlessingLine', eventConfig.hero?.blessingLine || 'With the Immense Grace of Shri Kuldevi Khimaj Mataji, We Have')}
           </p>
 
           {/* Grandparents line */}
-          <p className="text-[#4A1224] font-serif font-semibold text-[9px] max-w-[90%] leading-tight my-1">
+          <p className="text-[#4A1224] font-serif font-semibold text-[8.5px] max-w-[90%] leading-tight my-0.5">
             {t('hero.groomGrandparentsFull') || eventConfig.groom?.grandparentsLine}
           </p>
 
           {/* Groom */}
-          <h1 className="text-[#4A1224] font-script text-3xl mt-1 leading-tight">{eventConfig.groom.name}</h1>
-          <p className="text-[#9E6D38] font-serif italic text-[10px]">{t('hero.groomParentsLabel') || 'Son of'}</p>
-          <p className="text-[#4A1224] font-serif font-semibold text-xs">{t('hero.groomParents') || eventConfig.groom.parents}</p>
+          <h1 className="text-[#4A1224] font-script text-2xl mt-0.5 leading-tight">{eventConfig.groom.name}</h1>
+          <p className="text-[#9E6D38] font-serif italic text-[9px]">{t('hero.groomParentsLabel') || 'Son of'}</p>
+          <p className="text-[#4A1224] font-serif font-semibold text-[10px]">{t('hero.groomParents') || eventConfig.groom.parents}</p>
 
           <div className="w-16 h-[1px] bg-[#D8A85E]/50 my-1" />
 
           {/* Bride Grandparents */}
           <div className="my-0.5 text-center">
-            <p className="text-[#9E6D38] font-serif italic text-[10px]">Granddaughter of</p>
-            <p className="text-[#4A1224] font-serif font-semibold text-[9px] max-w-[90%] leading-tight mx-auto">
-              {t('bride.grandparentsLine') || eventConfig.bride?.grandparentsLine}
-            </p>
+            {t('bride.labelPosition') === 'after' ? (
+              <>
+                <p className="text-[#4A1224] font-serif font-semibold text-[8.5px] max-w-[90%] leading-tight mx-auto">
+                  {t('bride.grandparentsLine') || eventConfig.bride?.grandparentsLine}
+                </p>
+                <p className="text-[#9E6D38] font-serif italic text-[9px]">
+                  {t('bride.grandLabel', eventConfig.bride?.grandLabel || 'Granddaughter of')}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-[#9E6D38] font-serif italic text-[9px]">
+                  {t('bride.grandLabel', eventConfig.bride?.grandLabel || 'Granddaughter of')}
+                </p>
+                <p className="text-[#4A1224] font-serif font-semibold text-[8.5px] max-w-[90%] leading-tight mx-auto">
+                  {t('bride.grandparentsLine') || eventConfig.bride?.grandparentsLine}
+                </p>
+              </>
+            )}
           </div>
 
           {/* Bride */}
-          <h1 className="text-[#4A1224] font-script text-3xl leading-tight">{eventConfig.bride.name}</h1>
-          <p className="text-[#9E6D38] font-serif italic text-[10px]">{t('hero.brideParentsLabel') || 'Daughter of'}</p>
-          <p className="text-[#4A1224] font-serif font-semibold text-xs">{t('hero.brideParents') || eventConfig.bride.parents}</p>
+          <h1 className="text-[#4A1224] font-script text-2xl leading-tight">{eventConfig.bride.name}</h1>
+          <p className="text-[#9E6D38] font-serif italic text-[9px]">{t('hero.brideParentsLabel') || 'Daughter of'}</p>
+          <p className="text-[#4A1224] font-serif font-semibold text-[10px]">{t('hero.brideParents') || eventConfig.bride.parents}</p>
 
-          <div className="w-24 h-[1px] bg-[#D8A85E] my-2" />
-          <p className="text-[#B38136] text-[10px] font-serif tracking-wider font-semibold">SUNDAY, 6 DECEMBER 2026</p>
-          <p className="text-[#5A2637] text-[10px] font-serif">R.K. Royal Banquet &amp; Party Lawn, Science City</p>
+          <div className="w-24 h-[1px] bg-[#D8A85E] my-1.5" />
+          <p className="text-[#B38136] text-[9.5px] font-serif tracking-wider font-semibold">
+            {eventConfig.dateTime?.dateFormatted?.toUpperCase() || 'SUNDAY, 6 DECEMBER 2026'}
+          </p>
+          <p className="text-[#5A2637] text-[8.5px] font-serif">
+            {eventConfig.dateTime?.timeFormatted || '4:00 PM Onwards'} • {eventConfig.venue?.name}, {eventConfig.venue?.city}
+          </p>
         </motion.div>
 
         {/* Bottom Flap */}

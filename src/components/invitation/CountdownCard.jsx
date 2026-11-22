@@ -37,7 +37,7 @@ export default function CountdownCard() {
     return () => clearInterval(timer);
   }, [targetDate]);
 
-  const currentLang = i18n.language || 'en';
+  const currentLang = i18n.language || 'hi';
   const fontClass = currentLang === 'hi' 
     ? 'font-hindi' 
     : currentLang === 'gu' 

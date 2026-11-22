@@ -2,6 +2,7 @@ import React, { useRef, useMemo, useEffect } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import gsap from 'gsap';
+import { useTranslation } from 'react-i18next';
 import {
   createEmbossedLeafNormalTexture,
   createSilkLiningNormalTexture,
@@ -10,6 +11,7 @@ import {
 } from '../../utils/proceduralTextures';
 import soundEngine from '../../utils/proceduralAudio';
 import eventConfig from '../../../event.config.js';
+import { drawInvitationCardTexture } from '../../utils/cardTextureDrawer';
 
 export default function EnvelopeMesh({
   isOpening,
@@ -18,6 +20,8 @@ export default function EnvelopeMesh({
   tilt,
 }) {
   const { camera, viewport, gl } = useThree();
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language || 'hi';
 
   // Root references
   const envelopeGroupRef = useRef();
@@ -25,6 +29,8 @@ export default function EnvelopeMesh({
   const lowerPocketRef = useRef();
   const cardGroupRef = useRef();
   const cardMeshRef = useRef();
+  const cardCanvasRef = useRef(null);
+  const cardTextureRef = useRef(null);
   const ribbonBandRef = useRef();
   const bowRef = useRef();
   const leftTailRef = useRef();
@@ -118,158 +124,71 @@ export default function EnvelopeMesh({
     });
   }, []);
 
-  // 4. Satin Champagne Gold Ribbon & Bow Material
+  // 4. Satin Champagne Gold Ribbon & Bow Material (subtle sheen, non-plastic)
   const ribbonMaterial = useMemo(() => {
     return new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color('#E8BA6B'),
-      emissive: new THREE.Color('#38220A'),
-      roughness: 0.22,
-      metalness: 0.35,
+      color: new THREE.Color('#DFBE95'),
+      emissive: new THREE.Color('#221406'),
+      roughness: 0.18,
+      metalness: 0.28,
       sheen: 1.0,
-      sheenRoughness: 0.20,
-      sheenColor: new THREE.Color('#FFF6DB'),
-      clearcoat: 0.40,
-      clearcoatRoughness: 0.20,
+      sheenRoughness: 0.15,
+      sheenColor: new THREE.Color('#FFF5E6'),
+      clearcoat: 0.60,
+      clearcoatRoughness: 0.15,
       side: THREE.DoubleSide,
     });
   }, []);
 
-  // 5. High-Resolution Opaque Royal Ivory Card Material
+  // 5. Ultra-Sharp Opaque Royal Ivory Card Material (Single Source of Truth)
   const cardMaterial = useMemo(() => {
     const canvas = document.createElement('canvas');
-    canvas.width = 1400;
-    canvas.height = 2000;
-    const ctx = canvas.getContext('2d');
+    canvas.width = 1600;
+    canvas.height = 2640;
+    cardCanvasRef.current = canvas;
 
-    // Royal Ivory background (100% opaque)
-    ctx.fillStyle = '#FAF6F0';
-    ctx.fillRect(0, 0, 1400, 2000);
-
-    // Subtle paper border shading
-    ctx.fillStyle = '#F5ECE1';
-    ctx.fillRect(30, 30, 1340, 1940);
-    ctx.fillStyle = '#FAF6F0';
-    ctx.fillRect(40, 40, 1320, 1920);
-
-    // Ornate gold foil dual borders
-    ctx.strokeStyle = '#D8A85E';
-    ctx.lineWidth = 8;
-    ctx.strokeRect(60, 60, 1280, 1880);
-
-    ctx.lineWidth = 2.5;
-    ctx.strokeRect(80, 80, 1240, 1840);
-
-    // Corner filigree ornaments
-    const drawCorner = (x, y, flipX, flipY) => {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.scale(flipX, flipY);
-      ctx.strokeStyle = '#D8A85E';
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(0, 0);
-      ctx.lineTo(50, 0);
-      ctx.moveTo(0, 0);
-      ctx.lineTo(0, 50);
-      ctx.stroke();
-      ctx.restore();
-    };
-    drawCorner(100, 100, 1, 1);
-    drawCorner(1300, 100, -1, 1);
-    drawCorner(100, 1900, 1, -1);
-    drawCorner(1300, 1900, -1, -1);
-
-    // Sacred Ganesh motif
-    ctx.fillStyle = '#B38136';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.font = '64px serif';
-    ctx.fillText('卐', 700, 190);
-
-    // Top blessing lines
-    ctx.font = '500 30px "Cormorant Garamond", serif';
-    ctx.fillStyle = '#B38136';
-    ctx.fillText('Shree Ganeshay Namah  •  Shree Khimaj Mata Namah  •  Shree Kheteshwaray Namah', 700, 260);
-
-    ctx.font = '24px "Cinzel", serif';
-    ctx.fillStyle = '#8E5164';
-    ctx.fillText('WITH THE BLESSINGS OF OUR ELDERS', 700, 330);
-
-    ctx.font = 'italic 34px "Cormorant Garamond", serif';
-    ctx.fillStyle = '#8E5164';
-    ctx.fillText('Cordially invite you to celebrate the joyous', 700, 385);
-
-    ctx.font = 'bold 44px "Cinzel", serif';
-    ctx.fillStyle = '#B38136';
-    ctx.fillText('RING CEREMONY', 700, 445);
-
-    // Groom Block
-    ctx.font = 'italic 100px "Great Vibes", cursive';
-    ctx.fillStyle = '#4A1224';
-    ctx.fillText(eventConfig.groom.name, 700, 555);
-
-    ctx.font = 'italic 28px "Cormorant Garamond", serif';
-    ctx.fillStyle = '#9E6D38';
-    ctx.fillText('Son of', 700, 615);
-
-    ctx.font = 'bold 36px "Cormorant Garamond", serif';
-    ctx.fillStyle = '#4A1224';
-    ctx.fillText(eventConfig.groom.parents, 700, 660);
-
-    // Center & Divider
-    ctx.font = 'italic 38px "Cormorant Garamond", serif';
-    ctx.fillStyle = '#D8A85E';
-    ctx.fillText('—  &  —', 700, 730);
-
-    // Bride Block
-    ctx.font = 'italic 100px "Great Vibes", cursive';
-    ctx.fillStyle = '#4A1224';
-    ctx.fillText(eventConfig.bride.name, 700, 835);
-
-    ctx.font = 'italic 28px "Cormorant Garamond", serif';
-    ctx.fillStyle = '#9E6D38';
-    ctx.fillText('Daughter of', 700, 895);
-
-    ctx.font = 'bold 36px "Cormorant Garamond", serif';
-    ctx.fillStyle = '#4A1224';
-    ctx.fillText(eventConfig.bride.parents, 700, 940);
-
-    // Thin separator
-    ctx.strokeStyle = '#D8A85E';
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(350, 1010);
-    ctx.lineTo(1050, 1010);
-    ctx.stroke();
-
-    ctx.font = 'bold 42px "Cinzel", serif';
-    ctx.fillStyle = '#B38136';
-    ctx.fillText('SUNDAY, 6 DECEMBER 2026', 700, 1085);
-
-    ctx.font = '34px "Cormorant Garamond", serif';
-    ctx.fillStyle = '#5A2637';
-    ctx.fillText('4:00 PM Arrival & Welcome', 700, 1145);
-
-    ctx.font = '34px "Cormorant Garamond", serif';
-    ctx.fillStyle = '#5A2637';
-    ctx.fillText('R.K. Royal Banquet & Party Lawn, Science City', 700, 1205);
+    drawInvitationCardTexture(canvas, { t, currentLang, eventConfig });
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.generateMipmaps = true;
     texture.minFilter = THREE.LinearMipmapLinearFilter;
     texture.magFilter = THREE.LinearFilter;
+    try {
+      texture.anisotropy = gl?.capabilities?.getMaxAnisotropy() || 16;
+    } catch (e) {
+      texture.anisotropy = 4;
+    }
     texture.needsUpdate = true;
+    cardTextureRef.current = texture;
 
     return new THREE.MeshStandardMaterial({
       map: texture,
-      roughness: 0.50,
+      roughness: 0.45,
       metalness: 0.05,
       transparent: false,
       depthWrite: true,
       side: THREE.FrontSide,
     });
-  }, []);
+  }, [gl, currentLang, t]);
+
+  // Redraw when language changes or when web fonts are fully loaded
+  useEffect(() => {
+    const redraw = () => {
+      if (cardCanvasRef.current && cardTextureRef.current) {
+        drawInvitationCardTexture(cardCanvasRef.current, { t, currentLang, eventConfig });
+        cardTextureRef.current.needsUpdate = true;
+      }
+    };
+
+    redraw();
+
+    if (typeof document !== 'undefined' && document.fonts) {
+      document.fonts.ready.then(() => {
+        redraw();
+      });
+    }
+  }, [currentLang, t]);
 
   // 6. Wax Seal Radius (~38% of screen width on mobile, max 220px on desktop)
   const sealR = useMemo(() => Math.min(envW * 0.19, 0.44), [envW]);
@@ -434,7 +353,7 @@ export default function EnvelopeMesh({
 
       // 2.4s: Card inside with tied silk ribbon and knotted bow is fully revealed.
 
-      // 3.6s: Bow unties: ribbon tails loosen and slide off, ribbon falls away
+      // 3.6s: Bow unties: ribbon tails loosen and slide off, ribbon band slides off
       if (bowRef.current) {
         tl.to(
           bowRef.current.scale,
@@ -442,7 +361,7 @@ export default function EnvelopeMesh({
             x: 0,
             y: 0,
             z: 0,
-            duration: 0.5,
+            duration: 0.45,
             ease: 'power2.in',
           },
           3.6
@@ -452,10 +371,19 @@ export default function EnvelopeMesh({
         tl.to(
           leftTailRef.current.position,
           {
-            y: -1.2,
-            z: -0.1,
-            duration: 0.7,
+            y: -0.8,
+            z: -0.05,
+            duration: 0.6,
             ease: 'power2.in',
+          },
+          3.6
+        );
+        tl.to(
+          leftTailRef.current.scale,
+          {
+            x: 0,
+            y: 0,
+            duration: 0.6,
           },
           3.6
         );
@@ -463,7 +391,7 @@ export default function EnvelopeMesh({
           leftTailRef.current.rotation,
           {
             z: -0.8,
-            duration: 0.7,
+            duration: 0.6,
           },
           3.6
         );
@@ -472,10 +400,19 @@ export default function EnvelopeMesh({
         tl.to(
           rightTailRef.current.position,
           {
-            y: -1.2,
-            z: -0.1,
-            duration: 0.7,
+            y: -0.8,
+            z: -0.05,
+            duration: 0.6,
             ease: 'power2.in',
+          },
+          3.65
+        );
+        tl.to(
+          rightTailRef.current.scale,
+          {
+            x: 0,
+            y: 0,
+            duration: 0.6,
           },
           3.65
         );
@@ -483,7 +420,7 @@ export default function EnvelopeMesh({
           rightTailRef.current.rotation,
           {
             z: 0.8,
-            duration: 0.7,
+            duration: 0.6,
           },
           3.65
         );
@@ -492,21 +429,29 @@ export default function EnvelopeMesh({
         tl.to(
           ribbonBandRef.current.position,
           {
-            x: 3.5,
-            duration: 0.8,
+            x: cardWidth * 1.6,
+            duration: 0.75,
             ease: 'power2.in',
           },
-          3.8
+          3.7
         );
         tl.to(
           ribbonBandRef.current.rotation,
           {
-            z: 0.3,
-            duration: 0.8,
+            z: 0.25,
+            duration: 0.75,
           },
-          3.8
+          3.7
         );
       }
+
+      // Hide ribbon and bow completely before card scales up
+      tl.call(() => {
+        if (ribbonBandRef.current) ribbonBandRef.current.visible = false;
+        if (bowRef.current) bowRef.current.visible = false;
+        if (leftTailRef.current) leftTailRef.current.visible = false;
+        if (rightTailRef.current) rightTailRef.current.visible = false;
+      }, null, 4.5);
 
       // 4.8s: Card rises out of envelope and scales up to fill screen (with 16px margins).
       // Envelope body fades and drops down out of view.
@@ -601,56 +546,56 @@ export default function EnvelopeMesh({
           <planeGeometry args={[cardWidth, cardHeight]} />
         </mesh>
 
-        {/* Satin Champagne Ribbon tied horizontally across card center */}
-        <group ref={ribbonBandRef} position={[0, 0, 0.005]}>
+        {/* Satin Champagne Ribbon tied horizontally across lower third of card (safely below venue text) */}
+        <group ref={ribbonBandRef} position={[0, -cardHeight * 0.22, 0.008]}>
           <mesh material={ribbonMaterial}>
-            <planeGeometry args={[cardWidth * 1.02, 0.22]} />
+            <planeGeometry args={[cardWidth * 1.02, cardHeight * 0.045]} />
           </mesh>
         </group>
 
-        {/* 3D Knotted Bow across card center */}
-        <group position={[0, 0, 0.015]}>
+        {/* 3D Knotted Bow across lower third (below venue text) */}
+        <group position={[0, -cardHeight * 0.22, 0.018]}>
           <group ref={bowRef}>
             {/* Center Knot Sphere */}
             <mesh material={ribbonMaterial}>
-              <sphereGeometry args={[0.07, 16, 16]} />
+              <sphereGeometry args={[0.045, 16, 16]} />
             </mesh>
-            {/* Left Loop */}
+            {/* Left Silk Loop */}
             <mesh
-              position={[-0.14, 0.02, 0.01]}
+              position={[-0.08, 0.015, 0.008]}
               rotation={[0, 0.2, 0.3]}
               material={ribbonMaterial}
             >
-              <torusGeometry args={[0.10, 0.032, 16, 24, Math.PI * 1.6]} />
+              <torusGeometry args={[0.065, 0.018, 16, 24, Math.PI * 1.5]} />
             </mesh>
-            {/* Right Loop */}
+            {/* Right Silk Loop */}
             <mesh
-              position={[0.14, 0.02, 0.01]}
+              position={[0.08, 0.015, 0.008]}
               rotation={[0, -0.2, -0.3]}
               material={ribbonMaterial}
             >
-              <torusGeometry args={[0.10, 0.032, 16, 24, Math.PI * 1.6]} />
+              <torusGeometry args={[0.065, 0.018, 16, 24, Math.PI * 1.5]} />
             </mesh>
           </group>
 
           {/* Left Ribbon Tail */}
           <mesh
             ref={leftTailRef}
-            position={[-0.08, -0.22, 0.008]}
-            rotation={[0, 0, -0.25]}
+            position={[-0.045, -0.11, 0.008]}
+            rotation={[0, 0, -0.2]}
             material={ribbonMaterial}
           >
-            <planeGeometry args={[0.07, 0.35]} />
+            <planeGeometry args={[0.038, 0.20]} />
           </mesh>
 
           {/* Right Ribbon Tail */}
           <mesh
             ref={rightTailRef}
-            position={[0.08, -0.22, 0.008]}
-            rotation={[0, 0, 0.25]}
+            position={[0.045, -0.11, 0.008]}
+            rotation={[0, 0, 0.2]}
             material={ribbonMaterial}
           >
-            <planeGeometry args={[0.07, 0.35]} />
+            <planeGeometry args={[0.038, 0.20]} />
           </mesh>
         </group>
       </group>

@@ -6,7 +6,7 @@ import TopBlessingLines from '../TopBlessingLines';
 
 export default function HeroCard({ guestName }) {
   const { t, i18n } = useTranslation();
-  const currentLang = i18n.language || 'en';
+  const currentLang = i18n.language || 'hi';
 
   const fontClass = currentLang === 'hi' 
     ? 'font-hindi' 

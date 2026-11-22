@@ -5,7 +5,7 @@ import eventConfig from '../../../event.config.js';
 export default function VenueCard() {
   const { t, i18n } = useTranslation();
 
-  const currentLang = i18n.language || 'en';
+  const currentLang = i18n.language || 'hi';
   const fontClass = currentLang === 'hi' 
     ? 'font-hindi' 
     : currentLang === 'gu' 

@@ -104,7 +104,7 @@ export default function EnvelopeScene({
           alpha: false,
           powerPreference: 'high-performance',
         }}
-        dpr={[1, Math.min(window.devicePixelRatio || 1, 2)]}
+        dpr={[1, Math.min(typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1, 3)]}
         className="w-full h-full cursor-pointer pointer-events-auto"
       >
         {/* Paper-matched clear color */}
