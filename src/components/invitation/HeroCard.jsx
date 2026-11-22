@@ -25,16 +25,23 @@ export default function HeroCard({ guestName }) {
       {/* Top 3 Blessing Lines repeated in Hero Card */}
       <TopBlessingLines isHero={true} />
 
-      {/* Ceremony Monogram Badge */}
-      <div className="text-center mt-2.5 mb-0">
+      {/* Ceremony Monogram Pill: Bigger, Dark Wine, Gold Highlighted */}
+      <div className="text-center my-4 sm:my-5">
         <div
-          className={`inline-block px-3.5 py-1 rounded-full border border-[#D8A85E]/50 text-[11px] sm:text-xs text-[#B38136] bg-[#FFFBF5] whitespace-nowrap ${
+          className={`inline-flex items-center justify-center px-6 py-2.5 sm:px-8 sm:py-3 rounded-full border border-[#C9A24A] bg-[#4A1224] shadow-[0_0_14px_rgba(201,162,74,0.35)] whitespace-nowrap transition-transform duration-300 hover:scale-[1.02] select-none ${
             currentLang === 'en'
-              ? 'font-display tracking-[0.16em] sm:tracking-[0.2em] uppercase'
-              : `${fontClass} tracking-normal sm:tracking-wide font-medium`
+              ? 'font-display uppercase tracking-[0.1em]'
+              : `${fontClass} tracking-wide font-bold`
           }`}
+          style={{
+            fontSize: 'clamp(18px, 4.8vw, 24px)',
+            color: '#E8CC85',
+            textShadow: '0 1px 2px rgba(0, 0, 0, 0.4), 0 0 8px rgba(232, 204, 133, 0.3)',
+          }}
         >
-          {t('hero.heroPillText', eventConfig.heroPillText || 'Sagai - Dastur')}
+          <span className="font-bold drop-shadow-sm">
+            {t('hero.heroPillText', eventConfig.heroPillText || 'SAGAI - DASTUR')}
+          </span>
         </div>
       </div>
 
@@ -57,23 +64,39 @@ export default function HeroCard({ guestName }) {
       {/* Grandparents Section (centered between Blessing Line and Groom name) */}
       {(() => {
         const grandsonLabel = t('hero.grandsonLabel', '');
+        const labelPosition = t('hero.grandsonLabelPosition', 'before');
         let grandparentsText = t('hero.groomGrandparentsLine') || eventConfig.groom?.grandparentsLine || '';
         if (grandsonLabel && grandparentsText.startsWith(grandsonLabel)) {
           grandparentsText = grandparentsText.slice(grandsonLabel.length).replace(/^[\s,:-]+/, '');
         }
 
+        const labelElement = grandsonLabel ? (
+          <p className="font-serif italic text-xs text-[#9E6D38] my-1 tracking-wider">
+            {grandsonLabel}
+          </p>
+        ) : null;
+
+        const detailsElement = (
+          <p
+            className={`${fontClass} text-[13px] sm:text-[15px] text-[#4A1224] font-semibold tracking-wide leading-relaxed max-w-[92%] sm:max-w-[85%] mx-auto [text-wrap:balance]`}
+          >
+            {grandparentsText}
+          </p>
+        );
+
         return (
           <div className="mt-0 mb-3.5 sm:mb-4 px-2 text-center">
-            {grandsonLabel ? (
-              <p className="font-serif italic text-xs text-[#9E6D38] mb-1 tracking-wider">
-                {grandsonLabel}
-              </p>
-            ) : null}
-            <p
-              className={`${fontClass} text-[13px] sm:text-[15px] text-[#4A1224] font-semibold tracking-wide leading-relaxed max-w-[92%] sm:max-w-[85%] mx-auto [text-wrap:balance]`}
-            >
-              {grandparentsText}
-            </p>
+            {labelPosition === 'after' ? (
+              <>
+                {detailsElement}
+                {labelElement}
+              </>
+            ) : (
+              <>
+                {labelElement}
+                {detailsElement}
+              </>
+            )}
 
             {/* Thin gold ornamental divider below text to separate from Vraj */}
             <div className="flex items-center justify-center gap-2 mt-3.5 mb-1 opacity-80">

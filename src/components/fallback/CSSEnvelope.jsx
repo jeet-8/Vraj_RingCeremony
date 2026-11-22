@@ -69,7 +69,9 @@ export default function CSSEnvelope({
             </span>
           ))}
 
-          <h2 className="text-[#B38136] font-display text-xs font-bold tracking-widest my-1">{t('hero.heroPillText', eventConfig.heroPillText || 'SAGAI - DASTUR')}</h2>
+          <h2 className="text-[#E8CC85] bg-[#4A1224] border border-[#C9A24A] rounded-full shadow-[0_0_10px_rgba(201,162,74,0.35)] px-4 py-1 text-xs sm:text-sm font-bold tracking-widest my-1.5 uppercase whitespace-nowrap">
+            {t('hero.heroPillText', eventConfig.heroPillText || 'SAGAI - DASTUR')}
+          </h2>
 
           {/* Kuldevi Blessing line */}
           <p className="text-[#4A1224] font-serif font-semibold text-[8.5px] max-w-[88%] leading-tight my-0.5">
@@ -77,9 +79,31 @@ export default function CSSEnvelope({
           </p>
 
           {/* Grandparents line */}
-          <p className="text-[#4A1224] font-serif font-semibold text-[8.5px] max-w-[90%] leading-tight my-0.5">
-            {t('hero.groomGrandparentsFull') || eventConfig.groom?.grandparentsLine}
-          </p>
+          <div className="my-0.5 text-center">
+            {t('hero.grandsonLabelPosition') === 'after' ? (
+              <>
+                <p className="text-[#4A1224] font-serif font-semibold text-[8.5px] max-w-[90%] leading-tight mx-auto">
+                  {t('hero.groomGrandparentsLine') || eventConfig.groom?.grandparentsLine}
+                </p>
+                {t('hero.grandsonLabel') ? (
+                  <p className="text-[#9E6D38] font-serif italic text-[8.5px]">
+                    {t('hero.grandsonLabel')}
+                  </p>
+                ) : null}
+              </>
+            ) : (
+              <>
+                {t('hero.grandsonLabel') ? (
+                  <p className="text-[#9E6D38] font-serif italic text-[8.5px]">
+                    {t('hero.grandsonLabel')}
+                  </p>
+                ) : null}
+                <p className="text-[#4A1224] font-serif font-semibold text-[8.5px] max-w-[90%] leading-tight mx-auto">
+                  {t('hero.groomGrandparentsLine') || eventConfig.groom?.grandparentsLine}
+                </p>
+              </>
+            )}
+          </div>
 
           {/* Groom */}
           <h1 className="text-[#4A1224] font-script text-2xl mt-0.5 leading-tight">{eventConfig.groom.name}</h1>

@@ -3,7 +3,7 @@
  * Ensures users always receive the freshest build without stale cache lockups.
  */
 
-const BUILD_VERSION = 'vraj-ceremony-v20261122_1230';
+const BUILD_VERSION = 'vraj-ceremony-v20261122_1500';
 const CACHE_NAME = `vraj-cache-${BUILD_VERSION}`;
 
 // 1. Immediately activate upon installation
@@ -33,7 +33,7 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
 
   // Network-first for HTML pages so user always receives newest deploy
-  if (request.mode === 'navigate') {
+  if (request.mode === 'navigate' || url.pathname === '/' || url.pathname.endsWith('.html')) {
     event.respondWith(
       fetch(request)
         .then((response) => {

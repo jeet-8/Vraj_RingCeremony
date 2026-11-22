@@ -153,25 +153,34 @@ export function drawInvitationCardTexture(canvas, { t, currentLang = 'hi', event
   ctx.font = '16px serif';
   ctx.fillText('◆', midX, 362);
 
-  // 5. Ceremony Pill: "SAGAI - DASTUR"
+  // 5. Ceremony Pill: "SAGAI - DASTUR" (Bigger, Dark Wine with Gold Glow & Champagne Text)
   const pillText = t ? t('hero.heroPillText', eventConfig.heroPillText || 'SAGAI - DASTUR') : (eventConfig.heroPillText || 'SAGAI - DASTUR');
-  ctx.font = `bold 28px ${displayFont}`;
+  ctx.font = `bold 38px ${displayFont}`;
   const pillTextWidth = ctx.measureText(pillText.toUpperCase()).width;
-  const pillW = Math.max(340, pillTextWidth + 64);
-  const pillH = 54;
-  const pillY = 428;
+  const pillW = Math.max(400, pillTextWidth + 90);
+  const pillH = 72;
+  const pillY = 432;
 
-  // Pill Background & Border
-  ctx.fillStyle = '#FFFBF5';
-  drawPill(ctx, midX, pillY, pillW, pillH, 27);
+  // Soft Gold Glow around pill
+  ctx.save();
+  ctx.shadowColor = 'rgba(201, 162, 74, 0.45)';
+  ctx.shadowBlur = 22;
+
+  // Dark Wine Background
+  ctx.fillStyle = '#4A1224';
+  drawPill(ctx, midX, pillY, pillW, pillH, 36);
   ctx.fill();
-  ctx.strokeStyle = '#D8A85E';
-  ctx.lineWidth = 2.5;
-  drawPill(ctx, midX, pillY, pillW, pillH, 27);
-  ctx.stroke();
 
-  // Pill Text
-  ctx.fillStyle = '#B38136';
+  // 1px Solid Gold Border
+  ctx.strokeStyle = '#C9A24A';
+  ctx.lineWidth = 3.5;
+  drawPill(ctx, midX, pillY, pillW, pillH, 36);
+  ctx.stroke();
+  ctx.restore();
+
+  // Champagne Gold Text
+  ctx.fillStyle = '#E8CC85';
+  ctx.font = `bold 38px ${displayFont}`;
   ctx.fillText(pillText.toUpperCase(), midX, pillY);
 
   // 6. Kuldevi Blessing Line: "With the Immense Grace of Shri Kuldevi Khimaj Mataji, We Have"
@@ -182,7 +191,7 @@ export function drawInvitationCardTexture(canvas, { t, currentLang = 'hi', event
   ctx.font = `600 35px ${serifFont}`;
   ctx.fillStyle = '#4A1224';
   const kuldeviLines = getWrappedLines(ctx, kuldeviLine, 1200);
-  let curY = 510;
+  let curY = 518;
   for (const line of kuldeviLines) {
     ctx.fillText(line, midX, curY);
     curY += 46;
@@ -190,25 +199,38 @@ export function drawInvitationCardTexture(canvas, { t, currentLang = 'hi', event
 
   // 7. Groom Grandparents Block
   const grandsonLabel = t ? t('hero.grandsonLabel', '') : 'Grandson of';
+  const grandsonLabelPos = t ? t('hero.grandsonLabelPosition', 'before') : 'before';
   let gpText = t ? (t('hero.groomGrandparentsLine') || eventConfig.groom?.grandparentsLine || '') : (eventConfig.groom?.grandparentsLine || '');
   if (grandsonLabel && gpText.startsWith(grandsonLabel)) {
     gpText = gpText.slice(grandsonLabel.length).replace(/^[\s,:-]+/, '');
   }
 
   curY += 15;
-  if (grandsonLabel) {
-    ctx.font = `italic 26px ${serifFont}`;
-    ctx.fillStyle = '#9E6D38';
-    ctx.fillText(grandsonLabel, midX, curY);
-    curY += 38;
-  }
+  const drawGroomGpLabel = () => {
+    if (grandsonLabel) {
+      ctx.font = `italic 26px ${serifFont}`;
+      ctx.fillStyle = '#9E6D38';
+      ctx.fillText(grandsonLabel, midX, curY);
+      curY += 38;
+    }
+  };
 
-  ctx.font = `600 33px ${serifFont}`;
-  ctx.fillStyle = '#4A1224';
-  const gpLines = getWrappedLines(ctx, gpText, 1220);
-  for (const line of gpLines) {
-    ctx.fillText(line, midX, curY);
-    curY += 44;
+  const drawGroomGpDetails = () => {
+    ctx.font = `600 33px ${serifFont}`;
+    ctx.fillStyle = '#4A1224';
+    const gpLines = getWrappedLines(ctx, gpText, 1220);
+    for (const line of gpLines) {
+      ctx.fillText(line, midX, curY);
+      curY += 44;
+    }
+  };
+
+  if (grandsonLabelPos === 'after') {
+    drawGroomGpDetails();
+    drawGroomGpLabel();
+  } else {
+    drawGroomGpLabel();
+    drawGroomGpDetails();
   }
 
   // Thin gold divider before Groom Name

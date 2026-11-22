@@ -42,10 +42,18 @@ i18n
     },
     lng: initialLng,
     fallbackLng: 'hi',
+    supportedLngs: ['hi', 'en', 'gu'],
+    load: 'languageOnly',
     interpolation: {
       escapeValue: false,
     },
+    detection: false,
   });
+
+// Guarantee initial active language matches initialLng
+if (i18n.language !== initialLng) {
+  i18n.changeLanguage(initialLng);
+}
 
 // Keep document.documentElement.lang synchronized on load
 if (typeof document !== 'undefined') {

@@ -46,11 +46,14 @@ test.describe('Hindi Default, Reopen Behavior, Language Switching, and New Spell
     await skipBtn.click();
     await page.waitForTimeout(1000);
 
-    // Verify Hero Card Hindi content with new spellings (मोरीबई, सुखीबई, धर्मपत्नी श्रीधनसिंहजी)
-    await expect(page.locator('text=सगाई - दस्तूर').first()).toBeVisible();
+    // Verify Hero Card Hindi content with new spellings (मोरीबई, सुखीबई, धर्मपत्नी श्रीधनसिंहजी, भाचुंदा, के सुपौत्र)
+    const pill = page.locator('text=सगाई - दस्तूर').first();
+    await expect(pill).toBeVisible();
+
     await expect(page.locator('text="श्री कुलदेवी खिमज माताजी की असीम कृपा से, हमारे यहाँ"').first()).toBeVisible();
-    await expect(page.locator('text=/श्रीमति मोरीबई धर्मपत्नी श्रीधनसिंहजी राजपुरोहित \\(ठि\\. चूण्ड़ा\\) हाल- अहमदाबाद - का सुपौत्र/').first()).toBeVisible();
-    await expect(page.locator('text=/श्रीमति सुखीबई धर्मपत्नी, श्री दीपसिंहजी राजपुरोहित \\(ठि\\. भाचुंडा\\)/').first()).toBeVisible();
+    await expect(page.locator('text=/श्रीमति मोरीबई धर्मपत्नी श्रीधनसिंहजी राजपुरोहित \\(ठि\\. चूण्ड़ा\\)/').first()).toBeVisible();
+    await expect(page.locator('text=के सुपौत्र').first()).toBeVisible();
+    await expect(page.locator('text=/श्रीमति सुखीबई धर्मपत्नी, श्री दीपसिंहजी राजपुरोहित \\(ठि\\. भाचुंदा\\)/').first()).toBeVisible();
     await expect(page.locator('text=की सुपोत्री').first()).toBeVisible();
 
     // Capture screenshot of Hindi Hero Card
