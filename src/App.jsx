@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, Suspense, lazy } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Analytics } from '@vercel/analytics/react';
 import './i18n';
 import TopBlessingLines from './components/TopBlessingLines';
 import CSSEnvelope from './components/fallback/CSSEnvelope';
@@ -126,6 +127,8 @@ export default function App() {
 
   return (
     <div className="relative min-h-[100dvh] w-full bg-[#170E14] text-[#FDF8F5] overflow-x-hidden">
+      <Analytics />
+
       {/* In-app Browser Notice Banner */}
       <InAppBrowserBanner />
 
