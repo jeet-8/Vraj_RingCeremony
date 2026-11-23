@@ -14,22 +14,26 @@ test.describe('Verify Parents Name Spelling and Date/Time Block Enlargement', ()
 
   test('Verify spelling, typography, single-line rendering, and spacing across EN, HI, GU', async ({ page }) => {
     // 1. English Verification
+    await page.goto('/?mode=plain');
+    const enBtn = page.getByRole('button', { name: 'EN' });
+    await enBtn.click();
+    await page.waitForTimeout(600);
+
     for (const vp of viewports) {
       await page.setViewportSize({ width: vp.width, height: vp.height });
-      await page.goto('/?mode=plain');
-      await page.waitForTimeout(600);
+      await page.waitForTimeout(400);
 
       // Verify parents names in English
-      const groomParents = page.locator('text="Rekha Kuwar & Prakash singhji"').first();
+      const groomParents = page.locator('text="Rekha Kuwar & Prakashsinghji"').first();
       await expect(groomParents).toBeVisible();
 
-      const brideParents = page.locator('text="Seema Kuwar & Parvat singhji"').first();
+      const brideParents = page.locator('text="Seema Kuwar & Parvatsinghji"').first();
       await expect(brideParents).toBeVisible();
 
-      // Ensure old joined spellings do NOT exist in the page text
+      // Ensure old spaced spellings do NOT exist in the page text
       const pageText = await page.textContent('body');
-      expect(pageText).not.toContain('Prakashsinghji');
-      expect(pageText).not.toContain('Parvatsinghji');
+      expect(pageText).not.toContain('Prakash singhji');
+      expect(pageText).not.toContain('Parvat singhji');
 
       // Verify Date element
       const dateEl = page.locator('text=SUNDAY, 6 DECEMBER 2026').first();
@@ -109,18 +113,19 @@ test.describe('Verify Parents Name Spelling and Date/Time Block Enlargement', ()
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.waitForTimeout(400);
 
-      // Verify Hindi parents names with space
-      const groomHi = page.locator('text="रेखा कुंवर & प्रकाश सिंहजी"').first();
+      // Verify Hindi parents names without space
+      const groomHi = page.locator('text="रेखा कुंवर & प्रकाशसिंहजी"').first();
       await expect(groomHi).toBeVisible();
 
-      const brideHi = page.locator('text="सीमा कुंवर & पर्वत सिंहजी"').first();
+      const brideHi = page.locator('text="सीमा कुंवर & पर्वतसिंहजी"').first();
       await expect(brideHi).toBeVisible();
 
       // Ensure no old Hindi spellings
       const pageText = await page.textContent('body');
-      expect(pageText).not.toContain('प्रकाशसिंहजी');
+      expect(pageText).not.toContain('प्रकाश सिंहजी');
+      expect(pageText).not.toContain('पार्वत सिंहजी');
       expect(pageText).not.toContain('पार्वतसिंहजी');
-      expect(pageText).not.toContain('पर्वतसिंहजी');
+      expect(pageText).not.toContain('पर्वत सिंहजी');
 
       // Verify Date and Time
       const dateEl = page.locator('text=SUNDAY, 6 DECEMBER 2026').first();
@@ -150,18 +155,19 @@ test.describe('Verify Parents Name Spelling and Date/Time Block Enlargement', ()
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await page.waitForTimeout(400);
 
-      // Verify Gujarati parents names with space
-      const groomGu = page.locator('text="રેખા કુંવર & પ્રકાશ સિંહજી"').first();
+      // Verify Gujarati parents names without space
+      const groomGu = page.locator('text="રેખા કુંવર & પ્રકાશસિંહજી"').first();
       await expect(groomGu).toBeVisible();
 
-      const brideGu = page.locator('text="સીમા કુંવર & પર્વત સિંહજી"').first();
+      const brideGu = page.locator('text="સીમા કુંવર & પર્વતસિંહજી"').first();
       await expect(brideGu).toBeVisible();
 
       // Ensure no old Gujarati spellings
       const pageText = await page.textContent('body');
-      expect(pageText).not.toContain('પ્રકાશસિંહજી');
+      expect(pageText).not.toContain('પ્રકાશ સિંહજી');
+      expect(pageText).not.toContain('પાર્વત સિંહજી');
       expect(pageText).not.toContain('પાર્વતસિંહજી');
-      expect(pageText).not.toContain('પર્વતસિંહજી');
+      expect(pageText).not.toContain('પર્વત સિંહજી');
 
       // Verify Date and Time
       const dateEl = page.locator('text=SUNDAY, 6 DECEMBER 2026').first();

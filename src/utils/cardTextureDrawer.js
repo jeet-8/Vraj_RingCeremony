@@ -247,7 +247,7 @@ export function drawInvitationCardTexture(canvas, { t, currentLang = 'hi', event
   ctx.font = '14px serif';
   ctx.fillText('◆', midX, curY);
 
-  // 8. Groom Block: "Vraj", "Son of", "Rekha Kuwar & Prakash singhji"
+  // 8. Groom Block: "Vraj", "Son of", "Rekha Kuwar & Prakashsinghji"
   curY += 65;
   ctx.font = `italic 115px ${scriptFont}`;
   ctx.fillStyle = '#4A1224';
@@ -311,7 +311,7 @@ export function drawInvitationCardTexture(canvas, { t, currentLang = 'hi', event
     drawBrideGpLabel();
   }
 
-  // 11. Bride Block: "Pooja (Jiya)", "Daughter of", "Seema Kuwar & Parvat singhji"
+  // 11. Bride Block: "Pooja (Jiya)", "Daughter of", "Seema Kuwar & Parvatsinghji"
   curY += 40;
   ctx.font = `italic 115px ${scriptFont}`;
   ctx.fillStyle = '#4A1224';

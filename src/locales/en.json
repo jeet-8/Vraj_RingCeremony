@@ -20,8 +20,8 @@
     "groomGrandparentsFull": "Grandson of Shrimati MoriBai, Wife of Shri Dhansinghji Rajpurohit (Native: Chunda)",
     "groomParentsLabel": "Son of",
     "brideParentsLabel": "Daughter of",
-    "groomParents": "Rekha Kuwar & Prakash singhji",
-    "brideParents": "Seema Kuwar & Parvat singhji",
+    "groomParents": "Rekha Kuwar & Prakashsinghji",
+    "brideParents": "Seema Kuwar & Parvatsinghji",
     "defaultGreeting": "Dear Family & Friends,",
     "guestGreetingPrefix": "Dear",
     "guestGreetingSuffix": "and family,"
@@ -98,6 +98,7 @@
     "musicOn": "Music on",
     "muted": "Muted",
     "playMusic": "Play Music",
-    "muteMusic": "Mute Music"
+    "muteMusic": "Mute Music",
+    "tapHint": "Tap anywhere for music"
   }
 }

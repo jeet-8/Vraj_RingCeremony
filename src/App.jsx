@@ -38,6 +38,9 @@ export default function App() {
 
   // Check URL params on mount
   useEffect(() => {
+    // Attempt autoplay immediately on page mount
+    soundEngine.startAutoplayFlow();
+
     const parsedGuest = parseGuestName();
     if (parsedGuest) {
       setGuestName(parsedGuest);

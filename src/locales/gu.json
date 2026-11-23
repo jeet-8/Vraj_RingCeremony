@@ -21,8 +21,8 @@
     "groomGrandparentsFull": "શ્રીમતી મોરીબઈ ધર્મપત્ની ધનસિંહજી રાજપુરોહિત (ઠિ. ચુંડા) ના પૌત્ર",
     "groomParentsLabel": "સુપુત્ર",
     "brideParentsLabel": "સુપુત્રી",
-    "groomParents": "રેખા કુંવર & પ્રકાશ સિંહજી",
-    "brideParents": "સીમા કુંવર & પર્વત સિંહજી",
+    "groomParents": "રેખા કુંવર & પ્રકાશસિંહજી",
+    "brideParents": "સીમા કુંવર & પર્વતસિંહજી",
     "defaultGreeting": "સ્નેહી સ્વજનો અને મિત્રગણ,",
     "guestGreetingPrefix": "સ્નેહસહ,",
     "guestGreetingSuffix": "સહકુટુંબ,"
@@ -99,6 +99,7 @@
     "musicOn": "સંગીત ચાલુ",
     "muted": "મ્યૂટ",
     "playMusic": "સંગીત વગાડો",
-    "muteMusic": "સંગીત મ્યૂટ કરો"
+    "muteMusic": "સંગીત મ્યૂટ કરો",
+    "tapHint": "સંગીત માટે ગમે ત્યાં સ્પર્શ કરો"
   }
 }

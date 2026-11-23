@@ -43,7 +43,7 @@ test.describe('Verify Hero Card Layout & Pooja (Jiya) & V & P Monogram', () => {
     // Verify Groom Block
     const groomName = page.locator('h1', { hasText: 'Vraj' });
     const sonOf = page.locator('text=Son of');
-    const groomParents = page.locator('text=Rekha Kuwar & Prakash singhji');
+    const groomParents = page.locator('text=Rekha Kuwar & Prakashsinghji');
     await expect(groomName).toBeVisible();
     await expect(sonOf).toBeVisible();
     await expect(groomParents).toBeVisible();
@@ -51,7 +51,7 @@ test.describe('Verify Hero Card Layout & Pooja (Jiya) & V & P Monogram', () => {
     // Verify Bride Block
     const brideName = page.locator('h1', { hasText: 'Pooja (Jiya)' });
     const daughterOf = page.locator('text=Daughter of');
-    const brideParents = page.locator('text=Seema Kuwar & Parvat singhji');
+    const brideParents = page.locator('text=Seema Kuwar & Parvatsinghji');
     await expect(brideName).toBeVisible();
     await expect(daughterOf).toBeVisible();
     await expect(brideParents).toBeVisible();
@@ -128,9 +128,9 @@ test.describe('Verify Hero Card Layout & Pooja (Jiya) & V & P Monogram', () => {
     await page.waitForTimeout(500);
 
     await expect(page.getByText('सुपुत्र', { exact: true })).toBeVisible();
-    await expect(page.locator('text=रेखा कुंवर & प्रकाश सिंहजी').first()).toBeVisible();
+    await expect(page.locator('text=रेखा कुंवर & प्रकाशसिंहजी').first()).toBeVisible();
     await expect(page.getByText('सुपुत्री', { exact: true })).toBeVisible();
-    await expect(page.locator('text=सीमा कुंवर & पर्वत सिंहजी').first()).toBeVisible();
+    await expect(page.locator('text=सीमा कुंवर & पर्वतसिंहजी').first()).toBeVisible();
 
     // Switch to Gujarati
     const guBtn = page.getByRole('button', { name: 'ગુજરાતી' });
@@ -138,8 +138,8 @@ test.describe('Verify Hero Card Layout & Pooja (Jiya) & V & P Monogram', () => {
     await page.waitForTimeout(500);
 
     await expect(page.getByText('સુપુત્ર', { exact: true })).toBeVisible();
-    await expect(page.locator('text=રેખા કુંવર & પ્રકાશ સિંહજી').first()).toBeVisible();
+    await expect(page.locator('text=રેખા કુંવર & પ્રકાશસિંહજી').first()).toBeVisible();
     await expect(page.getByText('સુપુત્રી', { exact: true })).toBeVisible();
-    await expect(page.locator('text=સીમા કુંવર & પર્વત સિંહજી').first()).toBeVisible();
+    await expect(page.locator('text=સીમા કુંવર & પર્વતસિંહજી').first()).toBeVisible();
   });
 });
