@@ -15,7 +15,7 @@ test.describe('Verify Parents Name Spelling and Date/Time Block Enlargement', ()
   test('Verify spelling, typography, single-line rendering, and spacing across EN, HI, GU', async ({ page }) => {
     // 1. English Verification
     await page.goto('/?mode=plain');
-    const enBtn = page.getByRole('button', { name: 'EN' });
+    const enBtn = page.getByRole('button', { name: 'EN', exact: true });
     await enBtn.click();
     await page.waitForTimeout(600);
 

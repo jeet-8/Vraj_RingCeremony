@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Audio Autoplay & First-Gesture Fallback Verification (Incognito Simulation)', () => {
-  test('Fresh session handles autoplay block gracefully and starts audio on first user gesture', async ({ page }) => {
+  test('Fresh session starts audio on load or on first user gesture with clean UI and no hint pill', async ({ page }) => {
     // Playwright test runner naturally runs with a completely empty, fresh incognito context
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1000);
@@ -15,7 +15,6 @@ test.describe('Audio Autoplay & First-Gesture Fallback Verification (Incognito S
       return {
         isPlaying: se?.isPlaying,
         isMuted: se?.isMuted,
-        isBlocked: se?.isBlocked,
         audioPaused: se?.audioElement?.paused,
         audioMuted: se?.audioElement?.muted,
         audioVolume: se?.audioElement?.volume,
@@ -23,31 +22,20 @@ test.describe('Audio Autoplay & First-Gesture Fallback Verification (Incognito S
     });
     console.log('[Incognito Test] Audio status on load:', JSON.stringify(audioStatusOnLoad));
 
-    // Check hint pill visibility with proper :has-text() selector
+    // Confirm that NO hint pill exists in the DOM
     const hintPill = page.locator(':has-text("संगीत के लिए कहीं भी स्पर्श करें"), :has-text("Tap anywhere for music"), :has-text("સંગીત માટે ગમે ત્યાં સ્પર્શ કરો")').first();
-    const isHintVisible = await hintPill.isVisible().catch(() => false);
-    console.log(`[Incognito Test] Hint pill visible before gesture: ${isHintVisible}`);
-
-    // If it was blocked, hint must be visible. If browser allowed unmuted autoplay, it must be playing!
-    if (audioStatusOnLoad.isBlocked) {
-      expect(isHintVisible).toBe(true);
-    } else {
-      expect(audioStatusOnLoad.isPlaying).toBe(true);
-    }
+    const isHintPresent = await hintPill.isVisible().catch(() => false);
+    expect(isHintPresent).toBe(false);
 
     // Simulate first user gesture: tap anywhere on the screen
     await page.mouse.click(200, 300);
     await page.waitForTimeout(600);
-
-    // After gesture, hint pill must not be visible
-    await expect(hintPill).not.toBeVisible();
 
     const audioStatusAfterTap = await page.evaluate(() => {
       const se = window.__soundEngine;
       return {
         isPlaying: se?.isPlaying,
         isMuted: se?.isMuted,
-        isBlocked: se?.isBlocked,
         audioPaused: se?.audioElement?.paused,
         audioMuted: se?.audioElement?.muted,
       };
