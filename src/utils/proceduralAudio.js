@@ -18,7 +18,6 @@ class SoundEngine {
     this.audioCtx = null;
     this.isPlaying = false;
     this.isMuted = true;
-    this.isBlocked = false;
     this.userExplicitlyMuted = false;
     this.wasPlayingBeforeHide = false;
     this.targetVolume = 0.5;
@@ -66,8 +65,7 @@ class SoundEngine {
           this.audioElement.src = '/music/background-music.mp3';
           this.audioElement.load();
         } else {
-          console.info('[Audio] Audio file failed or not supported, hiding hint gracefully.');
-          this.isBlocked = false;
+          console.info('[Audio] Audio file failed or not supported.');
           this.isPlaying = false;
           this.notify();
         }
@@ -82,7 +80,6 @@ class SoundEngine {
     callback({
       isPlaying: this.isPlaying,
       isMuted: this.isMuted,
-      isBlocked: this.isBlocked,
     });
     return () => this.subscribers.delete(callback);
   }
@@ -93,7 +90,6 @@ class SoundEngine {
         cb({
           isPlaying: this.isPlaying,
           isMuted: this.isMuted,
-          isBlocked: this.isBlocked,
         });
       } catch (e) {}
     });
@@ -101,17 +97,16 @@ class SoundEngine {
 
   /**
    * Browser Autoplay Flow:
-   * 1. Start muted immediately on load (muted autoplay is universally permitted).
-   * 2. Try unmuting right away with 2-second fade-in.
-   * 3. If browser blocks unmuted playback, keep playing muted and show subtle hint.
-   * 4. Listen for first user gesture anywhere (pointerdown, touchend, click, keydown) to unmute.
+   * 1. Try unmuted playback immediately as website opens.
+   * 2. If allowed by browser policy, fades in sound smoothly right away.
+   * 3. If gated without user gesture, keep playing muted in background and listen
+   *    for very first touch/click anywhere on the page to unmute instantly.
    */
   startAutoplayFlow() {
     if (typeof window === 'undefined') return;
     this.init();
 
     if (this.userExplicitlyMuted) {
-      this.isBlocked = false;
       this.isMuted = true;
       this.notify();
       return;
@@ -119,11 +114,11 @@ class SoundEngine {
 
     if (!this.audioElement) return;
 
-    // Attach listeners for first user gesture anywhere on page
+    // Attach listeners for first user gesture anywhere on page (capture phase)
     this.attachGestureListeners();
 
-    // Start muted first
-    this.audioElement.muted = true;
+    // Try unmuted playback right away on load
+    this.audioElement.muted = false;
     this.audioElement.volume = 0;
 
     try {
@@ -131,50 +126,34 @@ class SoundEngine {
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            // Muted playback is active. Now test unmuting.
+            // Browser permitted unmuted playback directly on load!
             this.isPlaying = true;
-            try {
-              this.audioElement.muted = false;
-              if (!this.audioElement.paused && this.audioElement.volume !== undefined) {
-                // Browser allowed unmuted playback
-                this.isBlocked = false;
-                this.isMuted = false;
-                this.fadeIn(2000, this.targetVolume);
-                this.detachGestureListeners();
-                this.notify();
-              } else {
-                // Browser paused upon unmuting: re-mute and await gesture
-                this.audioElement.muted = true;
-                this.audioElement.play().catch(() => {});
-                this.isBlocked = true;
-                this.isMuted = true;
-                this.notify();
-              }
-            } catch (err) {
-              this.audioElement.muted = true;
-              this.isBlocked = true;
-              this.isMuted = true;
-              this.notify();
-            }
+            this.isMuted = false;
+            this.fadeIn(1500, this.targetVolume);
+            this.detachGestureListeners();
+            this.notify();
           })
           .catch(() => {
-            // Autoplay completely blocked: wait for gesture
-            this.isBlocked = true;
+            // Unmuted autoplay blocked: continue muted in background, wait for first tap
+            this.audioElement.muted = true;
+            this.audioElement.play().catch(() => {});
+            this.isPlaying = true;
             this.isMuted = true;
-            this.isPlaying = false;
             this.notify();
           });
       }
     } catch (err) {
-      this.isBlocked = true;
-      this.notify();
+      try {
+        this.audioElement.muted = true;
+        this.audioElement.play().catch(() => {});
+      } catch (e) {}
     }
   }
 
   attachGestureListeners() {
-    if (typeof document === 'undefined' || this.gestureListenerRemover) return;
+    if (typeof window === 'undefined' || this.gestureListenerRemover) return;
 
-    const events = ['pointerdown', 'touchend', 'click', 'keydown'];
+    const events = ['pointerdown', 'touchstart', 'touchend', 'click', 'keydown'];
     const onGesture = () => {
       this.detachGestureListeners();
       if (!this.userExplicitlyMuted) {
@@ -183,12 +162,12 @@ class SoundEngine {
     };
 
     events.forEach((evt) => {
-      document.addEventListener(evt, onGesture, { once: true, passive: true });
+      window.addEventListener(evt, onGesture, { capture: true, once: true, passive: true });
     });
 
     this.gestureListenerRemover = () => {
       events.forEach((evt) => {
-        document.removeEventListener(evt, onGesture);
+        window.removeEventListener(evt, onGesture, { capture: true });
       });
       this.gestureListenerRemover = null;
     };
@@ -228,7 +207,6 @@ class SoundEngine {
 
     if (!this.audioElement) return;
 
-    this.isBlocked = false;
     this.isMuted = false;
     this.isPlaying = true;
     this.audioElement.muted = false;
@@ -239,7 +217,7 @@ class SoundEngine {
         if (playPromise !== undefined) {
           playPromise
             .then(() => {
-              this.fadeIn(2000, this.targetVolume);
+              this.fadeIn(1500, this.targetVolume);
               this.notify();
             })
             .catch(() => {
@@ -247,8 +225,8 @@ class SoundEngine {
             });
         }
       } else {
-        // Already playing (was muted): simply fade in
-        this.fadeIn(2000, this.targetVolume);
+        // Already playing (was muted in background): simply fade in volume
+        this.fadeIn(1500, this.targetVolume);
         this.notify();
       }
     } catch (err) {
@@ -280,7 +258,6 @@ class SoundEngine {
     } catch (e) {}
 
     this.detachGestureListeners();
-    this.isBlocked = false;
     this.isMuted = true;
     this.isPlaying = false;
 
