@@ -18,6 +18,7 @@ class SoundEngine {
     this.audioCtx = null;
     this.isPlaying = false;
     this.isMuted = true;
+    this.isBlocked = false;
     this.userExplicitlyMuted = false;
     this.wasPlayingBeforeHide = false;
     this.targetVolume = 0.5;
@@ -67,6 +68,7 @@ class SoundEngine {
         } else {
           console.info('[Audio] Audio file failed or not supported.');
           this.isPlaying = false;
+          this.isBlocked = false;
           this.notify();
         }
       });
@@ -80,6 +82,7 @@ class SoundEngine {
     callback({
       isPlaying: this.isPlaying,
       isMuted: this.isMuted,
+      isBlocked: this.isBlocked,
     });
     return () => this.subscribers.delete(callback);
   }
@@ -90,6 +93,7 @@ class SoundEngine {
         cb({
           isPlaying: this.isPlaying,
           isMuted: this.isMuted,
+          isBlocked: this.isBlocked,
         });
       } catch (e) {}
     });
@@ -97,17 +101,18 @@ class SoundEngine {
 
   /**
    * Browser Autoplay Flow:
-   * 1. Try unmuted playback immediately as website opens.
-   * 2. If allowed by browser policy, fades in sound smoothly right away.
-   * 3. If gated without user gesture, keep playing muted in background and listen
-   *    for very first touch/click anywhere on the page to unmute instantly.
+   * 1. On page load, call play() on the single shared audio element right away (inside try/catch),
+   *    NOT muted-first. If browser allows, fade volume in.
+   * 2. If browser rejects with NotAllowedError, do NOT retry in a loop: wait for the first user gesture.
    */
   startAutoplayFlow() {
     if (typeof window === 'undefined') return;
     this.init();
 
     if (this.userExplicitlyMuted) {
+      this.isBlocked = false;
       this.isMuted = true;
+      this.isPlaying = false;
       this.notify();
       return;
     }
@@ -117,7 +122,7 @@ class SoundEngine {
     // Attach listeners for first user gesture anywhere on page (capture phase)
     this.attachGestureListeners();
 
-    // Try unmuted playback right away on load
+    // Call play() right away, NOT muted-first
     this.audioElement.muted = false;
     this.audioElement.volume = 0;
 
@@ -126,34 +131,36 @@ class SoundEngine {
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            // Browser permitted unmuted playback directly on load!
+            // Autoplay permitted by browser policy on load!
             this.isPlaying = true;
             this.isMuted = false;
-            this.fadeIn(1500, this.targetVolume);
+            this.isBlocked = false;
             this.detachGestureListeners();
+            this.fadeIn(1500, this.targetVolume);
             this.notify();
           })
-          .catch(() => {
-            // Unmuted autoplay blocked: continue muted in background, wait for first tap
-            this.audioElement.muted = true;
-            this.audioElement.play().catch(() => {});
-            this.isPlaying = true;
+          .catch((err) => {
+            // Autoplay rejected on load (NotAllowedError).
+            // Do NOT retry in a loop: show subtle hint and wait for first tap.
+            console.info('[Audio] Autoplay on load rejected by browser policy (NotAllowedError). Awaiting first user gesture.');
+            this.isPlaying = false;
             this.isMuted = true;
+            this.isBlocked = true;
             this.notify();
           });
       }
     } catch (err) {
-      try {
-        this.audioElement.muted = true;
-        this.audioElement.play().catch(() => {});
-      } catch (e) {}
+      this.isPlaying = false;
+      this.isMuted = true;
+      this.isBlocked = true;
+      this.notify();
     }
   }
 
   attachGestureListeners() {
     if (typeof window === 'undefined' || this.gestureListenerRemover) return;
 
-    const events = ['pointerdown', 'touchstart', 'touchend', 'click', 'keydown'];
+    const events = ['pointerdown', 'touchend', 'click', 'keydown'];
     const onGesture = () => {
       this.detachGestureListeners();
       if (!this.userExplicitlyMuted) {
@@ -198,38 +205,40 @@ class SoundEngine {
   }
 
   /**
-   * Unmute or start audio playback with smooth fade-in
+   * Unmute or start audio playback during user gesture with smooth fade-in
    */
   unlockAndPlay() {
     this.init();
     this.unlock();
     this.detachGestureListeners();
 
-    if (!this.audioElement) return;
+    if (!this.audioElement || this.userExplicitlyMuted) return;
 
+    this.isBlocked = false;
     this.isMuted = false;
-    this.isPlaying = true;
     this.audioElement.muted = false;
 
     try {
-      if (this.audioElement.paused) {
-        const playPromise = this.audioElement.play();
-        if (playPromise !== undefined) {
-          playPromise
-            .then(() => {
-              this.fadeIn(1500, this.targetVolume);
-              this.notify();
-            })
-            .catch(() => {
-              this.notify();
-            });
-        }
+      // Synchronously call play() in the gesture event call stack
+      const playPromise = this.audioElement.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            this.isPlaying = true;
+            this.fadeIn(1500, this.targetVolume);
+            this.notify();
+          })
+          .catch((err) => {
+            console.warn('[Audio] play() failed during user gesture:', err);
+            this.notify();
+          });
       } else {
-        // Already playing (was muted in background): simply fade in volume
+        this.isPlaying = true;
         this.fadeIn(1500, this.targetVolume);
         this.notify();
       }
     } catch (err) {
+      console.warn('[Audio] play() exception during user gesture:', err);
       this.notify();
     }
 
@@ -258,6 +267,7 @@ class SoundEngine {
     } catch (e) {}
 
     this.detachGestureListeners();
+    this.isBlocked = false;
     this.isMuted = true;
     this.isPlaying = false;
 
@@ -374,4 +384,7 @@ class SoundEngine {
 }
 
 export const soundEngine = new SoundEngine();
+if (typeof window !== 'undefined') {
+  window.__soundEngine = soundEngine;
+}
 export default soundEngine;

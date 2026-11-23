@@ -98,6 +98,7 @@
     "musicOn": "Music on",
     "muted": "Muted",
     "playMusic": "Play Music",
-    "muteMusic": "Mute Music"
+    "muteMusic": "Mute Music",
+    "tapHint": "Tap anywhere for music"
   }
 }
